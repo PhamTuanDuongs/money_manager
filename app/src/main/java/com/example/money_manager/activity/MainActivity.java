@@ -1,4 +1,4 @@
-package com.example.money_manager;
+package com.example.money_manager.activity;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar_logins);
         setSupportActionBar(toolbar);
 
         drawerLayout = findViewById(R.id.drawer_layout);

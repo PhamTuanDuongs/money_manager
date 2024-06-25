@@ -9,4 +9,6 @@
 
     <string name="reminder">Reminder</string>
     <string name="menu_home">Home</string>
+    <string name="email_null">Please enter your address</string>
+    <string name="email_error_address">Invalid email address</string>
 </resources>

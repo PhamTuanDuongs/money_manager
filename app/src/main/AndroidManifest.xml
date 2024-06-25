@@ -13,7 +13,20 @@
         android:theme="@style/Theme.Money_manager"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.authentication.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.authentication.RegisterActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Money_manager.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Money_manager.NoActionBar">

@@ -8,24 +8,8 @@
     tools:context=".activity.authentication.RegisterActivity">
 
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_register"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_gravity="bottom"
-        android:background="@color/teal_700"
-        android:pointerIcon="none"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:logo="@drawable/arrow"
-        app:popupTheme="@style/Theme.Money_manager"
-        app:title="Sign up"
-        app:titleMarginBottom="28dp"
-        app:titleMarginStart="30dp"
-        app:titleMarginTop="0dp"
-        app:titleTextColor="@color/white" />
+    <include android:id="@+id/toolbarSignUp" layout="@layout/toolbar"/>
+
 
     <Button
         android:id="@+id/btn_register"
@@ -64,7 +48,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_register" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbarSignUp" />
 
     <EditText
         android:id="@+id/edt_password_register"

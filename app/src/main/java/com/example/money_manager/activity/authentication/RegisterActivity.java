@@ -60,24 +60,14 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void handleLogoClick(){
-        Toolbar toolbar = findViewById(R.id.toolbar_register);
-        setSupportActionBar(toolbar);
-
-        try {
-            Field logoField = Toolbar.class.getDeclaredField("mLogoView");
-            logoField.setAccessible(true);
-            ImageView logo = (ImageView) logoField.get(toolbar);
-            if (logo != null) {
-                logo.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(RegisterActivity.this, "Logo clicked!", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        View toolbar = findViewById(R.id.toolbarSignUp);
+        ImageView backButton = toolbar.findViewById(R.id.nv_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getOnBackPressedDispatcher().onBackPressed();
             }
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        });
     }
 private void handlePassword(){
     edt_password.addTextChangedListener(new TextWatcher() {

@@ -7,24 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".activity.authentication.LoginActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_login_"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_gravity="bottom"
-        android:background="@color/teal_700"
-        android:pointerIcon="none"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:logo="@drawable/arrow"
-        app:popupTheme="@style/Theme.Money_manager"
-        app:title="Login"
-        app:titleMarginBottom="28dp"
-        app:titleMarginStart="30dp"
-        app:titleMarginTop="0dp"
-        app:titleTextColor="@color/white" />
+    <include android:id="@+id/toolbarLogin" layout="@layout/toolbar"/>
 
     <Button
         android:id="@+id/btn_login"
@@ -63,7 +46,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_login_" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbarLogin" />
 
     <EditText
         android:id="@+id/edt_password_login"

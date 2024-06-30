@@ -1,6 +1,10 @@
 package com.example.money_manager.activity.authentication;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -13,29 +17,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.example.money_manager.R;
 import com.example.money_manager.activity.MainActivity;
-import com.example.money_manager.utils.Validate;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
-import java.lang.reflect.Field;
-import java.util.Objects;
+import com.example.money_manager.contract.LoginContract;
+import com.example.money_manager.contract.presenter.LoginPresenter;
+import com.example.money_manager.utils.NetworkUtils;
+import com.example.money_manager.utils.ValidateUtils;
 
 import io.github.muddz.styleabletoast.StyleableToast;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements LoginContract.View {
     private EditText edt_email, edt_password;
     private TextView error_email, error_password;
     private Button btn_login;
-    private FirebaseAuth mAuth;
+    private LoginPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +44,27 @@ public class LoginActivity extends AppCompatActivity {
         handleLogin();
     }
 
+    private void handleLogin() {
+        btn_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = edt_email.getText().toString();
+                String password = edt_password.getText().toString();
+                if(NetworkUtils.isNetworkAvailable(LoginActivity.this)){
+                    Toast.makeText(LoginActivity.this, "ssssssssssss",
+                            Toast.LENGTH_LONG).show();
+                    presenter.onLoginButtonClick(email, password);
+                }else {
+                    Toast.makeText(LoginActivity.this, "asdasdasd",
+                            Toast.LENGTH_LONG).show();
+                    showPopupNetworkError();
+                }
+            }
+        });
+    }
 
     private void init() {
-        mAuth = FirebaseAuth.getInstance();
+        presenter = new LoginPresenter(LoginActivity.this);
         edt_email = findViewById(R.id.edt_email_login);
         edt_password = findViewById(R.id.edt_password_login);
         error_email = findViewById(R.id.error_email_login);
@@ -60,11 +76,9 @@ public class LoginActivity extends AppCompatActivity {
         handleEmail();
         handlePassword();
         handleLogoClick();
-
     }
 
-
-    private void handleLogoClick(){
+    private void handleLogoClick() {
         View toolbar = findViewById(R.id.toolbarLogin);
         ImageView backButton = toolbar.findViewById(R.id.nv_back);
         TextView title = toolbar.findViewById(R.id.title);
@@ -77,7 +91,8 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
-    private void handlePassword(){
+
+    private void handlePassword() {
         edt_password.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -93,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                boolean isEmailValid = !TextUtils.isEmpty(edt_email.getText()) && Validate.isValidEmailId(edt_email.getText().toString());
+                boolean isEmailValid = !TextUtils.isEmpty(edt_email.getText()) && ValidateUtils.isValidEmailId(edt_email.getText().toString());
                 boolean isPasswordValid = !TextUtils.isEmpty(s) && s.length() >= 8;
                 if (s.length() < 8) {
                     error_password.setText("Length of password must be greater than 8.");
@@ -105,7 +120,8 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-    private void handleEmail(){
+
+    private void handleEmail() {
         edt_email.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -121,9 +137,9 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                boolean isEmailValid = !TextUtils.isEmpty(s) && Validate.isValidEmailId(s.toString());
+                boolean isEmailValid = !TextUtils.isEmpty(s) && ValidateUtils.isValidEmailId(s.toString());
                 boolean isPasswordValid = !TextUtils.isEmpty(edt_password.getText()) && s.length() >= 8;
-                if (!TextUtils.isEmpty(s) && !Validate.isValidEmailId(s.toString())) {
+                if (!TextUtils.isEmpty(s) && !ValidateUtils.isValidEmailId(s.toString())) {
                     error_email.setText(getResources().getString(R.string.email_error_address));
                 } else if (isEmailValid && isPasswordValid) {
                     btn_login.setAlpha(1.0f);
@@ -135,29 +151,34 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-    private void handleLogin() {
-        btn_login.setOnClickListener(new View.OnClickListener() {
+
+    @Override
+    public void showLoginError(String message) {
+        StyleableToast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG, R.style.Error).show();
+    }
+
+    @Override
+    public void showLoginErrorNeedToVerifyEmail(String message) {
+        StyleableToast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG, R.style.Error).show();
+    }
+
+    @Override
+    public void navigateToHome() {
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+    }
+
+    @Override
+    public void showPopupNetworkError() {
+        AlertDialog.Builder builder =new AlertDialog.Builder(this);
+        builder.setTitle("No internet Connection");
+        builder.setMessage("Please turn on internet connection to continue");
+        builder.setNegativeButton("close", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                String email = edt_email.getText().toString();
-                String password = edt_password.getText().toString();
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    if (mAuth.getCurrentUser().isEmailVerified()) {
-                                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                    }else {
-                                        StyleableToast.makeText(LoginActivity.this, "Please verify your email before login", Toast.LENGTH_LONG, R.style.Warning).show();
-                                    }
-                                } else {
-                                    StyleableToast.makeText(LoginActivity.this,  task.getException().getMessage(), Toast.LENGTH_LONG, R.style.Error).show();
-                                }
-                            }
-                        });
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
             }
         });
-
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

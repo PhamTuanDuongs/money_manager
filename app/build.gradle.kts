@@ -41,6 +41,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.constraintlayout)
     implementation("io.github.muddz:styleabletoast:2.4.0")
+    implementation("com.google.firebase:firebase-database:19.2.0")
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.navigation.fragment)

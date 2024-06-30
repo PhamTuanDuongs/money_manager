@@ -2,8 +2,10 @@ package com.example.money_manager.utils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
-public final class DateTimeManager {
+public final class DateTimeUtils {
+    private DateTimeUtils() {}
     public static LocalDate getCurrentDate() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             LocalDate date = LocalDate.now();

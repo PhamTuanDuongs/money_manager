@@ -2,8 +2,8 @@ package com.example.money_manager.utils;
 
 import java.util.regex.Pattern;
 
-public class Validate {
-    private Validate(){}
+public class ValidateUtils {
+    private ValidateUtils(){}
 
     public static boolean isValidEmailId(String email){
 

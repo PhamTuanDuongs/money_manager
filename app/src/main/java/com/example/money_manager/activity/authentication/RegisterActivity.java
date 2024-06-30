@@ -1,5 +1,6 @@
 package com.example.money_manager.activity.authentication;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,27 +14,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.example.money_manager.R;
-import com.example.money_manager.utils.Validate;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-
-import java.lang.reflect.Field;
+import com.example.money_manager.contract.RegisterContract;
+import com.example.money_manager.contract.presenter.RegisterPresenter;
+import com.example.money_manager.utils.NetworkUtils;
+import com.example.money_manager.utils.ValidateUtils;
 
 import io.github.muddz.styleabletoast.StyleableToast;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements RegisterContract.View {
 
      private EditText edt_email, edt_password;
     private TextView error_email, error_password;
     private Button btn_signup;
-    private FirebaseAuth mAuth;
+    private RegisterPresenter registerPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void init() {
-        mAuth = FirebaseAuth.getInstance();
+        registerPresenter = new RegisterPresenter(RegisterActivity.this);
         edt_email = findViewById(R.id.edt_email_register);
         edt_password = findViewById(R.id.edt_password_register);
         error_email = findViewById(R.id.error_email);
@@ -58,7 +55,20 @@ public class RegisterActivity extends AppCompatActivity {
         handlePassword();
         handleLogoClick();
     }
-
+    public void handleSignUp() {
+        btn_signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = edt_email.getText().toString();
+                String password = edt_password.getText().toString();
+                if(NetworkUtils.isNetworkAvailable(RegisterActivity.this)){
+                    registerPresenter.onRegisterButtonClick(email,password);
+                }else{
+                    showPopupNetworkError();
+                }
+            }
+        });
+    }
     private void handleLogoClick(){
         View toolbar = findViewById(R.id.toolbarSignUp);
         ImageView backButton = toolbar.findViewById(R.id.nv_back);
@@ -83,7 +93,7 @@ private void handlePassword(){
 
         @Override
         public void afterTextChanged(Editable s) {
-            boolean isEmailValid = !TextUtils.isEmpty(edt_email.getText()) && Validate.isValidEmailId(edt_email.getText().toString());
+            boolean isEmailValid = !TextUtils.isEmpty(edt_email.getText()) && ValidateUtils.isValidEmailId(edt_email.getText().toString());
             boolean isPasswordValid = !TextUtils.isEmpty(s) && s.length() >= 8;
             if (s.length() < 8) {
                 error_password.setText("Length of password must be greater than 8.");
@@ -113,9 +123,9 @@ private void handlePassword(){
 
             @Override
             public void afterTextChanged(Editable s) {
-                boolean isEmailValid = !TextUtils.isEmpty(s) && Validate.isValidEmailId(s.toString());
+                boolean isEmailValid = !TextUtils.isEmpty(s) && ValidateUtils.isValidEmailId(s.toString());
                 boolean isPasswordValid = !TextUtils.isEmpty(edt_password.getText()) && s.length() >= 8;
-                if (!TextUtils.isEmpty(s) && !Validate.isValidEmailId(s.toString())) {
+                if (!TextUtils.isEmpty(s) && !ValidateUtils.isValidEmailId(s.toString())) {
                     error_email.setText(getResources().getString(R.string.email_error_address));
                 } else if (isEmailValid && isPasswordValid) {
                     btn_signup.setAlpha(1.0f);
@@ -127,38 +137,39 @@ private void handlePassword(){
             }
         });
     }
-    public void handleSignUp() {
-        btn_signup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = edt_email.getText().toString();
-                String password = edt_password.getText().toString();
-                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            mAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-                                        StyleableToast.makeText(RegisterActivity.this, "User registered successfully. Please verify your email", Toast.LENGTH_LONG, R.style.Success).show();
-                                        Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
-                                        startActivity(i);
-                                        edt_email.setText("");
-                                        edt_password.setText("");
-                                        error_password.setText("");
-                                        btn_signup.setEnabled(false);
-                                    }else{
-                                        StyleableToast.makeText(RegisterActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG, R.style.Error).show();
-                                    }
-                                }
-                            });
-                        } else {
-                            StyleableToast.makeText(RegisterActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG, R.style.Error).show();
-                        }
-                    }
-                });
-            }
-        });
+
+
+    @Override
+    public void showRegistrationError(String message) {
+        StyleableToast.makeText(RegisterActivity.this, message, Toast.LENGTH_LONG, R.style.Success).show();
     }
+    @Override
+    public void showRegistrationSuccess(String message) {
+        StyleableToast.makeText(RegisterActivity.this, message, Toast.LENGTH_LONG, R.style.Error).show();
+    }
+    @Override
+    public void navigateToLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
+
+
+
+    @Override
+    public void resetDataOfFields() {
+        edt_email.setText("");
+        edt_password.setText("");
+        error_password.setText("");
+        btn_signup.setEnabled(false);
+    }
+
+    @Override
+    public void showPopupNetworkError(){
+        AlertDialog.Builder builder =new AlertDialog.Builder(this);
+        builder.setTitle("No internet Connection");
+        builder.setMessage("Please turn on internet connection to continue");
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
 }

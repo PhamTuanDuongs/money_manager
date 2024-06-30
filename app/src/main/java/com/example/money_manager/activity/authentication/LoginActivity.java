@@ -51,12 +51,8 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
                 String email = edt_email.getText().toString();
                 String password = edt_password.getText().toString();
                 if(NetworkUtils.isNetworkAvailable(LoginActivity.this)){
-                    Toast.makeText(LoginActivity.this, "ssssssssssss",
-                            Toast.LENGTH_LONG).show();
-                    presenter.onLoginButtonClick(email, password);
+                  presenter.onLoginButtonClick(email, password);
                 }else {
-                    Toast.makeText(LoginActivity.this, "asdasdasd",
-                            Toast.LENGTH_LONG).show();
                     showPopupNetworkError();
                 }
             }

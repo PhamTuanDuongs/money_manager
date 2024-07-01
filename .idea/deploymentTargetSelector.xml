@@ -2,7 +2,10 @@
 <project version="4">
   <component name="deploymentTargetSelector">
     <selectionStates>
-      <SelectionState runConfigName="app">
+      <SelectionState runConfigName="LandingPageActivity">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="MainActivity">
         <option name="selectionMode" value="DROPDOWN" />
         <DropdownSelection timestamp="2024-06-23T14:57:53.651791300Z">
           <Target type="DEFAULT_BOOT">
@@ -12,6 +15,9 @@
           </Target>
         </DropdownSelection>
         <DialogSelection />
+      </SelectionState>
+      <SelectionState runConfigName="RegisterActivity">
+        <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
   </component>

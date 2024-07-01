@@ -14,6 +14,7 @@ import android.widget.Button;
 
 import com.example.money_manager.Models.Reminder;
 import com.example.money_manager.R;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,7 @@ public class ListReminderFragment extends Fragment {
         // Initialize RecyclerView
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_reminders);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        FirebaseStorage storage = FirebaseStorage.getInstance();
 
         // Sample data for testing
         List<Reminder> reminders = new ArrayList<>();

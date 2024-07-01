@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"
+        android:maxSdkVersion="32" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -14,9 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Money_manager"
         tools:targetApi="31">
-        <activity
-            android:name=".activity.authentication.ProfileActivity"
-            android:exported="false" />
         <activity
             android:name=".activity.authentication.WelcomeActivity"
             android:exported="false" />

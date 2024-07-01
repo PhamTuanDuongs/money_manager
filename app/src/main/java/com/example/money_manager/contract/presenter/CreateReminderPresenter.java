@@ -1,5 +1,6 @@
 package com.example.money_manager.contract.presenter;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
@@ -35,8 +36,6 @@ public class CreateReminderPresenter implements CreateReminderContract.Presenter
 
     @Override
     public void onDateClicked() {
-
-
         Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH ) + 1;
@@ -75,6 +74,7 @@ public class CreateReminderPresenter implements CreateReminderContract.Presenter
 
     }
 
+    @SuppressLint("ScheduleExactAlarm")
     @Override
     public void createNewReminder(Context context, String name, String frequencey, String strDate, String strTime, String comment, String account ) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -82,11 +82,11 @@ public class CreateReminderPresenter implements CreateReminderContract.Presenter
             String[]date = strDate.split("-");
             String[]time = strTime.split(":");
             Intent intent = new Intent(context, AlarmReceiver.class);
-            intent.setAction("Reminder");
+            intent.setAction("Default");
             int notificationId = getNotificationId();
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.YEAR, Integer.parseInt(date[0]) );
-            calendar.set(Calendar.MONTH, Integer.parseInt(date[1]));
+            calendar.set(Calendar.MONTH, Integer.parseInt(date[1]) - 1);  // Calendar.MONTH is zero-based
             calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(date[2]));
             calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time[0]));
             calendar.set(Calendar.MINUTE, Integer.parseInt(time[1]));

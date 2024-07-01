@@ -22,13 +22,13 @@ public class AlarmReceiver extends BroadcastReceiver {
     @SuppressLint("NotificationPermission")
     @Override
     public void onReceive(Context context, Intent intent) {
-            if(Objects.equals("Reminder", intent.getAction())){
+            if(Objects.equals("Default", intent.getAction())){
                 int notificationId = intent.getIntExtra("notificationId", -1);  // Retrieve the notification ID
                 String title = intent.getStringExtra("title");
                 String message = intent.getStringExtra("message");
                 NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
                 if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
-                    NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Reminder", NotificationManager.IMPORTANCE_HIGH);
+                    NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Money_Manager", NotificationManager.IMPORTANCE_HIGH);
                     notificationManager.createNotificationChannel(channel);
                 }
                 Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

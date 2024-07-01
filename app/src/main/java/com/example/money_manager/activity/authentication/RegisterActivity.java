@@ -1,7 +1,9 @@
 package com.example.money_manager.activity.authentication;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +23,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.money_manager.R;
 import com.example.money_manager.contract.RegisterContract;
 import com.example.money_manager.contract.presenter.RegisterPresenter;
+import com.example.money_manager.utils.AESUtil;
+import com.example.money_manager.utils.AccountState;
+import com.example.money_manager.utils.DialogUtils;
 import com.example.money_manager.utils.NetworkUtils;
 import com.example.money_manager.utils.ValidateUtils;
 
@@ -141,20 +147,24 @@ private void handlePassword(){
 
     @Override
     public void showRegistrationError(String message) {
-        StyleableToast.makeText(RegisterActivity.this, message, Toast.LENGTH_LONG, R.style.Success).show();
+        DialogUtils.showDialogError("Account Exists", "The account already exists. Please use a different email.", this);
     }
     @Override
     public void showRegistrationSuccess(String message) {
-        StyleableToast.makeText(RegisterActivity.this, message, Toast.LENGTH_LONG, R.style.Error).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Registration Successful");
+        builder.setMessage("Your account has been successfully created. Please verify your email to continue.");
+        builder.setCancelable(true);
+        builder.setIcon(android.R.drawable.ic_dialog_info);
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            dialog.dismiss();
+            Intent intent = new Intent(this, WelcomeActivity.class);
+            startActivity(intent);
+        });
+        AlertDialog alertDialog = builder.create();
+        AccountState.saveEmail(this, "", "email");
+        alertDialog.show();
     }
-    @Override
-    public void navigateToLogin() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-    }
-
-
-
     @Override
     public void resetDataOfFields() {
         edt_email.setText("");
@@ -165,11 +175,7 @@ private void handlePassword(){
 
     @Override
     public void showPopupNetworkError(){
-        AlertDialog.Builder builder =new AlertDialog.Builder(this);
-        builder.setTitle("No internet Connection");
-        builder.setMessage("Please turn on internet connection to continue");
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+        DialogUtils.showDialogError("No internet Connection", "Please turn on internet connection to continue", this);
     }
 
 }

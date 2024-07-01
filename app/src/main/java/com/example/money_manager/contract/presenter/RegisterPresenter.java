@@ -22,7 +22,6 @@ public class RegisterPresenter implements RegisterContract.Presenter {
             @Override
             public void onSuccess() {
                 view.showRegistrationSuccess("User registered successfully. Please verify your email");
-                view.navigateToLogin();
                 view.resetDataOfFields();
             }
 
@@ -32,4 +31,6 @@ public class RegisterPresenter implements RegisterContract.Presenter {
             }
         });
     }
+
+
 }

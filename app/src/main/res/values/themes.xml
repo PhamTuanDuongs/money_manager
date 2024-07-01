@@ -14,6 +14,10 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="Button_Background">
+        <item name="backgroundTint">@color/yellow_600</item>
+    </style>
+
     <style name="Theme.Money_manager.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

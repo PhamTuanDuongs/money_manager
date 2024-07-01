@@ -36,14 +36,30 @@ public class LoginModel implements LoginContract.Model {
                             if (mAuth.getCurrentUser().isEmailVerified()) {
                                 listener.onSuccess();
                             } else {
-                                listener.onErrorNeedToVerifyEmail("Please verify your email before login");
+                                listener.onErrorNeedToVerifyEmail("Login Failed","Please verify your email before login");
                                 mAuth.getCurrentUser().reload();
                                 mAuth.getCurrentUser().sendEmailVerification();
                             }
+                        } else {
+                            listener.onError("Login Failed","Invalid authentication data.");
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void resetPassword(String email, OnResetPasswordListener listener) {
+        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            listener.onSuccess();
                         } else {
                             listener.onError(task.getException().getMessage());
                         }
                     }
                 });
     }
+
 }

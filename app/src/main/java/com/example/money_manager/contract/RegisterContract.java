@@ -5,7 +5,6 @@ public class RegisterContract {
    public  interface View {
         void showRegistrationError(String message);
         void showRegistrationSuccess(String message);
-        void navigateToLogin();
         void resetDataOfFields();
         void showPopupNetworkError();
 

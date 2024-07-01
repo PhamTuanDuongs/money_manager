@@ -24,6 +24,7 @@ import com.example.money_manager.R;
 import com.example.money_manager.activity.MainActivity;
 import com.example.money_manager.contract.LoginContract;
 import com.example.money_manager.contract.presenter.LoginPresenter;
+import com.example.money_manager.utils.DialogUtils;
 import com.example.money_manager.utils.NetworkUtils;
 import com.example.money_manager.utils.ValidateUtils;
 
@@ -31,7 +32,7 @@ import io.github.muddz.styleabletoast.StyleableToast;
 
 public class LoginActivity extends AppCompatActivity implements LoginContract.View {
     private EditText edt_email, edt_password;
-    private TextView error_email, error_password;
+    private TextView error_email, error_password, txt_reset_password;
     private Button btn_login;
     private LoginPresenter presenter;
 
@@ -44,6 +45,11 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         handleLogin();
     }
 
+   public void resetPassword(){
+
+   }
+
+
     private void handleLogin() {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,7 +59,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
                 if(NetworkUtils.isNetworkAvailable(LoginActivity.this)){
                   presenter.onLoginButtonClick(email, password);
                 }else {
-                    showPopupNetworkError();
+                    showPopupNetworkError("No internet Connection", "Please turn on internet connection to continue.");
                 }
             }
         });
@@ -65,6 +71,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         edt_password = findViewById(R.id.edt_password_login);
         error_email = findViewById(R.id.error_email_login);
         error_password = findViewById(R.id.error_password_login);
+        txt_reset_password = findViewById(R.id.txt_reset_password);
         btn_login = findViewById(R.id.btn_login);
         edt_email.requestFocus();
         btn_login.setEnabled(false);
@@ -72,6 +79,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         handleEmail();
         handlePassword();
         handleLogoClick();
+        handleResetPassword();
     }
 
     private void handleLogoClick() {
@@ -148,14 +156,28 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         });
     }
 
-    @Override
-    public void showLoginError(String message) {
-        StyleableToast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG, R.style.Error).show();
+    public void handleResetPassword(){
+        txt_reset_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isEmailValid = !TextUtils.isEmpty(edt_email.getText().toString()) && ValidateUtils.isValidEmailId(edt_email.getText().toString());
+                if(isEmailValid){
+                    presenter.onResetPassWord(edt_email.getText().toString());
+                }else{
+                    DialogUtils.showDialogError("Invalid Email", "Please fill your email before reset password", LoginActivity.this);
+                }
+            }
+        });
     }
 
     @Override
-    public void showLoginErrorNeedToVerifyEmail(String message) {
-        StyleableToast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG, R.style.Error).show();
+    public void showLoginError(String title, String message) {
+        DialogUtils.showDialogError(title, message, this);
+    }
+
+    @Override
+    public void showLoginErrorNeedToVerifyEmail(String title, String message) {
+        DialogUtils.showDialogError(title, "Login unsuccessful. Please verify your email to continue.", this);
     }
 
     @Override
@@ -164,17 +186,17 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
     }
 
     @Override
-    public void showPopupNetworkError() {
-        AlertDialog.Builder builder =new AlertDialog.Builder(this);
-        builder.setTitle("No internet Connection");
-        builder.setMessage("Please turn on internet connection to continue");
-        builder.setNegativeButton("close", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+    public void showPopupNetworkError(String title, String message) {
+        DialogUtils.showDialogError(title, message, this);
+    }
+
+    @Override
+    public void showResetSuccess(String title, String message) {
+        DialogUtils.showDialogSuccess(title, message, this);
+    }
+
+    @Override
+    public void showResetError(String title, String message) {
+        DialogUtils.showDialogError(title, message, this);
     }
 }

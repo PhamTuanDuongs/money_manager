@@ -72,7 +72,7 @@ public class CreateReminderFragment extends Fragment implements CreateReminderCo
         btn_create_reminder = v.findViewById(R.id.btn_create_reminder);
         btn_create_reminder.setAlpha(0.5f);
         btn_create_reminder.setEnabled(false);
-        String [] values = {"Once","Daily","Weekly"};
+        String [] values = {"Once", "Every 1 Minute", "Daily","Weekly"};
         sp = (Spinner) v.findViewById(R.id.sp_create_reminder);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_dropdown_item_1line, values);
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);

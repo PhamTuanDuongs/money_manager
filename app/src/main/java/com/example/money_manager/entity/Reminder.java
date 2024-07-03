@@ -14,6 +14,7 @@ public class Reminder {
 
     private String account;
 
+    public Reminder() {}
     public Reminder(String name, String frequency, String date, String time, String comment, String account) {
         this.name = name;
         this.frequency = frequency;

@@ -1,41 +1,31 @@
 package com.example.money_manager.contract.presenter;
 
-import android.annotation.SuppressLint;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.DatePicker;
 
 import androidx.fragment.app.Fragment;
 
 import com.example.money_manager.AlarmReceiver;
-import com.example.money_manager.activity.authentication.WelcomeActivity;
 import com.example.money_manager.contract.CreateReminderContract;
-import com.example.money_manager.contract.model.CreateReminderModel;
+import com.example.money_manager.contract.UpdateReminderContract;
+import com.example.money_manager.contract.model.UpdateReminderModel;
 import com.example.money_manager.entity.Reminder;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Objects;
 
-public class CreateReminderPresenter implements CreateReminderContract.Presenter {
-    private CreateReminderContract.View view;
-    private CreateReminderModel model;
-    private AlarmManager alarmManager;
-    private PendingIntent pendingIntent;
+public class UpdateReminderPresenter implements UpdateReminderContract.Presenter {
+    private UpdateReminderContract.View view;
+    private UpdateReminderModel model;
 
-    public CreateReminderPresenter(CreateReminderContract.View view) {
+    public  UpdateReminderPresenter(UpdateReminderContract.View view) {
         this.view = view;
-        model = new CreateReminderModel();
+        model = new UpdateReminderModel();
     }
+
+
 
     @Override
     public void onDateClicked() {
@@ -67,17 +57,25 @@ public class CreateReminderPresenter implements CreateReminderContract.Presenter
         timePickerDialog.show();
     }
 
-
-    @SuppressLint("ScheduleExactAlarm")
     @Override
-    public void createNewReminder(Context context, String title, String frequencey, String strDate, String strTime, String comment, String account ) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+    public void getReminderById(int id) {
+         model.getReminderById(id, new UpdateReminderContract.Model.FireStoreReminderCallBack() {
+            @Override
+            public void onCallBack(Reminder reminder) {
+               if(reminder != null) {
+                   view.fillExistData(reminder);
+               }
+            }
+        });
+    }
 
+    @Override
+    public void onClickUpdateReminder(Context context, String title, String frequencey, String strDate, String strTime, String comment, String account, int notificationId) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             String[]date = strDate.split("-");
             String[]time = strTime.split(":");
             Intent intent = new Intent(context, AlarmReceiver.class);
             intent.setAction("Default");
-            int notificationId = getNotificationId();
             int year = Integer.parseInt(date[0]);
             int month = Integer.parseInt(date[1]);
             int day = Integer.parseInt(date[2]);
@@ -90,8 +88,6 @@ public class CreateReminderPresenter implements CreateReminderContract.Presenter
             calendar.set(Calendar.HOUR_OF_DAY, hour);
             calendar.set(Calendar.MINUTE, minute);
             calendar.set(Calendar.SECOND, 0);
-
-
             Reminder reminder = new Reminder(title, frequencey, strDate, strTime, comment, account);
 
             switch (frequencey){
@@ -104,15 +100,15 @@ public class CreateReminderPresenter implements CreateReminderContract.Presenter
                         builder.setIcon(android.R.drawable.ic_dialog_alert);
                         builder.setPositiveButton("Yes", (dialog, which) -> {
                             dialog.dismiss();
-                            model.createNewReminderToDB(reminder, Integer.toString(notificationId), new CreateReminderContract.Model.OnCreateNewReminderListener() {
+                            model.updateReminderToDB(reminder, Integer.toString(notificationId), new CreateReminderContract.Model.OnCreateNewReminderListener() {
                                 @Override
                                 public void onSuccess() {
-                                    view.createNewReminderSuccess();
+                                    view.updateReminderSuccess();
                                 }
 
                                 @Override
                                 public void onError(String message) {
-                                    view.createNewReminderError();
+                                    view.updateReminderError();
                                 }
                             });
                         });
@@ -122,68 +118,63 @@ public class CreateReminderPresenter implements CreateReminderContract.Presenter
                         AlertDialog alertDialog = builder.create();
                         alertDialog.show();
                     }else {
-                        model.scheduleOneTimeNotification(context,notificationId, title, comment, reminder, calendar);
-                        model.createNewReminderToDB(reminder, Integer.toString(notificationId), new CreateReminderContract.Model.OnCreateNewReminderListener() {
+                        model.updateScheduleOneTimeNotification(context,notificationId, title, comment, reminder, calendar);
+                        model.updateReminderToDB(reminder, Integer.toString(notificationId), new CreateReminderContract.Model.OnCreateNewReminderListener() {
                             @Override
                             public void onSuccess() {
-                                view.createNewReminderSuccess();
+                                view.updateReminderSuccess();
                             }
 
                             @Override
                             public void onError(String message) {
-                                view.createNewReminderError();
+                                view.updateReminderError();
                             }
                         });
                     }
                     break;
                 case "Every 1 Minute":
-                    model.scheduleEvery1MinuteNotification(context,notificationId, title, comment, reminder, calendar);
-                    model.createNewReminderToDB(reminder, Integer.toString(notificationId), new CreateReminderContract.Model.OnCreateNewReminderListener() {
+                    model.updateScheduleEvery1MinuteNotification(context,notificationId, title, comment, reminder, calendar);
+                    model.updateReminderToDB(reminder, Integer.toString(notificationId), new CreateReminderContract.Model.OnCreateNewReminderListener() {
                         @Override
                         public void onSuccess() {
-                            view.createNewReminderSuccess();
+                            view.updateReminderSuccess();
                         }
 
                         @Override
                         public void onError(String message) {
-                            view.createNewReminderError();
+                            view.updateReminderError();
                         }
                     });
                     break;
                 case "Daily":
-                    model.scheduleDailyNotification(context, notificationId, title, comment, reminder, calendar);
-                    model.createNewReminderToDB(reminder, Integer.toString(notificationId), new CreateReminderContract.Model.OnCreateNewReminderListener() {
+                    model.updateScheduleDailyNotification(context, notificationId, title, comment, reminder, calendar);
+                    model.updateReminderToDB(reminder, Integer.toString(notificationId), new CreateReminderContract.Model.OnCreateNewReminderListener() {
                         @Override
                         public void onSuccess() {
-                            view.createNewReminderSuccess();
+                            view.updateReminderSuccess();
                         }
 
                         @Override
                         public void onError(String message) {
-                            view.createNewReminderError();
+                            view.updateReminderError();
                         }
                     });
                     break;
                 case "Weekly":
-                    model.scheduleWeeklyNotification(context, notificationId, title, comment, reminder, calendar);
-                    model.createNewReminderToDB(reminder, Integer.toString(notificationId), new CreateReminderContract.Model.OnCreateNewReminderListener() {
+                    model.updateScheduleWeeklyNotification(context, notificationId, title, comment, reminder, calendar);
+                    model.updateReminderToDB(reminder, Integer.toString(notificationId), new CreateReminderContract.Model.OnCreateNewReminderListener() {
                         @Override
                         public void onSuccess() {
-                            view.createNewReminderSuccess();
+                            view.updateReminderSuccess();
                         }
 
                         @Override
                         public void onError(String message) {
-                            view.createNewReminderError();
+                            view.updateReminderError();
                         }
                     });
                     break;
             }
         }
-
-    }
-    private int getNotificationId(){
-        int time = (int)new Date().getTime();
-        return time;
     }
 }

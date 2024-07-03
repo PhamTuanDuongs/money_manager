@@ -125,12 +125,22 @@
         app:layout_constraintVertical_bias="0.372" />
 
     <TextView
-        android:id="@+id/txt_required"
+        android:id="@+id/txt_required_update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.045"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edt_creat_name" />
+
+    <TextView
+        android:id="@+id/nextToUpdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:text="nextToUpdate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_create_reminder" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,27 +21,32 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.money_manager.R;
-import com.example.money_manager.contract.CreateReminderContract;
+import com.example.money_manager.contract.UpdateReminderContract;
 import com.example.money_manager.contract.presenter.CreateReminderPresenter;
+import com.example.money_manager.contract.presenter.UpdateReminderPresenter;
+import com.example.money_manager.entity.Reminder;
 import com.example.money_manager.utils.AccountState;
 import com.example.money_manager.utils.DateTimeUtils;
 
-
-public class CreateReminderFragment extends Fragment implements CreateReminderContract.View {
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link UpdateReminderFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class UpdateReminderFragment extends Fragment implements UpdateReminderContract.View {
     private Spinner sp;
-    private TextView txtDate, txtHour, txt_required, txt_next_to_Update;
-    private EditText edt_Create, edt_Comment;
-    private  CreateReminderPresenter presenter;
-    private Button btn_create_reminder;
+    private TextView txtDate, txtHour, txt_required;
+    private EditText edt_Update, edt_Comment;
+    private UpdateReminderPresenter presenter;
+    private Button btn_update_reminder;
     private String frequencey = "";
 
-
-
-    public CreateReminderFragment() {
+    public UpdateReminderFragment() {
     }
 
-    public static CreateReminderFragment newInstance(String param1, String param2) {
-        CreateReminderFragment fragment = new CreateReminderFragment();
+
+    public static UpdateReminderFragment newInstance(String param1, String param2) {
+        UpdateReminderFragment fragment = new UpdateReminderFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -50,31 +55,33 @@ public class CreateReminderFragment extends Fragment implements CreateReminderCo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new CreateReminderPresenter(CreateReminderFragment.this);
+        presenter = new UpdateReminderPresenter(UpdateReminderFragment.this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_create_reminder, container, false);
-        txtDate = v.findViewById(R.id.txt_create_day);
-        txtHour = v.findViewById(R.id.txt_create_hour);
+        View v = inflater.inflate(R.layout.fragment_update_reminder, container, false);
+        txtDate = v.findViewById(R.id.txt_update_day);
+        txtHour = v.findViewById(R.id.txt_update_hour);
         txtDate.setText(DateTimeUtils.getCurrentDate().toString());
         txtHour.setText(DateTimeUtils.getCurrentHour().toString());
         txt_required = v.findViewById(R.id.txt_required_update);
-        edt_Create = v.findViewById(R.id.edt_creat_name);
-        txt_next_to_Update = v.findViewById(R.id.nextToUpdate);
-        edt_Comment = v.findViewById(R.id.edt_comment);
-        btn_create_reminder = v.findViewById(R.id.btn_create_reminder);
-        btn_create_reminder.setAlpha(0.5f);
-        btn_create_reminder.setEnabled(false);
+        edt_Update = v.findViewById(R.id.edt_update_name);
+        edt_Comment = v.findViewById(R.id.edt_comment_update);
+        btn_update_reminder = v.findViewById(R.id.btn_update_reminder);
+        btn_update_reminder.setAlpha(0.5f);
+        btn_update_reminder.setEnabled(false);
         String [] values = {"Once", "Every 1 Minute", "Daily","Weekly"};
-        sp = (Spinner) v.findViewById(R.id.sp_create_reminder);
+        sp = (Spinner) v.findViewById(R.id.sp_update_reminder);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_dropdown_item_1line, values);
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         sp.setAdapter(adapter);
+        String value = getArguments().getString("id");
+        presenter.getReminderById(Integer.parseInt(value));
         return v;
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -105,35 +112,23 @@ public class CreateReminderFragment extends Fragment implements CreateReminderCo
                 }
             }
         });
-        btn_create_reminder.setOnClickListener(new View.OnClickListener() {
+
+        btn_update_reminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = edt_Create.getText().toString();
+                String name = edt_Update.getText().toString();
                 String date = txtDate.getText().toString();
                 String time = txtHour.getText().toString();
                 String comment = edt_Comment.getText().toString();
                 String account = AccountState.getEmail(requireContext(), "email");
-                presenter.createNewReminder(requireContext(), name,frequencey,date, time, comment, account);
-            }
-        });
-
-        txt_next_to_Update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UpdateReminderFragment updateFragment = new UpdateReminderFragment();
-                Bundle args = new Bundle();
-                args.putString("id", "1991755196");
-                updateFragment.setArguments(args);
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.nav_host_fragment_content_main, updateFragment)
-                        .addToBackStack(null)
-                        .commit();
+                String value = getArguments().getString("id");
+                presenter.onClickUpdateReminder(requireContext(), name,frequencey,date, time, comment, account, Integer.parseInt(value));
             }
         });
     }
 
     private void handleNameReminder() {
-        edt_Create.addTextChangedListener(new TextWatcher() {
+        edt_Update.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -143,8 +138,8 @@ public class CreateReminderFragment extends Fragment implements CreateReminderCo
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (TextUtils.isEmpty(s)) {
                     txt_required.setText("Name required");
-                    btn_create_reminder.setAlpha(0.5f);
-                    btn_create_reminder.setEnabled(false);
+                    btn_update_reminder.setAlpha(0.5f);
+                    btn_update_reminder.setEnabled(false);
                 }
             }
 
@@ -152,13 +147,12 @@ public class CreateReminderFragment extends Fragment implements CreateReminderCo
             public void afterTextChanged(Editable s) {
                 if (!TextUtils.isEmpty(s.toString()) ){
                     txt_required.setText("");
-                    btn_create_reminder.setAlpha(1.0f);
-                    btn_create_reminder.setEnabled(true);
+                    btn_update_reminder.setAlpha(1.0f);
+                    btn_update_reminder.setEnabled(true);
                 }
             }
         });
     }
-
     @Override
     public void showDate(String date) {
         txtDate.setText(date);
@@ -175,12 +169,24 @@ public class CreateReminderFragment extends Fragment implements CreateReminderCo
     }
 
     @Override
-    public void createNewReminderSuccess() {
-        Toast.makeText(requireContext(), "Create reminder success", Toast.LENGTH_SHORT).show();
+    public void updateReminderSuccess() {
+        Toast.makeText(requireContext(), "Update reminder success", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void createNewReminderError() {
-        Toast.makeText(requireContext(), "Create reminder failed", Toast.LENGTH_SHORT).show();
+    public void updateReminderError() {
+        Toast.makeText(requireContext(), "Update reminder failed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void fillExistData(Reminder reminder) {
+        edt_Update.setText(reminder.getName());
+        edt_Comment.setText(reminder.getComment());
+        txtDate.setText(reminder.getDate());
+        txtHour.setText(reminder.getTime());
+        String frequency = reminder.getFrequency();
+        ArrayAdapter<String> adapter = (ArrayAdapter<String>) sp.getAdapter();
+        int spinnerPosition = adapter.getPosition(frequency);
+        sp.setSelection(spinnerPosition);
     }
 }

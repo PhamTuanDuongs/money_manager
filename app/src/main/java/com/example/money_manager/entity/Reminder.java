@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.Timer;
 
 public class Reminder {
+    private String id;
     private String name;
     private String frequency;
     private String date;
@@ -13,6 +14,10 @@ public class Reminder {
     private String comment;
 
     private String account;
+
+    public  Reminder(){
+
+    }
 
     public Reminder(String name, String frequency, String date, String time, String comment, String account) {
         this.name = name;
@@ -22,6 +27,20 @@ public class Reminder {
         this.comment = comment;
         this.account = account;
     }
+
+    public Reminder(String id, String name, String frequency, String date, String time, String comment, String account) {
+        this.id = id;
+        this.name = name;
+        this.frequency = frequency;
+        this.date = date;
+        this.time = time;
+        this.comment = comment;
+        this.account = account;
+    }
+
+    public String getId(){return id;}
+
+    public void setId(String id){this.id = id;}
 
     public String getName() {
         return name;

@@ -7,8 +7,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.money_manager.Models.Reminder;
 import com.example.money_manager.R;
+import com.example.money_manager.entity.Reminder;
 
 import java.util.List;
 public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.ReminderViewHolder> {
@@ -29,8 +29,9 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
     @Override
     public void onBindViewHolder(@NonNull ReminderAdapter.ReminderViewHolder holder, int position) {
         Reminder reminder = reminderList.get(position);
-        holder.titleTextView.setText(reminder.getTitle());
-        holder.descriptionTextView.setText(reminder.getDescription());
+        holder.titleTextView.setText(reminder.getName());
+        holder.descriptionTextView.setText(reminder.getComment());
+        holder.idTextView.setText(reminder.getId());
     }
 
     @Override
@@ -42,11 +43,13 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
 
         TextView titleTextView;
         TextView descriptionTextView;
+        TextView idTextView;
 
         public ReminderViewHolder(@NonNull View itemView) {
             super(itemView);
             titleTextView = itemView.findViewById(R.id.reminder_title);
             descriptionTextView = itemView.findViewById(R.id.reminder_description);
+            idTextView = itemView.findViewById(R.id.txtID);
         }
     }
 }

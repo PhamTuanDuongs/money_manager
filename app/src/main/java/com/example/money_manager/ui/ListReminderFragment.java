@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.money_manager.R;
+import com.example.money_manager.contract.ListReminderContract;
+import com.example.money_manager.contract.presenter.ListReminderPresenter;
 import com.example.money_manager.entity.Reminder;
 import com.google.firebase.Firebase;
 import com.google.firebase.database.DataSnapshot;
@@ -35,7 +37,7 @@ import java.util.List;
  * Use the {@link ListReminderFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ListReminderFragment extends Fragment {
+public class ListReminderFragment extends Fragment implements ListReminderContract.View{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -46,6 +48,9 @@ public class ListReminderFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private RecyclerView recyclerView;
+    private ReminderAdapter adapter;
+    private ListReminderPresenter presenter;
     public ListReminderFragment() {
         // Required empty public constructor
     }
@@ -66,6 +71,7 @@ public class ListReminderFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        presenter = new ListReminderPresenter(this);
     }
 
     @Override
@@ -75,27 +81,12 @@ public class ListReminderFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_reminders);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        FirebaseFirestore storage = FirebaseFirestore.getInstance();
-        CollectionReference remindersRef = storage.collection("reminders");
 
         List<Reminder> reminders = new ArrayList<>();
-
-        ReminderAdapter adapter = new ReminderAdapter(reminders);
+        adapter = new ReminderAdapter(reminders);
         recyclerView.setAdapter(adapter);
 
-        remindersRef.get().addOnCompleteListener(task -> {
-           if (task.isSuccessful()){
-               QuerySnapshot querySnapshot = task.getResult();
-               for (QueryDocumentSnapshot doc: querySnapshot){
-                   Reminder reminder = doc.toObject(Reminder.class);
-                   reminder.setId(doc.getId());
-                   reminders.add(reminder);
-               }
-               adapter.notifyDataSetChanged();
-           }else{
-               Log.d("Firestore","Error getting reminders: ",task.getException());
-           }
-        });
+        presenter.loadReminders();
 
         Button addReminderButton = view.findViewById(R.id.btnAddReminder);
         addReminderButton.setOnClickListener(new View.OnClickListener() {
@@ -110,5 +101,15 @@ public class ListReminderFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void showReminders(List<Reminder> reminders) {
+        adapter.updateReminders(reminders);
+    }
+
+    @Override
+    public void showError(String message) {
+        Log.d("Firestore", "Error getting reminders: " + message);
     }
 }

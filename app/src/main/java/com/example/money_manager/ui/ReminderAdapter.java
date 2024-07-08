@@ -21,7 +21,7 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
 
     @NonNull
     @Override
-    public ReminderAdapter.ReminderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ReminderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_reminder, parent, false);
         return new ReminderViewHolder(view);
     }
@@ -37,6 +37,12 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
     @Override
     public int getItemCount() {
         return reminderList.size();
+    }
+
+    public void updateReminders(List<Reminder> newReminders) {
+        reminderList.clear();
+        reminderList.addAll(newReminders);
+        notifyDataSetChanged();
     }
 
     static class ReminderViewHolder extends RecyclerView.ViewHolder {

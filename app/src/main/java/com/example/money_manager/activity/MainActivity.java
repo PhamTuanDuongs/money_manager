@@ -15,7 +15,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.money_manager.R;
-import com.example.money_manager.ui.CreateReminderFragment;
 import com.example.money_manager.ui.HomeFragment;
 import com.example.money_manager.ui.ListReminderFragment;
 import com.example.money_manager.ui.ProfileFragment;

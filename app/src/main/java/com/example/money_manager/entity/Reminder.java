@@ -12,7 +12,6 @@ public class Reminder {
     private String date;
     private String time;
     private String comment;
-
     private String account;
 
     public  Reminder(){

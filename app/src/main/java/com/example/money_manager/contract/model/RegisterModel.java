@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Objects;
+
 import io.github.muddz.styleabletoast.StyleableToast;
 
 public class RegisterModel implements RegisterContract.Model  {
@@ -38,6 +40,7 @@ public class RegisterModel implements RegisterContract.Model  {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         addAccount(new Account(email));
+                        Objects.requireNonNull(mAuth.getCurrentUser()).sendEmailVerification();
                         listener.onSuccess();
                     } else {
                         listener.onError(task.getException().getMessage());

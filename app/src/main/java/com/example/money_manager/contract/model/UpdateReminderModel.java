@@ -1,6 +1,5 @@
 package com.example.money_manager.contract.model;
 
-import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -10,23 +9,37 @@ import androidx.annotation.NonNull;
 
 import com.example.money_manager.AlarmReceiver;
 import com.example.money_manager.contract.CreateReminderContract;
+import com.example.money_manager.contract.UpdateReminderContract;
 import com.example.money_manager.entity.Reminder;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
 
-public class CreateReminderModel implements CreateReminderContract.Model {
+public class UpdateReminderModel implements UpdateReminderContract.Model {
+
+    public UpdateReminderModel() {
+        this.db = FirebaseFirestore.getInstance();
+    }
 
     FirebaseFirestore db ;
 
-    public CreateReminderModel(){
-        db =  FirebaseFirestore.getInstance();
-    }
-
     @Override
-    public void createNewReminderToDB(Reminder reminder, String notificationId, OnCreateNewReminderListener listener) {
+    public void getReminderById(int id, FireStoreReminderCallBack fireStoreReminderCallBack) {
+        DocumentReference docRef = db.collection("reminders").document(Integer.toString(id));
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Reminder reminder = documentSnapshot.toObject(Reminder.class);
+                fireStoreReminderCallBack.onCallBack(reminder);
+            }
+        });
+    }
+    @Override
+    public void updateReminderToDB(Reminder reminder, String notificationId, CreateReminderContract.Model.OnCreateNewReminderListener listener) {
         db.collection("reminders").document(notificationId)
                 .set(reminder)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -42,20 +55,22 @@ public class CreateReminderModel implements CreateReminderContract.Model {
                     }
                 });
     }
-    @SuppressLint("ScheduleExactAlarm")
+
     @Override
-    public  void scheduleOneTimeNotification(Context context, int notificationId, String title, String message, Reminder reminder, Calendar calendar) {
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            Intent intent = new Intent(context, AlarmReceiver.class);
-            intent.setAction("Default");
-            intent.putExtra("notificationId", notificationId);
-            intent.putExtra("title", title);
-            intent.putExtra("message", message);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_IMMUTABLE);
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+    public void updateScheduleOneTimeNotification(Context context, int notificationId, String title, String message, Reminder reminder, Calendar calendar) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.setAction("Default");
+        intent.putExtra("notificationId", notificationId);
+        intent.putExtra("title", title);
+        intent.putExtra("message", message);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_IMMUTABLE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
+
     @Override
-    public void scheduleEvery1MinuteNotification(Context context, int notificationId, String title, String message, Reminder reminder, Calendar calendar) {
+    public void updateScheduleEvery1MinuteNotification(Context context, int notificationId, String title, String message, Reminder reminder, Calendar calendar) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.setAction("Default");
@@ -69,11 +84,11 @@ public class CreateReminderModel implements CreateReminderContract.Model {
             calendar.add(Calendar.MINUTE, 1);
         }
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 60000L, pendingIntent);
     }
 
     @Override
-    public void scheduleDailyNotification(Context context, int notificationId, String title, String message, Reminder reminder, Calendar calendar) {
+    public void updateScheduleDailyNotification(Context context, int notificationId, String title, String message, Reminder reminder, Calendar calendar) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.setAction("Default");
@@ -89,9 +104,8 @@ public class CreateReminderModel implements CreateReminderContract.Model {
 
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
-
     @Override
-    public void scheduleWeeklyNotification(Context context, int notificationId, String title, String message, Reminder reminder, Calendar calendar) {
+    public void updateScheduleWeeklyNotification(Context context, int notificationId, String title, String message, Reminder reminder, Calendar calendar) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.setAction("Default");

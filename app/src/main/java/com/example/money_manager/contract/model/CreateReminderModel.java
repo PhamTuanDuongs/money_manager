@@ -51,7 +51,7 @@ public class CreateReminderModel implements CreateReminderContract.Model {
             intent.putExtra("notificationId", notificationId);
             intent.putExtra("title", title);
             intent.putExtra("message", message);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_IMMUTABLE);
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
     @Override
@@ -63,7 +63,7 @@ public class CreateReminderModel implements CreateReminderContract.Model {
         intent.putExtra("title", title);
         intent.putExtra("message", message);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_IMMUTABLE);
 
         if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
             calendar.add(Calendar.MINUTE, 1);
@@ -81,7 +81,7 @@ public class CreateReminderModel implements CreateReminderContract.Model {
         intent.putExtra("title", title);
         intent.putExtra("message", message);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_IMMUTABLE);
 
         if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
             calendar.add(Calendar.DAY_OF_MONTH, 1);
@@ -99,7 +99,7 @@ public class CreateReminderModel implements CreateReminderContract.Model {
         intent.putExtra("title", title);
         intent.putExtra("message", message);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_IMMUTABLE);
 
         if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
             calendar.add(Calendar.WEEK_OF_YEAR, 1);

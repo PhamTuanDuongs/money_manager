@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.money_manager.R;
 import com.example.money_manager.adapter.IncomeAdapter;
@@ -26,6 +27,8 @@ import com.example.money_manager.ui.placeholder.PlaceholderContent;
 
 import java.util.ArrayList;
 
+import io.github.muddz.styleabletoast.StyleableToast;
+
 /**
  * A fragment representing a list of Items.
  */
@@ -36,6 +39,7 @@ public class IncomeFragment extends Fragment implements IncomeContract.View {
     private RecyclerView incomeRecycleView;
     private IncomeAdapter incomeAdapter;
     private TextView tvLoading;
+    private int incomePosition;
 
     public static IncomeFragment newInstance(String param1, String param2) {
         IncomeFragment fragment = new IncomeFragment();
@@ -54,13 +58,30 @@ public class IncomeFragment extends Fragment implements IncomeContract.View {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_list_income, container, false);
+        presenter = new IncomePresenter(new IncomeModel(), IncomeFragment.this);
         tvLoading = v.findViewById(R.id.tvLoading);
         incomeRecycleView = v.findViewById(R.id.income_recycle_view);
         incomeAdapter = new IncomeAdapter(getContext(), incomes);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         incomeRecycleView.setAdapter(incomeAdapter);
         incomeRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
-        presenter = new IncomePresenter(new IncomeModel(), IncomeFragment.this);
+
+        incomeAdapter.setListenerDelete(new IncomeAdapter.IncomeListClickListener() {
+            @Override
+            public void OnClick(View v, int position) {
+                incomePosition = position;
+                Transaction t = incomeAdapter.getItem(position);
+                presenter.onDeleteButtonClick(t.getId());
+            }
+        });
+
+        incomeAdapter.setListenerUpdate(new IncomeAdapter.IncomeListClickListener() {
+            @Override
+            public void OnClick(View v, int position) {
+                incomePosition = position;
+
+            }
+        });
 
         return v;
     }
@@ -87,6 +108,11 @@ public class IncomeFragment extends Fragment implements IncomeContract.View {
     }
 
     @Override
+    public void showAddSuccess(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public void setListIncome(ArrayList<Transaction> transactions) {
 
         for (Transaction trans : transactions
@@ -96,6 +122,13 @@ public class IncomeFragment extends Fragment implements IncomeContract.View {
         incomeAdapter.notifyDataSetChanged();
         tvLoading.setText("");
 
+    }
+
+    @Override
+    public void DeleteIncome(String message) {
+        Toast.makeText(getContext(),message,Toast.LENGTH_LONG).show();
+        incomeAdapter.removeItem(incomePosition);
+        incomeAdapter.notifyDataSetChanged();
     }
 
     @Override

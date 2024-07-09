@@ -27,62 +27,81 @@ public class IncomeModel implements IncomeContract.Model {
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
     @Override
-    public ArrayList<Transaction> getTransactions(String email,onTransactionListener listener) {
+    public ArrayList<Transaction> getTransactions(String email, onTransactionListener listener) {
         DocumentReference user = firestore
                 .collection("accounts")
                 .document(email);
 
         ArrayList<Transaction> incomes = new ArrayList<>();
-            firestore
-                    .collection(TRANSACTION_COLLECTION)
-                    .whereEqualTo("type", 0)
-                    .whereEqualTo("account_id", user)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot q : task.getResult()) {
-                                    double amount = q.get("amount", double.class);
-                                    Date createAt = q.get("createdAt", Date.class);
-                                    String description = q.get("description", String.class);
-                                    Transaction t = new Transaction();
-                                    t.setAmount(amount);
-                                    t.setCreateAt(createAt);
-                                    t.setDescription(description);
-                                    incomes.add(t);
+        firestore
+                .collection(TRANSACTION_COLLECTION)
+                .whereEqualTo("type", 0)
+                .whereEqualTo("account_id", user)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot q : task.getResult()) {
+                                double amount = q.get("amount", double.class);
+                                Date createAt = q.get("createdAt", Date.class);
+                                String description = q.get("description", String.class);
+                                int id = q.get("id", int.class);
+                                String name = q.get("name", String.class);
+                                Transaction t = new Transaction();
+                                t.setAmount(amount);
+                                t.setCreateAt(createAt);
+                                t.setDescription(description);
+                                t.setId(id);
+                                t.setName(name);
+                                incomes.add(t);
 
-                                }
-                                Log.d("INCOME", incomes.size() + "");
-                                listener.onSuccess(incomes);
                             }
+                            listener.onSuccess(incomes);
                         }
-                    });
+                    }
+                });
 
         return incomes;
     }
 
     @Override
-    public void add(Transaction transaction) {
+    public void add(Transaction transaction, String email, onTransactionListener listener) {
+
+        DocumentReference user = firestore
+                .collection("accounts")
+                .document(email);
+
+        Map<String, Object> docData = new HashMap<>();
+        docData.put("amount", transaction.getAmount());
+        docData.put("createAt", transaction.getCreateAt());
+        docData.put("description", transaction.getDescription());
+        docData.put("type", transaction.getType());
+        docData.put("account_id", user);
+        docData.put("id", getTransactionId());
+
         transaction.setId(getTransactionId());
         firestore.collection(TRANSACTION_COLLECTION)
-                .add(transaction)
+                .add(docData)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d("ADD_TRANS", "DocumentSnapshot written with ID: " + documentReference.getId());
+                        listener.onSuccess(transaction);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w("ADD_TRANS", "Error adding document", e);
+                        listener.onError("Failed to add");
                     }
                 });
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id, onTransactionListener listener) {
+        Log.d("TEST_DELETE", "Id: " + id);
         firestore
                 .collection(TRANSACTION_COLLECTION)
                 .whereEqualTo("id", id)
@@ -90,12 +109,21 @@ public class IncomeModel implements IncomeContract.Model {
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (QueryDocumentSnapshot q : queryDocumentSnapshots) {
-                            firestore
-                                    .collection(TRANSACTION_COLLECTION)
-                                    .document(q.getId())
-                                    .delete();
+                        if (queryDocumentSnapshots.size() >= 1) {
+                            for (QueryDocumentSnapshot q : queryDocumentSnapshots) {
+                                firestore
+                                        .collection(TRANSACTION_COLLECTION)
+                                        .document(q.getId())
+                                        .delete();
+                            }
+
+                            listener.onSuccess(null);
+
+                        } else {
+                            listener.onError("Delete failed");
                         }
+
+                        Log.d("TEST_DELETE", queryDocumentSnapshots.size() + "");
                     }
                 });
 
@@ -103,7 +131,7 @@ public class IncomeModel implements IncomeContract.Model {
     }
 
     @Override
-    public void update(Transaction transactionn, int id) {
+    public void update(Transaction transactionn, int id, onTransactionListener listener) {
         Map<String, Object> result = new HashMap<>();
         result.put("amount", transactionn.getAmount());
         result.put("description", transactionn.getDescription());

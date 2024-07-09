@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,16 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeView
 
     private Context context;
     private ArrayList<Transaction> incomes;
+    IncomeListClickListener listenerDelete;
+    IncomeListClickListener listenerUpdate;
+
+    public void setListenerDelete(IncomeListClickListener listenerDelete) {
+        this.listenerDelete = listenerDelete;
+    }
+
+    public void setListenerUpdate(IncomeListClickListener listenerUpdate) {
+        this.listenerUpdate = listenerUpdate;
+    }
 
     public IncomeAdapter(Context context, ArrayList<Transaction> incomes) {
         this.context = context;
@@ -41,6 +52,14 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeView
         holder.tvDesc.setText(t.getDescription());
     }
 
+    public void removeItem(int pos) {
+        incomes.remove(pos);
+    }
+
+    public Transaction getItem(int pos) {
+        return incomes.get(pos);
+    }
+
     @Override
     public int getItemCount() {
         return incomes.size();
@@ -50,13 +69,33 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeView
         private TextView tvDesc;
         private TextView tvAmount;
         private TextView tvName;
+        private Button btnUpdate;
+        private Button btnDelete;
 
         public IncomeViewHolder(@NonNull View itemView) {
             super(itemView);
             tvDesc = itemView.findViewById(R.id.txtDes);
             tvAmount = itemView.findViewById(R.id.txtAmount);
             tvName = itemView.findViewById(R.id.txtName);
+            btnUpdate = itemView.findViewById(R.id.btnUpdate);
+            btnDelete = itemView.findViewById(R.id.btnDelete);
+            btnUpdate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listenerUpdate.OnClick(view, getLayoutPosition());
+                }
+            });
+            btnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listenerDelete.OnClick(view, getLayoutPosition());
+                }
+            });
 
         }
+    }
+
+    public interface IncomeListClickListener {
+        void OnClick(View v, int position);
     }
 }

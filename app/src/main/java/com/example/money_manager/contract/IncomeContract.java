@@ -10,7 +10,10 @@ public class IncomeContract {
     public interface View {
         void showAddError(String title,String error);
         void navigateToIncomeActivity();
+        void showAddSuccess(String message);
         void setListIncome(ArrayList<Transaction> transactions);
+
+        void DeleteIncome(String message);
     }
 
     public interface Presenter {
@@ -26,11 +29,11 @@ public class IncomeContract {
     public interface Model {
         ArrayList<Transaction> getTransactions(String email, onTransactionListener listener);
 
-        void add(Transaction transaction);
+        void add(Transaction transaction, String email, onTransactionListener listener);
 
-        void delete(int id);
+        void delete(int id, onTransactionListener listener);
 
-        void update(Transaction transaction, int id);
+        void update(Transaction transaction, int id, onTransactionListener listener);
 
         interface onTransactionListener {
             void onSuccess(Object object);

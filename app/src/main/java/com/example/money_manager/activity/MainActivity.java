@@ -15,6 +15,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.money_manager.R;
+import com.example.money_manager.ui.AddIncomeFragment;
 import com.example.money_manager.ui.CreateReminderFragment;
 import com.example.money_manager.ui.HomeFragment;
 import com.example.money_manager.ui.IncomeFragment;
@@ -71,6 +72,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_income) {
             selectedFragment = new IncomeFragment();
             setToolbarTitle("Income");
+        } else if(id == R.id.nav_add_income) {
+            selectedFragment = new AddIncomeFragment();
+            setToolbarTitle("Add income");
         }
         if (selectedFragment != null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, selectedFragment).commit();

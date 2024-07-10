@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 import com.example.money_manager.AlarmReceiver;
 import com.example.money_manager.contract.CreateReminderContract;
 import com.example.money_manager.contract.UpdateReminderContract;
-import com.example.money_manager.contract.model.UpdateReminderModel;
+import com.example.money_manager.activity.authentication.model.UpdateReminderModel;
 import com.example.money_manager.entity.Reminder;
 
 import java.util.Calendar;

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.money_manager.R;
 import com.example.money_manager.entity.Transaction;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeViewHolder> {
@@ -47,9 +48,11 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeView
     @Override
     public void onBindViewHolder(@NonNull IncomeViewHolder holder, int position) {
         Transaction t = incomes.get(position);
+        SimpleDateFormat sf = new SimpleDateFormat("dd-MM-YYYY");
         holder.tvName.setText(t.getName());
         holder.tvAmount.setText(t.getAmount() + "");
         holder.tvDesc.setText(t.getDescription());
+        holder.tvDate.setText(sf.format(t.getCreateAt()).toString());
     }
 
     public void removeItem(int pos) {
@@ -69,6 +72,7 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeView
         private TextView tvDesc;
         private TextView tvAmount;
         private TextView tvName;
+        private TextView tvDate;
         private Button btnUpdate;
         private Button btnDelete;
 
@@ -77,6 +81,7 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeView
             tvDesc = itemView.findViewById(R.id.txtDes);
             tvAmount = itemView.findViewById(R.id.txtAmount);
             tvName = itemView.findViewById(R.id.txtName);
+            tvDate = itemView.findViewById(R.id.txtDate);
             btnUpdate = itemView.findViewById(R.id.btnUpdate);
             btnDelete = itemView.findViewById(R.id.btnDelete);
             btnUpdate.setOnClickListener(new View.OnClickListener() {

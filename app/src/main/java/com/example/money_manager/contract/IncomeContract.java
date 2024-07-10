@@ -14,6 +14,10 @@ public class IncomeContract {
         void setListIncome(ArrayList<Transaction> transactions);
 
         void DeleteIncome(String message);
+
+        void updateIncome(Transaction transaction);
+
+        void updateIncomeOnSuccess(String message);
     }
 
     public interface Presenter {
@@ -24,6 +28,8 @@ public class IncomeContract {
         void onUpdateButtonClick(Transaction transaction, int id);
 
         void onGetListIncome();
+
+        void onLoadIncome(int id);
     }
 
     public interface Model {
@@ -34,6 +40,8 @@ public class IncomeContract {
         void delete(int id, onTransactionListener listener);
 
         void update(Transaction transaction, int id, onTransactionListener listener);
+
+        void load(int id, onTransactionListener listener);
 
         interface onTransactionListener {
             void onSuccess(Object object);

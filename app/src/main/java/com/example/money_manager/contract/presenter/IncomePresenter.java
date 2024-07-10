@@ -57,7 +57,17 @@ public class IncomePresenter implements IncomeContract.Presenter {
 
     @Override
     public void onUpdateButtonClick(Transaction transaction, int id) {
+        model.update(transaction, id, new IncomeContract.Model.onTransactionListener() {
+            @Override
+            public void onSuccess(Object object) {
+                view.updateIncomeOnSuccess("Update income successfully");
+            }
 
+            @Override
+            public void onError(String message) {
+
+            }
+        });
     }
 
     @Override
@@ -68,6 +78,22 @@ public class IncomePresenter implements IncomeContract.Presenter {
             public void onSuccess(Object object) {
                 view.setListIncome((ArrayList<Transaction>) object);
 
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onLoadIncome(int id) {
+        model.load(id, new IncomeContract.Model.onTransactionListener() {
+            @Override
+            public void onSuccess(Object object) {
+                Transaction transaction = (Transaction) object;
+                view.updateIncome(transaction);
             }
 
             @Override

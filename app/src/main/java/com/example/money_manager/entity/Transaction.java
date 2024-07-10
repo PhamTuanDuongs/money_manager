@@ -6,7 +6,7 @@ public class Transaction {
     private Account account_id;
     private double amount;
     private int categoryId;
-    private Date createAt;
+    private Date date;
     private String description;
     private int id;
     private String name;
@@ -40,11 +40,11 @@ public class Transaction {
     }
 
     public Date getCreateAt() {
-        return createAt;
+        return date;
     }
 
     public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
+        this.date = createAt;
     }
 
     public String getDescription() {

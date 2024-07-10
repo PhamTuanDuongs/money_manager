@@ -45,43 +45,25 @@
         android:id="@+id/tvDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="75dp"
+        android:layout_marginTop="136dp"
         android:layout_marginEnd="66dp"
         android:text="Date"
         app:layout_constraintEnd_toStartOf="@+id/btnDate"
-        app:layout_constraintTop_toBottomOf="@+id/tvEmailTitle" />
-
-    <TextView
-        android:id="@+id/tvEmailTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="36dp"
-        android:text="TextView"
+        app:layout_constraintHorizontal_bias="0.752"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtAmount" />
-
-    <TextView
-        android:id="@+id/tvDescriptionTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="176dp"
-        android:layout_marginTop="71dp"
-        android:text="Description"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnDate" />
 
     <EditText
         android:id="@+id/edtDesc"
         android:layout_width="283dp"
         android:layout_height="151dp"
         android:layout_marginStart="64dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="123dp"
         android:ems="10"
         android:hint="Enter your description"
         android:inputType="text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDescriptionTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/btnDate" />
 
     <Button
         android:id="@+id/btnUpdateIncome"
@@ -90,7 +72,7 @@
         android:layout_marginStart="160dp"
         android:layout_marginTop="84dp"
         android:backgroundTint="@color/yellow_600"
-        android:text="Add"
+        android:text="Update"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtDesc" />
 </androidx.constraintlayout.widget.ConstraintLayout>

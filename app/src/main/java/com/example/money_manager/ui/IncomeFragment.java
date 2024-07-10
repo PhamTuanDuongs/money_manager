@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +41,7 @@ public class IncomeFragment extends Fragment implements IncomeContract.View {
     private RecyclerView incomeRecycleView;
     private IncomeAdapter incomeAdapter;
     private TextView tvLoading;
+
     private int incomePosition;
 
     public static IncomeFragment newInstance(String param1, String param2) {
@@ -79,7 +82,12 @@ public class IncomeFragment extends Fragment implements IncomeContract.View {
             @Override
             public void OnClick(View v, int position) {
                 incomePosition = position;
-
+                IncomeDialogFragment fragment = new IncomeDialogFragment(incomeAdapter.getItem(position).getId());
+                FragmentManager manager = getParentFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
+                transaction.replace(R.id.nav_host_fragment_content_main, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
 
@@ -114,7 +122,7 @@ public class IncomeFragment extends Fragment implements IncomeContract.View {
 
     @Override
     public void setListIncome(ArrayList<Transaction> transactions) {
-
+        incomes.clear();
         for (Transaction trans : transactions
         ) {
             incomes.add(trans);
@@ -126,9 +134,19 @@ public class IncomeFragment extends Fragment implements IncomeContract.View {
 
     @Override
     public void DeleteIncome(String message) {
-        Toast.makeText(getContext(),message,Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
         incomeAdapter.removeItem(incomePosition);
         incomeAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void updateIncome(Transaction transaction) {
+
+    }
+
+    @Override
+    public void updateIncomeOnSuccess(String message) {
+
     }
 
     @Override

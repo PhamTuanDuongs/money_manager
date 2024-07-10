@@ -10,6 +10,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -44,13 +45,13 @@ public class IncomeModel implements IncomeContract.Model {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot q : task.getResult()) {
                                 double amount = q.get("amount", double.class);
-                                Date createAt = q.get("createdAt", Date.class);
                                 String description = q.get("description", String.class);
                                 int id = q.get("id", int.class);
+                                Timestamp createAt = q.get("date", Timestamp.class);
                                 String name = q.get("name", String.class);
                                 Transaction t = new Transaction();
+                                t.setCreateAt(createAt.toDate());
                                 t.setAmount(amount);
-                                t.setCreateAt(createAt);
                                 t.setDescription(description);
                                 t.setId(id);
                                 t.setName(name);
@@ -74,7 +75,7 @@ public class IncomeModel implements IncomeContract.Model {
 
         Map<String, Object> docData = new HashMap<>();
         docData.put("amount", transaction.getAmount());
-        docData.put("createAt", transaction.getCreateAt());
+        docData.put("date", new Timestamp(transaction.getCreateAt()));
         docData.put("description", transaction.getDescription());
         docData.put("type", transaction.getType());
         docData.put("account_id", user);
@@ -135,7 +136,62 @@ public class IncomeModel implements IncomeContract.Model {
         Map<String, Object> result = new HashMap<>();
         result.put("amount", transactionn.getAmount());
         result.put("description", transactionn.getDescription());
-        firestore.collection(TRANSACTION_COLLECTION).document(id + "").update(result);
+        firestore
+                .collection(TRANSACTION_COLLECTION)
+                .whereEqualTo("id", id)
+                .limit(1)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot q : task.getResult()) {
+                                firestore
+                                        .collection(TRANSACTION_COLLECTION)
+                                        .document(q.getId())
+                                        .update(result)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                listener.onSuccess(null);
+                                            }
+                                        });
+                                break;
+                            }
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void load(int id, onTransactionListener listener) {
+        firestore
+                .collection(TRANSACTION_COLLECTION)
+                .whereEqualTo("type", 0)
+                .whereEqualTo("id", id)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot q : task.getResult()) {
+                                double amount = q.get("amount", double.class);
+                                String description = q.get("description", String.class);
+                                int id = q.get("id", int.class);
+                                Timestamp createAt = q.get("date", Timestamp.class);
+                                String name = q.get("name", String.class);
+                                Transaction t = new Transaction();
+                                t.setCreateAt(createAt.toDate());
+                                t.setAmount(amount);
+                                t.setDescription(description);
+                                t.setId(id);
+                                t.setName(name);
+                                listener.onSuccess(t);
+                                break;
+                            }
+                        }
+                    }
+                });
     }
 
     private int getTransactionId() {

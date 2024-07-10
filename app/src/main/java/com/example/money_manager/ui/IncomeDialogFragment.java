@@ -2,11 +2,6 @@ package com.example.money_manager.ui;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,20 +11,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+
 import com.example.money_manager.R;
 import com.example.money_manager.contract.IncomeContract;
 import com.example.money_manager.contract.model.IncomeModel;
 import com.example.money_manager.contract.presenter.IncomePresenter;
 import com.example.money_manager.entity.Transaction;
-import com.example.money_manager.utils.AccountState;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-
-public class AddIncomeFragment extends Fragment implements IncomeContract.View {
-
+public class IncomeDialogFragment extends Fragment implements IncomeContract.View {
     private Button btnDatePicker;
     private TextView tvDate;
     private String email;
@@ -37,40 +35,33 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
     private EditText edtAmount;
     private EditText edtDesc;
 
-    private Button btnAdd;
-
-    private Date choosenDate;
+    private Button btnUpdate;
+    private int incomeId;
     private IncomeContract.Presenter presenter;
 
-    public AddIncomeFragment() {
-        // Required empty public constructor
-    }
+    private Date choosenDate;
 
 
-    public static AddIncomeFragment newInstance(String param1, String param2) {
-        AddIncomeFragment fragment = new AddIncomeFragment();
-        Bundle args = new Bundle();
-
-        fragment.setArguments(args);
-        return fragment;
+    public IncomeDialogFragment(int incomeId) {
+        this.incomeId = incomeId;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new IncomePresenter(new IncomeModel(), this);
 
     }
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_add_income, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Toast.makeText(getContext(), "Id: " + incomeId, Toast.LENGTH_SHORT).show();
+        super.onCreateView(inflater, container, savedInstanceState);
+        View v = inflater.inflate(R.layout.fragment_update_income, container, false);
         btnDatePicker = v.findViewById(R.id.btnDate);
         tvDate = v.findViewById(R.id.tvDate);
-        tvEmailTitle = v.findViewById(R.id.tvEmailTitle);
-        btnAdd = v.findViewById(R.id.btnUpdateIncome);
+        btnUpdate = v.findViewById(R.id.btnUpdateIncome);
         edtAmount = v.findViewById(R.id.edtAmount);
         edtDesc = v.findViewById(R.id.edtDesc);
         return v;
@@ -78,7 +69,8 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
+        super.onViewCreated(view, savedInstanceState);
+        presenter.onLoadIncome(incomeId);
         btnDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,25 +89,21 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                                 tvDate.setText(day + "-" + (month + 1) + "-" + year);
-                                Calendar cal = Calendar.getInstance();
-                                cal.set(year, month, day);
-                                choosenDate = cal.getTime();
-
+                                choosenDate = new Date(year, month, day);
+                                Toast.makeText(getContext(), choosenDate.toString(), Toast.LENGTH_SHORT).show();
                             }
                         }, year, month, day
                 );
                 dialog.show();
             }
         });
-        email = AccountState.getEmail(getContext(), "email");
-        tvEmailTitle.setText("Account: " + email);
-        btnAdd.setOnClickListener(new View.OnClickListener() {
+
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               presenter.onAddButtonClick(getTransaction());
+                presenter.onUpdateButtonClick(getTransaction(), incomeId);
             }
         });
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -130,7 +118,7 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
 
     @Override
     public void showAddSuccess(String message) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -145,12 +133,16 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
 
     @Override
     public void updateIncome(Transaction transaction) {
+        edtAmount.setText(transaction.getAmount() + "");
+        edtDesc.setText(transaction.getDescription());
+        SimpleDateFormat sf = new SimpleDateFormat("dd-MM-YYYY");
+        tvDate.setText(sf.format(transaction.getCreateAt()).toString());
 
     }
 
     @Override
     public void updateIncomeOnSuccess(String message) {
-
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     public Transaction getTransaction() {

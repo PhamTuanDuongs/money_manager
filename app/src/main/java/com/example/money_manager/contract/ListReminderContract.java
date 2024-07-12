@@ -10,6 +10,7 @@ public class ListReminderContract {
     public interface View {
         void showReminders(List<Reminder> reminders);
         void showError(String message);
+        void navigateToUpdateReminder(Reminder reminder);
     }
 
     public interface Presenter {

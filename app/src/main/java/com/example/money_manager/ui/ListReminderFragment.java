@@ -1,5 +1,6 @@
 package com.example.money_manager.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -37,7 +38,7 @@ import java.util.List;
  * Use the {@link ListReminderFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ListReminderFragment extends Fragment implements ListReminderContract.View{
+public class ListReminderFragment extends Fragment implements ListReminderContract.View, ReminderAdapter.OnReminderClickListener{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -83,7 +84,7 @@ public class ListReminderFragment extends Fragment implements ListReminderContra
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         List<Reminder> reminders = new ArrayList<>();
-        adapter = new ReminderAdapter(reminders);
+        adapter = new ReminderAdapter(reminders, this);
         recyclerView.setAdapter(adapter);
 
         presenter.loadReminders();
@@ -111,5 +112,19 @@ public class ListReminderFragment extends Fragment implements ListReminderContra
     @Override
     public void showError(String message) {
         Log.d("Firestore", "Error getting reminders: " + message);
+    }
+
+    @Override
+    public void navigateToUpdateReminder(Reminder reminder) {
+        presenter.onReminderClicked(reminder);
+    }
+
+    @Override
+    public void onReminderClick(Reminder reminder) {
+        Fragment updateFragment = UpdateReminderFragment.newInstance(reminder.getId());
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment_content_main, updateFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }

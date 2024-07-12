@@ -1,5 +1,6 @@
 package com.example.money_manager.ui;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +14,16 @@ import com.example.money_manager.R;
 import com.example.money_manager.entity.Category;
 import com.example.money_manager.entity.Reminder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 
-    private List<Category> categories;
-    public CategoryAdapter(List<Category> categories) {
+    private List<Category> categories = new ArrayList<>();
+
+    public void setCategories(List<Category> categories) {
         this.categories = categories;
+        notifyDataSetChanged();
     }
     @NonNull
     @Override
@@ -31,7 +35,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Category category = categories.get(position);
-        holder.categoryName.setText(category.getCategoryName());
+        holder.bind(category);
     }
 
     @Override
@@ -47,6 +51,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             super(itemView);
             categoryIcon = itemView.findViewById(R.id.category_icon);
             categoryName = itemView.findViewById(R.id.category_name);
+        }
+
+        public void bind(Category category){
+            categoryIcon.setImageResource(itemView.getContext().getResources().getIdentifier(
+                    category.getImage(), "drawable", itemView.getContext().getPackageName()));
+            categoryName.setText(category.getName());
         }
     }
 }

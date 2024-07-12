@@ -2,17 +2,21 @@ package com.example.money_manager.entity;
 
 public class Category {
     private int id;
-    private String categoryName;
-    private byte type;
+    private String name;
+    private int type;
     private String account;
-    private int iconImageId;
+    private String image;
 
-    public Category(int id, String categoryName, byte type, String account, int iconImageId) {
+    public Category(){
+
+    }
+
+    public Category(int id, String name, int type, String account, String image) {
         this.id = id;
-        this.categoryName = categoryName;
+        this.name = name;
         this.type = type;
         this.account = account;
-        this.iconImageId = iconImageId;
+        this.image = image;
     }
 
     public int getId() {
@@ -23,19 +27,19 @@ public class Category {
         this.id = id;
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public String getName() {
+        return name;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public byte getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(byte type) {
+    public void setType(int type) {
         this.type = type;
     }
 
@@ -47,11 +51,11 @@ public class Category {
         this.account = account;
     }
 
-    public int getIconImageId() {
-        return iconImageId;
+    public String getImage() {
+        return image;
     }
 
-    public void setIconImageId(int iconImageId) {
-        this.iconImageId = iconImageId;
+    public void setIconImageId(String image) {
+        this.image = image;
     }
 }

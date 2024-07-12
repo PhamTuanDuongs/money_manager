@@ -21,7 +21,7 @@ public class ListReminderPresenter implements ListReminderContract.Presenter, Li
 
     @Override
     public void onReminderClicked(Reminder reminder) {
-
+        view.navigateToUpdateReminder(reminder);
     }
 
     @Override

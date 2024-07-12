@@ -2,21 +2,16 @@
 <project version="4">
   <component name="deploymentTargetSelector">
     <selectionStates>
-<<<<<<< HEAD
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-07-02T06:24:16.964825Z">
+        <DropdownSelection timestamp="2024-07-09T06:37:25.541489900Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Acer\.android\avd\Pixel_8_Pro_API_32.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Acer\.android\avd\Pixel_8_Pro_API_30.avd" />
             </handle>
           </Target>
         </DropdownSelection>
         <DialogSelection />
-=======
-      <SelectionState runConfigName="LandingPageActivity">
-        <option name="selectionMode" value="DROPDOWN" />
->>>>>>> 533ea092075b43e1001e349d3d85de125ea5960b
       </SelectionState>
     </selectionStates>
   </component>

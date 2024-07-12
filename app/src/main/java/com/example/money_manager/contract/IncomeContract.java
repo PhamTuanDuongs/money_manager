@@ -1,7 +1,6 @@
 package com.example.money_manager.contract;
 
 import com.example.money_manager.entity.Transaction;
-import com.google.firebase.firestore.DocumentReference;
 
 import java.util.ArrayList;
 
@@ -18,6 +17,8 @@ public class IncomeContract {
         void updateIncome(Transaction transaction);
 
         void updateIncomeOnSuccess(String message);
+
+
     }
 
     public interface Presenter {
@@ -30,10 +31,14 @@ public class IncomeContract {
         void onGetListIncome();
 
         void onLoadIncome(int id);
+
+        void onGetListIncomeByWeek(String date);
+        void onGetListIncomeByMonth(String date);
+        void onGetListIncomeByYear(String date);
     }
 
     public interface Model {
-        ArrayList<Transaction> getTransactions(String email, onTransactionListener listener);
+        ArrayList<Transaction> getTransactions(String email,String date ,onTransactionListener listener);
 
         void add(Transaction transaction, String email, onTransactionListener listener);
 

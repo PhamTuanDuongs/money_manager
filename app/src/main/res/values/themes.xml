@@ -46,4 +46,8 @@
     <item name="stColorBackground">@color/yellow_300</item>
     <item name="stIconStart">@drawable/warning</item>
     </style>
+    <style name="roundedImageViewRounded">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.money_manager.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.example.money_manager.entity.Transaction;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeViewHolder> {
 
@@ -22,7 +24,11 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeView
     private ArrayList<Transaction> incomes;
     IncomeListClickListener listenerDelete;
     IncomeListClickListener listenerUpdate;
+    OnLongItemClickListener mOnLongItemClickListener;
 
+    public void setOnLongItemClickListener(OnLongItemClickListener onLongItemClickListener) {
+        mOnLongItemClickListener = onLongItemClickListener;
+    }
     public void setListenerDelete(IncomeListClickListener listenerDelete) {
         this.listenerDelete = listenerDelete;
     }
@@ -47,12 +53,26 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeView
 
     @Override
     public void onBindViewHolder(@NonNull IncomeViewHolder holder, int position) {
+        int pos = holder.getLayoutPosition();
         Transaction t = incomes.get(position);
-        SimpleDateFormat sf = new SimpleDateFormat("dd-MM-YYYY");
+        Date date = t.getCreateAt().toDate();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String formattedDate = formatter.format(date);
+
         holder.tvName.setText(t.getName());
-        holder.tvAmount.setText(t.getAmount() + "");
-        holder.tvDesc.setText(t.getDescription());
-        holder.tvDate.setText(sf.format(t.getCreateAt()).toString());
+        holder.tvAmount.setText("+" +t.getAmount());
+//        holder.tvDesc.setText(t.getDescription());
+        holder.tvDate.setText(formattedDate);
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (mOnLongItemClickListener != null) {
+                    mOnLongItemClickListener.itemLongClicked(view, pos);
+                    Log.d("INCOME:" , "Hello");
+                }
+                return false;
+            }
+        });
     }
 
     public void removeItem(int pos) {
@@ -78,29 +98,19 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeView
 
         public IncomeViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvDesc = itemView.findViewById(R.id.txtDes);
-            tvAmount = itemView.findViewById(R.id.txtAmount);
-            tvName = itemView.findViewById(R.id.txtName);
-            tvDate = itemView.findViewById(R.id.txtDate);
-            btnUpdate = itemView.findViewById(R.id.btnUpdate);
-            btnDelete = itemView.findViewById(R.id.btnDelete);
-            btnUpdate.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    listenerUpdate.OnClick(view, getLayoutPosition());
-                }
-            });
-            btnDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    listenerDelete.OnClick(view, getLayoutPosition());
-                }
-            });
+            tvAmount = itemView.findViewById(R.id.txtIncomeValue);
+            tvName = itemView.findViewById(R.id.txtIncomeName);
+            tvDate = itemView.findViewById(R.id.txtIncomeDateCreated);
 
         }
     }
 
     public interface IncomeListClickListener {
         void OnClick(View v, int position);
+
+    }
+
+    public interface OnLongItemClickListener {
+        void itemLongClicked(View v, int position);
     }
 }

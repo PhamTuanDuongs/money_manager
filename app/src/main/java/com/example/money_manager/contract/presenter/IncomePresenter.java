@@ -7,6 +7,9 @@ import com.example.money_manager.contract.IncomeContract;
 import com.example.money_manager.entity.Transaction;
 import com.example.money_manager.ui.AddIncomeFragment;
 import com.example.money_manager.ui.IncomeFragment;
+import com.example.money_manager.ui.IncomeListByMonthFragment;
+import com.example.money_manager.ui.IncomeListByWeekFragment;
+import com.example.money_manager.ui.IncomeListByYearFragment;
 import com.example.money_manager.utils.AccountState;
 
 import java.util.ArrayList;
@@ -73,7 +76,7 @@ public class IncomePresenter implements IncomeContract.Presenter {
     @Override
     public void onGetListIncome() {
         String email = AccountState.getEmail(((IncomeFragment) view).getContext(), "email");
-        ArrayList<Transaction> trans = model.getTransactions(email, new IncomeContract.Model.onTransactionListener() {
+        ArrayList<Transaction> trans = model.getTransactions(email, "", new IncomeContract.Model.onTransactionListener() {
             @Override
             public void onSuccess(Object object) {
                 view.setListIncome((ArrayList<Transaction>) object);
@@ -98,6 +101,58 @@ public class IncomePresenter implements IncomeContract.Presenter {
 
             @Override
             public void onError(String message) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onGetListIncomeByWeek(String date) {
+        String email = AccountState.getEmail(((IncomeListByWeekFragment) view).getContext(), "email");
+        ArrayList<Transaction> trans = model.getTransactions(email, date, new IncomeContract.Model.onTransactionListener() {
+            @Override
+            public void onSuccess(Object object) {
+                view.setListIncome((ArrayList<Transaction>) object);
+            }
+
+            @Override
+            public void onError(String message) {
+                view.showAddError("Error", "Error");
+            }
+        });
+    }
+
+    @Override
+    public void onGetListIncomeByMonth(String date) {
+        String email = AccountState.getEmail(((IncomeListByMonthFragment) view).getContext(), "email");
+        ArrayList<Transaction> trans = model.getTransactions(email,date, new IncomeContract.Model.onTransactionListener() {
+            @Override
+            public void onSuccess(Object object) {
+                view.setListIncome((ArrayList<Transaction>) object);
+
+            }
+
+            @Override
+            public void onError(String message) {
+                view.showAddError("Error","Error");
+
+            }
+        });
+    }
+
+    @Override
+    public void onGetListIncomeByYear(String date) {
+        String email = AccountState.getEmail(((IncomeListByYearFragment) view).getContext(), "email");
+        ArrayList<Transaction> trans = model.getTransactions(email,date, new IncomeContract.Model.onTransactionListener() {
+            @Override
+            public void onSuccess(Object object) {
+                view.setListIncome((ArrayList<Transaction>) object);
+
+            }
+
+            @Override
+            public void onError(String message) {
+                view.showAddError("Error","Error");
 
             }
         });

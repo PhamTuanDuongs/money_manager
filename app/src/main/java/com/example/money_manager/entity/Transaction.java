@@ -1,12 +1,14 @@
 package com.example.money_manager.entity;
 
+import com.google.firebase.Timestamp;
+
 import java.util.Date;
 
 public class Transaction {
     private Account account_id;
     private double amount;
     private int categoryId;
-    private Date date;
+    private Timestamp date;
     private String description;
     private int id;
     private String name;
@@ -39,11 +41,11 @@ public class Transaction {
         this.categoryId = categoryId;
     }
 
-    public Date getCreateAt() {
+    public Timestamp getCreateAt() {
         return date;
     }
 
-    public void setCreateAt(Date createAt) {
+    public void setCreateAt(Timestamp createAt) {
         this.date = createAt;
     }
 

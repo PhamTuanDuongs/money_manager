@@ -22,6 +22,7 @@ import com.example.money_manager.contract.model.IncomeModel;
 import com.example.money_manager.contract.presenter.IncomePresenter;
 import com.example.money_manager.entity.Transaction;
 import com.example.money_manager.utils.AccountState;
+import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,9 +38,11 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
     private EditText edtAmount;
     private EditText edtDesc;
 
+    private EditText edtName;
+
     private Button btnAdd;
 
-    private Date choosenDate;
+    private Timestamp choosenDate;
     private IncomeContract.Presenter presenter;
 
     public AddIncomeFragment() {
@@ -73,6 +76,7 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
         btnAdd = v.findViewById(R.id.btnUpdateIncome);
         edtAmount = v.findViewById(R.id.edtAmount);
         edtDesc = v.findViewById(R.id.edtDesc);
+        edtName = v.findViewById(R.id.edtName);
         return v;
     }
 
@@ -99,7 +103,7 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
                                 tvDate.setText(day + "-" + (month + 1) + "-" + year);
                                 Calendar cal = Calendar.getInstance();
                                 cal.set(year, month, day);
-                                choosenDate = cal.getTime();
+                                choosenDate = new Timestamp(cal.getTime());
 
                             }
                         }, year, month, day
@@ -157,9 +161,9 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
         Transaction t = new Transaction();
         t.setAmount(Double.parseDouble(edtAmount.getText().toString()));
         t.setDescription(edtDesc.getText().toString());
-        t.setCreateAt(choosenDate);
         t.setType(0);
-        t.setName("New transaction");
+        t.setName(edtName.getText().toString());
+        t.setCreateAt(choosenDate);
         return t;
     }
 }

@@ -135,8 +135,9 @@ public class IncomeDialogFragment extends Fragment implements IncomeContract.Vie
     public void updateIncome(Transaction transaction) {
         edtAmount.setText(transaction.getAmount() + "");
         edtDesc.setText(transaction.getDescription());
-        SimpleDateFormat sf = new SimpleDateFormat("dd-MM-YYYY");
-        tvDate.setText(sf.format(transaction.getCreateAt()).toString());
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String formattedDate = formatter.format(transaction.getCreateAt().toDate());
+        tvDate.setText(formattedDate);
 
     }
 
@@ -149,7 +150,6 @@ public class IncomeDialogFragment extends Fragment implements IncomeContract.Vie
         Transaction t = new Transaction();
         t.setAmount(Double.parseDouble(edtAmount.getText().toString()));
         t.setDescription(edtDesc.getText().toString());
-        t.setCreateAt(choosenDate);
         t.setType(0);
         t.setName("New transaction");
         return t;

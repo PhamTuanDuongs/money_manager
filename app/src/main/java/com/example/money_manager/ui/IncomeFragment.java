@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +41,7 @@ public class IncomeFragment extends Fragment implements IncomeContract.View {
     private IncomeContract.Presenter presenter;
     private RecyclerView incomeRecycleView;
     private IncomeAdapter incomeAdapter;
-    private TextView tvLoading;
+    private ProgressBar bar;
 
     private int incomePosition;
 
@@ -62,7 +63,7 @@ public class IncomeFragment extends Fragment implements IncomeContract.View {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_list_income, container, false);
         presenter = new IncomePresenter(new IncomeModel(), IncomeFragment.this);
-        tvLoading = v.findViewById(R.id.tvLoading);
+        bar = v.findViewById(R.id.pLoading);
         incomeRecycleView = v.findViewById(R.id.income_recycle_view);
         incomeAdapter = new IncomeAdapter(getContext(), incomes);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -128,7 +129,7 @@ public class IncomeFragment extends Fragment implements IncomeContract.View {
             incomes.add(trans);
         }
         incomeAdapter.notifyDataSetChanged();
-        tvLoading.setText("");
+     bar.setVisibility(View.INVISIBLE);
 
     }
 

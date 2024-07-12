@@ -60,6 +60,7 @@ public class ExpenseListByMonthFragment extends Fragment implements ExpenseContr
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("onCreate","onCreate");
     }
 
 
@@ -67,18 +68,7 @@ public class ExpenseListByMonthFragment extends Fragment implements ExpenseContr
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_expense_list_month, container, false);
-        presenter = new ExpensePresenter(new ExpenseModel(), ExpenseListByMonthFragment.this);
-        pbLoading = v.findViewById(R.id.progressBar);
-        expenseRecycleView = v.findViewById(R.id.expense_recycle_view_month);
-        expenseAdapter = new ExpenseAdapter(getContext(), expenses);
-        expenseRecycleView.setAdapter(expenseAdapter);
-        expenseRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
-        txtDate = v.findViewById(R.id.txtSelectedMonth);
-        txtDate.setText(getCurrentMonth());
-        btnNext =v.findViewById(R.id.btnNextMonth);
-        btnPrevious =v.findViewById(R.id.btnPreviousMonth);
-        txtNoExpense =v.findViewById(R.id.txtNoExpense);
-        txtNoExpense.setText("");
+
 
 
 
@@ -107,6 +97,18 @@ public class ExpenseListByMonthFragment extends Fragment implements ExpenseContr
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        presenter = new ExpensePresenter(new ExpenseModel(), ExpenseListByMonthFragment.this);
+        pbLoading = view.findViewById(R.id.progressBar);
+        expenseRecycleView = view.findViewById(R.id.expense_recycle_view_month);
+        expenseAdapter = new ExpenseAdapter(getContext(), expenses);
+        expenseRecycleView.setAdapter(expenseAdapter);
+        expenseRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
+        txtDate = view.findViewById(R.id.txtSelectedMonth);
+        txtDate.setText(getCurrentMonth());
+        btnNext =view.findViewById(R.id.btnNextMonth);
+        btnPrevious =view.findViewById(R.id.btnPreviousMonth);
+        txtNoExpense =view.findViewById(R.id.txtNoExpense);
+        txtNoExpense.setText("");
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

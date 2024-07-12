@@ -62,18 +62,7 @@ public class ExpenseListByYearFragment extends Fragment implements ExpenseContra
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_expense_list_year, container, false);
-        presenter = new ExpensePresenter(new ExpenseModel(), ExpenseListByYearFragment.this);
-        pbLoading = v.findViewById(R.id.progressBar);
-        expenseRecycleView = v.findViewById(R.id.expense_recycle_view_year);
-        expenseAdapter = new ExpenseAdapter(getContext(), expenses);
-        expenseRecycleView.setAdapter(expenseAdapter);
-        expenseRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
-        txtDate = v.findViewById(R.id.txtSelectedYear);
-        txtDate.setText(getCurrentMonth().substring(4,8));
-        btnNext =v.findViewById(R.id.btnNextYear);
-        btnPrevious =v.findViewById(R.id.btnPreviousYear);
-        txtNoExpense =v.findViewById(R.id.txtNoExpense);
-        txtNoExpense.setText("");
+
 
 
 
@@ -102,6 +91,18 @@ public class ExpenseListByYearFragment extends Fragment implements ExpenseContra
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        presenter = new ExpensePresenter(new ExpenseModel(), ExpenseListByYearFragment.this);
+        pbLoading = view.findViewById(R.id.progressBar);
+        expenseRecycleView = view.findViewById(R.id.expense_recycle_view_year);
+        expenseAdapter = new ExpenseAdapter(getContext(), expenses);
+        expenseRecycleView.setAdapter(expenseAdapter);
+        expenseRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
+        txtDate = view.findViewById(R.id.txtSelectedYear);
+        txtDate.setText(getCurrentMonth().substring(4,8));
+        btnNext =view.findViewById(R.id.btnNextYear);
+        btnPrevious =view.findViewById(R.id.btnPreviousYear);
+        txtNoExpense =view.findViewById(R.id.txtNoExpense);
+        txtNoExpense.setText("");
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
@@ -38,20 +39,27 @@ public class ExpenseListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_expense, container, false);
-        tabLayout = v.findViewById(R.id.ctablayout);
-        btnAddExpense = v.findViewById((R.id.btnAddExpense));
-        week =v.findViewById((R.id.ctab1));
-        month =v.findViewById((R.id.ctab2));
-        year=v.findViewById((R.id.ctab3));
-        viewPager=(ViewPager) v.findViewById(R.id.pageholder);
-        fragmentmanager=new FragmentManage(getFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,tabLayout.getTabCount());
+
+        return v;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        tabLayout = view.findViewById(R.id.ctablayout);
+        btnAddExpense = view.findViewById((R.id.btnAddExpense));
+        week =view.findViewById((R.id.ctab1));
+        month =view.findViewById((R.id.ctab2));
+        year=view.findViewById((R.id.ctab3));
+        viewPager=(ViewPager) view.findViewById(R.id.pageholder);
+        fragmentmanager=new FragmentManage(getChildFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,tabLayout.getTabCount());
         viewPager.setAdapter(fragmentmanager);
         btnAddExpense.setOnClickListener(new View.OnClickListener() {
-                                             @Override
-                                             public void onClick(View view) {
-                                                 loadFragment(new AddExpenseFragment());
-                                             }
-                                         });
+            @Override
+            public void onClick(View view) {
+                loadFragment(new AddExpenseFragment());
+            }
+        });
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -66,6 +74,7 @@ public class ExpenseListFragment extends Fragment {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
 
             }
         });
@@ -74,59 +83,7 @@ public class ExpenseListFragment extends Fragment {
 
 
 
-        return v;
     }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-       /* presenter.onGetListExpense();*/
-//        setList();
-        /*btnCreateExpense.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });*/
-
-    }
-
-
-
-    /*@Override
-    public void navigateToExpenseActivity() {
-
-    }
-
-    @Override
-    public void showAddSuccess(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void setListExpense(ArrayList<Transaction> transactions) {
-
-        for (Transaction trans : transactions
-        ) {
-            expenses.add(trans);
-        }
-        expenseAdapter.notifyDataSetChanged();
-        pbLoading.setVisibility(View.GONE);
-
-    }
-
-    @Override
-    public void DeleteExpense(String message) {
-        Toast.makeText(getContext(),message,Toast.LENGTH_LONG).show();
-        expenseAdapter.removeItem(expensePosition);
-        expenseAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void showAddError(String title, String error) {
-
-    }
-*/
 
     private void loadFragment(Fragment fragment) {
         FragmentManager fragmentManager = getParentFragmentManager();

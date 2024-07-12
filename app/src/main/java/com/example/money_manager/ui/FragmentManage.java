@@ -12,8 +12,6 @@ public class FragmentManage extends FragmentPagerAdapter {
         this.tabno = tabno;
     }
 
-
-
     @NonNull
     @Override
     public Fragment getItem(int position) {

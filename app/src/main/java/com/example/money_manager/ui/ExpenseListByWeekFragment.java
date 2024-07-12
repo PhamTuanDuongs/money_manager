@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,7 @@ public class ExpenseListByWeekFragment extends Fragment implements ExpenseContra
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("onCreate","onCreate");
     }
 
 
@@ -62,18 +64,8 @@ public class ExpenseListByWeekFragment extends Fragment implements ExpenseContra
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_expense_list_week, container, false);
-        presenter = new ExpensePresenter(new ExpenseModel(), ExpenseListByWeekFragment.this);
-        pbLoading = v.findViewById(R.id.progressBar);
-        expenseRecycleView = v.findViewById(R.id.expense_recycle_view_week);
-        expenseAdapter = new ExpenseAdapter(getContext(), expenses);
-        expenseRecycleView.setAdapter(expenseAdapter);
-        expenseRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
-        txtDate = v.findViewById(R.id.txtSelectedWeek);
-        txtDate.setText(getCurrentWeek());
-        btnNext =v.findViewById(R.id.btnNextWeek);
-        btnPrevious =v.findViewById(R.id.btnPreviousWeek);
-        txtNoExpense =v.findViewById(R.id.txtNoExpense);
-        txtNoExpense.setText("");
+        Log.d("onCreateView","onCreateView");
+
 
 
 
@@ -102,6 +94,18 @@ public class ExpenseListByWeekFragment extends Fragment implements ExpenseContra
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        presenter = new ExpensePresenter(new ExpenseModel(), ExpenseListByWeekFragment.this);
+        pbLoading = view.findViewById(R.id.progressBar);
+        expenseRecycleView = view.findViewById(R.id.expense_recycle_view_week);
+        expenseAdapter = new ExpenseAdapter(getContext(), expenses);
+        expenseRecycleView.setAdapter(expenseAdapter);
+        expenseRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
+        txtDate = view.findViewById(R.id.txtSelectedWeek);
+        txtDate.setText(getCurrentWeek());
+        btnNext =view.findViewById(R.id.btnNextWeek);
+        btnPrevious =view.findViewById(R.id.btnPreviousWeek);
+        txtNoExpense =view.findViewById(R.id.txtNoExpense);
+        txtNoExpense.setText("");
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,6 +131,8 @@ public class ExpenseListByWeekFragment extends Fragment implements ExpenseContra
             }
         });
         presenter.onGetListExpenseByWeek(getCurrentWeek());
+        Log.d("onViewCreated","onViewCreated");
+
     }
 
     @Override

@@ -45,9 +45,10 @@ public class UpdateReminderFragment extends Fragment implements UpdateReminderCo
     }
 
 
-    public static UpdateReminderFragment newInstance(String param1, String param2) {
+    public static UpdateReminderFragment newInstance(String reminderId) {
         UpdateReminderFragment fragment = new UpdateReminderFragment();
         Bundle args = new Bundle();
+        args.putString("reminderId", reminderId);
         fragment.setArguments(args);
         return fragment;
     }

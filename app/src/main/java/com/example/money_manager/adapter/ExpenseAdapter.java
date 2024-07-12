@@ -50,7 +50,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
     @Override
     public void onBindViewHolder(@NonNull ExpenseViewHolder holder, int position) {
         Transaction t = expenses.get(position);
-        holder.tvName.setText(t.getName());
+        holder.tvName.setText("Title: "+t.getName());
         holder.tvValue.setText("- " +t.getAmount() + "  VND");
         Timestamp timestamp = t.getCreateAt();
         Date date = timestamp.toDate();

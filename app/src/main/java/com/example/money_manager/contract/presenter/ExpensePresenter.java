@@ -1,11 +1,12 @@
 package com.example.money_manager.contract.presenter;
 import android.util.Log;
 
-import com.example.money_manager.adapter.ExpenseAdapter;
 import com.example.money_manager.contract.ExpenseContract;
 import com.example.money_manager.entity.Transaction;
 import com.example.money_manager.ui.AddExpenseFragment;
-import com.example.money_manager.ui.ExpenseFragment;
+import com.example.money_manager.ui.ExpenseListByMonthFragment;
+import com.example.money_manager.ui.ExpenseListByWeekFragment;
+import com.example.money_manager.ui.ExpenseListByYearFragment;
 import com.example.money_manager.utils.AccountState;
 
 import java.util.ArrayList;
@@ -59,10 +60,11 @@ public class ExpensePresenter implements ExpenseContract.Presenter {
 
     }
 
+
     @Override
-    public void onGetListExpense() {
-        String email = AccountState.getEmail(((ExpenseFragment) view).getContext(), "email");
-        ArrayList<Transaction> trans = model.getTransactions(email, new ExpenseContract.Model.onTransactionListener() {
+    public void onGetListExpenseByWeek(String date) {
+        String email = AccountState.getEmail(((ExpenseListByWeekFragment) view).getContext(), "email");
+        ArrayList<Transaction> trans = model.getTransactions(email,date, new ExpenseContract.Model.onTransactionListener() {
             @Override
             public void onSuccess(Object object) {
                 view.setListExpense((ArrayList<Transaction>) object);
@@ -71,6 +73,43 @@ public class ExpensePresenter implements ExpenseContract.Presenter {
 
             @Override
             public void onError(String message) {
+                view.showAddError("Error","Error");
+
+            }
+        });
+    }
+
+    @Override
+    public void onGetListExpenseByMonth(String date) {
+        String email = AccountState.getEmail(((ExpenseListByMonthFragment) view).getContext(), "email");
+        ArrayList<Transaction> trans = model.getTransactions(email,date, new ExpenseContract.Model.onTransactionListener() {
+            @Override
+            public void onSuccess(Object object) {
+                view.setListExpense((ArrayList<Transaction>) object);
+
+            }
+
+            @Override
+            public void onError(String message) {
+                view.showAddError("Error","Error");
+
+            }
+        });
+    }
+
+    @Override
+    public void onGetListExpenseByYear(String date) {
+        String email = AccountState.getEmail(((ExpenseListByYearFragment) view).getContext(), "email");
+        ArrayList<Transaction> trans = model.getTransactions(email,date, new ExpenseContract.Model.onTransactionListener() {
+            @Override
+            public void onSuccess(Object object) {
+                view.setListExpense((ArrayList<Transaction>) object);
+
+            }
+
+            @Override
+            public void onError(String message) {
+                view.showAddError("Error","Error");
 
             }
         });

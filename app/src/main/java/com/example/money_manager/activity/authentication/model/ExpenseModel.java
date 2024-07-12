@@ -17,7 +17,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +31,19 @@ public class ExpenseModel implements ExpenseContract.Model {
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
     @Override
-    public ArrayList<Transaction> getTransactions(String email, onTransactionListener listener) {
+    public ArrayList<Transaction> getTransactions(String email, String date, onTransactionListener listener) {
+        String[] dates = date.split(" - ");
+        SimpleDateFormat formatter = new SimpleDateFormat("d MMM yyyy");
+        Date date1, date2;
+        try {
+            date1 =formatter.parse(dates[0]);
+            date2=formatter.parse(dates[1]);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        Timestamp timestamp1 = new Timestamp(date1);
+        Timestamp timestamp2 = new Timestamp(date2);
+
         DocumentReference user = firestore
                 .collection("accounts")
                 .document(email);
@@ -38,6 +53,8 @@ public class ExpenseModel implements ExpenseContract.Model {
                 .collection(TRANSACTION_COLLECTION)
                 .whereEqualTo("type", 1)
                 .whereEqualTo("account_id", user)
+                .whereGreaterThanOrEqualTo("date", date1)
+                .whereLessThanOrEqualTo("date", date2)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

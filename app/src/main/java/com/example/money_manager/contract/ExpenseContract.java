@@ -23,11 +23,14 @@ public class ExpenseContract {
 
         void onUpdateButtonClick(Transaction transaction, int id);
 
-        void onGetListExpense();
+
+        void onGetListExpenseByWeek(String date);
+        void onGetListExpenseByMonth(String date);
+        void onGetListExpenseByYear(String date);
     }
 
     public interface Model {
-        ArrayList<Transaction> getTransactions(String email, onTransactionListener listener);
+        ArrayList<Transaction> getTransactions(String email, String date, onTransactionListener listener);
 
         void add(Transaction transaction, String email, onTransactionListener listener);
 

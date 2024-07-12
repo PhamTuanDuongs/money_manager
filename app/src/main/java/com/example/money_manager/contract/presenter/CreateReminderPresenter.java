@@ -8,23 +8,16 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.DatePicker;
 
 import androidx.fragment.app.Fragment;
 
 import com.example.money_manager.AlarmReceiver;
-import com.example.money_manager.activity.authentication.WelcomeActivity;
 import com.example.money_manager.contract.CreateReminderContract;
-import com.example.money_manager.contract.model.CreateReminderModel;
+import com.example.money_manager.activity.authentication.model.CreateReminderModel;
 import com.example.money_manager.entity.Reminder;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
 
 public class CreateReminderPresenter implements CreateReminderContract.Presenter {
     private CreateReminderContract.View view;

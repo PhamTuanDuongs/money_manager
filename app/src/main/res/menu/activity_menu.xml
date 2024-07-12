@@ -12,5 +12,9 @@
             android:id="@+id/nav_reminder"
             android:icon="@drawable/ic_launcher_reminder"
             android:title="@string/reminder" />
+        <item
+            android:id="@+id/nav_expense"
+            android:icon="@drawable/ic_launcher_money"
+            android:title="@string/expense" />
     </group>
 </menu>

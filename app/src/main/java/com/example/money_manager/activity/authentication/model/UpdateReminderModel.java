@@ -1,4 +1,4 @@
-package com.example.money_manager.contract.model;
+package com.example.money_manager.activity.authentication.model;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

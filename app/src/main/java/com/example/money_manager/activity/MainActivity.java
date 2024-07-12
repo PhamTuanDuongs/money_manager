@@ -15,6 +15,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.money_manager.R;
+
+import com.example.money_manager.ui.CreateReminderFragment;
+import com.example.money_manager.ui.ExpenseListFragment;
 import com.example.money_manager.ui.HomeFragment;
 import com.example.money_manager.ui.ListCategoryFragment;
 import com.example.money_manager.ui.ListReminderFragment;
@@ -70,6 +73,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             selectedFragment = new ListCategoryFragment();
             //selectedFragment = new CreateReminderFragment();
             //setToolbarTitle("Create Reminder");
+        }
+        else if (id == R.id.nav_expense) {
+            selectedFragment = new ExpenseListFragment();
+            setToolbarTitle("Expense");
         }
         if (selectedFragment != null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, selectedFragment).commit();

@@ -7,9 +7,22 @@ public class Category {
     private int type;
     private String account;
     private String image;
+    private String autoID;
 
     public Category(){
 
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getAutoID() {
+        return autoID;
+    }
+
+    public void setAutoID(String autoID) {
+        this.autoID = autoID;
     }
 
     public Category(int id, String name, int type, String account, String image) {

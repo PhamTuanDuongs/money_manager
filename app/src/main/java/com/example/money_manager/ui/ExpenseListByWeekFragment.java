@@ -26,6 +26,7 @@ import com.example.money_manager.adapter.ExpenseAdapter;
 import com.example.money_manager.contract.ExpenseContract;
 import com.example.money_manager.activity.authentication.model.ExpenseModel;
 import com.example.money_manager.contract.presenter.ExpensePresenter;
+import com.example.money_manager.entity.Category;
 import com.example.money_manager.entity.Transaction;
 
 
@@ -64,7 +65,7 @@ public class ExpenseListByWeekFragment extends Fragment implements ExpenseContra
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_expense_list_week, container, false);
-        Log.d("onCreateView","onCreateView");
+
 
 
 
@@ -131,7 +132,7 @@ public class ExpenseListByWeekFragment extends Fragment implements ExpenseContra
             }
         });
         presenter.onGetListExpenseByWeek(getCurrentWeek());
-        Log.d("onViewCreated","onViewCreated");
+
 
     }
 
@@ -164,6 +165,8 @@ public class ExpenseListByWeekFragment extends Fragment implements ExpenseContra
         pbLoading.setVisibility(View.GONE);
 
     }
+
+
 
     @Override
     public void DeleteExpense(String message) {

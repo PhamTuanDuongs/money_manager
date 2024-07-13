@@ -21,6 +21,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     private List<Category> categories = new ArrayList<>();
 
+
+
     public void setCategories(List<Category> categories) {
         this.categories = categories;
         notifyDataSetChanged();

@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.money_manager.contract.ExpenseContract;
+import com.example.money_manager.entity.Category;
 import com.example.money_manager.entity.Transaction;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -12,6 +13,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -28,6 +30,7 @@ import java.util.Map;
 public class ExpenseModel implements ExpenseContract.Model {
 
     private static final String TRANSACTION_COLLECTION = "transactions";
+    private static final String CATEGORY_COLLECTION = "categories";
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
     @Override
@@ -41,8 +44,9 @@ public class ExpenseModel implements ExpenseContract.Model {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-        Timestamp timestamp1 = new Timestamp(date1);
-        Timestamp timestamp2 = new Timestamp(date2);
+        date2.setHours(23);
+        date2.setMinutes(59);
+        date2.setSeconds(59);
 
         DocumentReference user = firestore
                 .collection("accounts")
@@ -60,22 +64,44 @@ public class ExpenseModel implements ExpenseContract.Model {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            if (task.getResult().size()!=0){
                             for (QueryDocumentSnapshot q : task.getResult()) {
-                                double amount = q.get("amount", double.class);
-                                Timestamp createAt = q.get("date", Timestamp.class);
-                                String description = q.get("description", String.class);
-                                int id = q.get("id", int.class);
-                                String name = q.get("name", String.class);
                                 Transaction t = new Transaction();
+                                double amount = q.get("amount", double.class);
+                                Date createAt = q.get("date", Date.class);
+                                DocumentReference category=q.getDocumentReference("category");
+                                Category c= new Category();
+                                c.setAutoID(category.getId());
+                                category.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+
+                                            DocumentSnapshot document = task.getResult();
+                                            if (document.exists()) {
+                                                String categoryName = document.get("name",String.class);
+                                                c.setName(categoryName);
+                                                t.setCategory(c);
+                                                expenses.add(t);
+                                            }
+
+
+                                            listener.onSuccess(expenses);
+                                        }
+                                    }
+                                });
+                                String description = q.get("description", String.class);
+
+                                String name = q.get("name", String.class);
                                 t.setAmount(amount);
                                 t.setCreateAt(createAt);
                                 t.setDescription(description);
-                                t.setId(id);
-                                t.setName(name);
-                                expenses.add(t);
 
+                                t.setName(name);
                             }
-                            listener.onSuccess(expenses);
+                            }else{
+                                listener.onSuccess(expenses);
+                            }
                         }
                     }
                 });
@@ -84,34 +110,74 @@ public class ExpenseModel implements ExpenseContract.Model {
     }
 
     @Override
+    public void getCategoryListByEmailAndType(String email, int type, onTransactionListener listener) {
+        DocumentReference user = firestore
+                .collection("accounts")
+                .document(email);
+
+        ArrayList<Category> categories = new ArrayList<>();
+        firestore
+                .collection(CATEGORY_COLLECTION)
+                .whereEqualTo("type", type)
+                .whereEqualTo("account_id", user)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                                for (QueryDocumentSnapshot q : task.getResult()) {
+
+                                    DocumentReference dRef = q.getReference();
+
+                                    Category c = new Category();
+                                    String autoID= dRef.getId();
+                                    String name = q.get("name", String.class);
+                                    String img = q.get("image", String.class);
+                                    c.setName(name);
+                                    c.setAutoID(autoID);
+                                    c.setIconImageId(img);
+                                    categories.add(c);
+
+                                }
+                                listener.onSuccess(categories);
+
+
+                }
+                    }});
+
+    }
+
+    @Override
     public void add(Transaction transaction, String email, onTransactionListener listener) {
 
         DocumentReference user = firestore
                 .collection("accounts")
                 .document(email);
+        DocumentReference category = firestore
+                .collection("categories")
+                .document(transaction.getCategory().getAutoID());
 
         Map<String, Object> docData = new HashMap<>();
         docData.put("amount", transaction.getAmount());
-        docData.put("createAt", transaction.getCreateAt());
+        docData.put("date", transaction.getCreateAt());
+        docData.put("name", transaction.getName());
         docData.put("description", transaction.getDescription());
         docData.put("type", transaction.getType());
         docData.put("account_id", user);
-        docData.put("id", getTransactionId());
-
-        transaction.setId(getTransactionId());
+        docData.put("category", category);
         firestore.collection(TRANSACTION_COLLECTION)
                 .add(docData)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Log.d("ADD_TRANS", "DocumentSnapshot written with ID: " + documentReference.getId());
+
                         listener.onSuccess(transaction);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w("ADD_TRANS", "Error adding document", e);
                         listener.onError("Failed to add");
                     }
                 });

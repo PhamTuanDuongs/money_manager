@@ -2,68 +2,107 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:id="@+id/add_expense_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:isScrollContainer="true"
+    android:scrollbarAlwaysDrawVerticalTrack="true"
+    android:scrollbars="vertical"
     tools:context=".ui.AddExpenseFragment">
 
+    <TextView
+        android:id="@+id/txtExpenseTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="110dp"
+        android:text="New Expense"
+        android:textColor="@color/teal_700"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/btnGoBack"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnGoBack"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/img_btn_back"
+        android:src="@drawable/ic_launcher_back"
+        android:text="Button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/edtExpenseValue"
-        android:layout_width="234dp"
-        android:layout_height="74dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="72dp"
-        android:layout_marginEnd="120dp"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
         android:ems="10"
         android:hint="Enter your number"
         android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/btnSelectDate" />
 
     <TextView
         android:id="@+id/tvCurrency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="92dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="40dp"
         android:text="VND"
+        android:textColor="@color/teal_700"
         android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/edtExpenseValue"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tvExpenseDate" />
 
     <Button
         android:id="@+id/btnSelectDate"
+        android:layout_width="28dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/ic_launcher_calendar"
+        android:text=""
+        app:layout_constraintStart_toEndOf="@+id/tvExpenseDate"
+        app:layout_constraintTop_toBottomOf="@+id/gridViewCategories" />
+
+    <TextView
+        android:id="@+id/txtDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="160dp"
-        android:layout_marginTop="64dp"
-        android:backgroundTint="@color/yellow_600"
-        android:text="Pick Date"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:text="Date"
+        android:textColor="@color/teal_700"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtExpenseValue" />
+        app:layout_constraintTop_toBottomOf="@+id/gridViewCategories" />
 
     <TextView
         android:id="@+id/tvExpenseDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="56dp"
-        android:layout_marginEnd="92dp"
-        android:text="Date"
-        app:layout_constraintEnd_toStartOf="@+id/btnSelectDate"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtBalance" />
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="10/07/2024"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/txtDate"
+        app:layout_constraintTop_toBottomOf="@+id/gridViewCategories" />
 
     <TextView
         android:id="@+id/txtBalance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="4dp"
-        android:text="TextView"
+        android:text="Balance: 100000000 VND"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtExpenseValue" />
 
@@ -71,21 +110,26 @@
         android:id="@+id/txtExpenseDes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
         android:text="Description"
+        android:textColor="@color/teal_700"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSelectDate" />
+        app:layout_constraintTop_toBottomOf="@+id/txtBalance" />
 
     <EditText
-        android:id="@+id/ediExpenseDesc"
-        android:layout_width="283dp"
-        android:layout_height="151dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="12dp"
+        android:id="@+id/edtExpenseDesc"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
         android:ems="10"
         android:hint="Enter your description"
         android:inputType="text"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtExpenseDes" />
 
@@ -94,19 +138,68 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="160dp"
-        android:layout_marginTop="64dp"
-        android:backgroundTint="@color/yellow_600"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="@color/teal_700"
         android:text="Add"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtCategory" />
+        app:layout_constraintTop_toBottomOf="@+id/edtExpenseDesc" />
 
     <TextView
         android:id="@+id/txtCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
         android:text="Category"
+        android:textColor="@color/teal_700"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ediExpenseDesc" />
+        app:layout_constraintTop_toBottomOf="@+id/edtExpenseTitle" />
+
+    <GridView
+        android:id="@+id/gridViewCategories"
+        android:layout_width="342dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:clickable="true"
+        android:contextClickable="true"
+        android:numColumns="2"
+        android:scrollIndicators="top|bottom"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:stretchMode="columnWidth"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtCategory" />
+
+    <TextView
+        android:id="@+id/txtExpenseName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="120dp"
+        android:text="Title"
+        android:textColor="@color/teal_700"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edtExpenseTitle"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:ems="10"
+        android:hint="Enter your Title"
+        android:inputType="text"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtExpenseName" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

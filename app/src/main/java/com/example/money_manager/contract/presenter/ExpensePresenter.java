@@ -2,6 +2,7 @@ package com.example.money_manager.contract.presenter;
 import android.util.Log;
 
 import com.example.money_manager.contract.ExpenseContract;
+import com.example.money_manager.entity.Category;
 import com.example.money_manager.entity.Transaction;
 import com.example.money_manager.ui.AddExpenseFragment;
 import com.example.money_manager.ui.ExpenseListByMonthFragment;
@@ -59,6 +60,8 @@ public class ExpensePresenter implements ExpenseContract.Presenter {
     public void onUpdateButtonClick(Transaction transaction, int id) {
 
     }
+
+
 
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.money_manager.contract;
 
+import com.example.money_manager.entity.Category;
 import com.example.money_manager.entity.Transaction;
 import com.google.firebase.firestore.DocumentReference;
 
@@ -12,7 +13,6 @@ public class ExpenseContract {
         void navigateToExpenseActivity();
         void showAddSuccess(String message);
         void setListExpense(ArrayList<Transaction> transactions);
-
         void DeleteExpense(String message);
     }
 
@@ -23,7 +23,6 @@ public class ExpenseContract {
 
         void onUpdateButtonClick(Transaction transaction, int id);
 
-
         void onGetListExpenseByWeek(String date);
         void onGetListExpenseByMonth(String date);
         void onGetListExpenseByYear(String date);
@@ -31,6 +30,7 @@ public class ExpenseContract {
 
     public interface Model {
         ArrayList<Transaction> getTransactions(String email, String date, onTransactionListener listener);
+        void getCategoryListByEmailAndType(String email, int type, onTransactionListener listener);
 
         void add(Transaction transaction, String email, onTransactionListener listener);
 

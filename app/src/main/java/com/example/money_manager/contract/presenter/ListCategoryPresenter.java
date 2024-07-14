@@ -10,33 +10,55 @@ public class ListCategoryPresenter implements ListCategoryContract.Presenter, Li
 
     private ListCategoryContract.View view;
     private ListCategoryContract.Model model;
-    public ListCategoryPresenter(ListCategoryContract.View view, ListCategoryContract.Model model) {
-        this.view = view;
+
+    public ListCategoryPresenter(ListCategoryContract.Model model) {
         this.model = model;
     }
 
+
     @Override
-    public void loadCategories() {
+    public void attachView(ListCategoryContract.View view) {
+        this.view = view;
+    }
+
+    @Override
+    public void detachView() {
+        this.view = null;
+    }
+
+    @Override
+    public void loadExpenseCategories() {
+        model.getCategories(this);
+    }
+
+    @Override
+    public void loadIncomeCategories() {
         model.getCategories(this);
     }
 
     @Override
     public void onCategoriesGet(List<Category> categories) {
-        List<Category> expenseCategories = new ArrayList<>();
-        List<Category> incomeCategories = new ArrayList<>();
-        for (Category category : categories) {
-            if (category.getType() == 1) {
-                expenseCategories.add(category);
-            } else if (category.getType() == 2) {
-                incomeCategories.add(category);
-            }
+        if (view != null) {
+            List<Category> expenseCategories = filterCategoriesByType(categories, 1);
+            List<Category> incomeCategories = filterCategoriesByType(categories, 2);
+
+            view.showExpenseCategories(expenseCategories);
+            view.showIncomeCategories(incomeCategories);
         }
-        view.showExpenseCategories(expenseCategories);
-        view.showIncomeCategories(incomeCategories);
     }
 
     @Override
     public void onError(Exception e) {
+        // Handle error if needed
+    }
 
+    private List<Category> filterCategoriesByType(List<Category> categories, int type) {
+        List<Category> filteredCategories = new ArrayList<>();
+        for (Category category : categories) {
+            if (category.getType() == type) {
+                filteredCategories.add(category);
+            }
+        }
+        return filteredCategories;
     }
 }

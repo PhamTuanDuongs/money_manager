@@ -5,16 +5,19 @@ import com.example.money_manager.entity.Category;
 import java.util.List;
 
 public class ListCategoryContract {
-    public interface View{
+    public interface View {
         void showExpenseCategories(List<Category> expenseCategories);
         void showIncomeCategories(List<Category> incomeCategories);
     }
 
-    public interface Presenter{
-        void loadCategories();
+    public interface Presenter {
+        void attachView(View view);
+        void detachView();
+        void loadExpenseCategories();
+        void loadIncomeCategories();
     }
 
-    public interface Model{
+    public interface Model {
         void getCategories(OnCategoriesGetListener listener);
 
         interface OnCategoriesGetListener {

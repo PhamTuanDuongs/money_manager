@@ -32,10 +32,11 @@ public class UpdateReminderPresenter implements UpdateReminderContract.Presenter
 
 
     @Override
-    public void onDateClicked() {
+    public void onDateClicked(Date date) {
         Calendar c = Calendar.getInstance();
+        c.setTime(date);
         int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH ) + 1;
+        int month = c.get(Calendar.MONTH );
         int day = c.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(((Fragment) view).getActivity(), (view, selectedYear, selectedMonth, selectedDay) -> {
@@ -43,13 +44,14 @@ public class UpdateReminderPresenter implements UpdateReminderContract.Presenter
                 this.view.showDate(String.format("%d-%02d-%02d", selectedYear, selectedMonth, selectedDay));
             }
         }, year, month, day);
-
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         datePickerDialog.show();
     }
 
     @Override
-    public void onTimeClicked() {
+    public void onTimeClicked(Date datetime) {
         Calendar c = Calendar.getInstance();
+        c.setTime(datetime);
         int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
         int minute = c.get(Calendar.MINUTE);
 
@@ -102,7 +104,7 @@ public class UpdateReminderPresenter implements UpdateReminderContract.Presenter
             }
             Timestamp timestamp = new Timestamp(datetime);
             Account account = new Account(email);
-            Reminder reminder = new Reminder(title, frequencey, timestamp, comment, account);
+            Reminder reminder = new Reminder(title, frequencey, timestamp, comment, account, false);
 
             switch (frequencey){
                 case "Once":

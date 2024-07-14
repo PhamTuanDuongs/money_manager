@@ -40,4 +40,15 @@ public final class DateTimeUtils {
         return timePart;
     }
 
+    public  static  Date parseDate(String strDate, String pattern) {
+        Date result = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+        try {
+            result = dateFormat.parse(strDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 }

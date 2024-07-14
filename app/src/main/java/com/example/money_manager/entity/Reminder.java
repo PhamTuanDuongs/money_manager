@@ -15,13 +15,16 @@ public class Reminder {
 
     private Account account;
 
+    private boolean isActive;
+
     public Reminder() {}
-    public Reminder(String name, String frequency, Timestamp datetime, String comment, Account account) {
+    public Reminder(String name, String frequency, Timestamp datetime, String comment, Account account, boolean isActive) {
         this.name = name;
         this.frequency = frequency;
         this.datetime = datetime;
         this.comment = comment;
         this.account = account;
+        this.isActive = isActive;
     }
 
     public String getName() {
@@ -40,15 +43,6 @@ public class Reminder {
         this.frequency = frequency;
     }
 
-    public Timestamp getDateTime() {
-        return datetime;
-    }
-
-    public void setDateTime(Timestamp date) {
-        this.datetime = date;
-    }
-
-
     public String getComment() {
         return comment;
     }
@@ -63,5 +57,21 @@ public class Reminder {
 
     public void setAccount(Account account) {
         this.account = account;
+    }
+
+    public Timestamp getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(Timestamp datetime) {
+        this.datetime = datetime;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

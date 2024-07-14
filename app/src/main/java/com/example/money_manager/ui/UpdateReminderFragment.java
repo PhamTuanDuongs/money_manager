@@ -27,6 +27,9 @@ import com.example.money_manager.contract.presenter.UpdateReminderPresenter;
 import com.example.money_manager.entity.Reminder;
 import com.example.money_manager.utils.AccountState;
 import com.example.money_manager.utils.DateTimeUtils;
+import com.google.type.DateTime;
+
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -90,13 +93,14 @@ public class UpdateReminderFragment extends Fragment implements UpdateReminderCo
         txtDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.onDateClicked();
+                presenter.onDateClicked(DateTimeUtils.parseDate(txtDate.getText().toString(), "yyyy-MM-dd"));
             }
         });
         txtHour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.onTimeClicked();
+                String datetime = txtDate.getText().toString() + " " +  txtHour.getText().toString() + ":00";
+                presenter.onTimeClicked(DateTimeUtils.parseDate(datetime, "yyyy-MM-dd HH:mm:ss"));
             }
         });
         sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -182,8 +186,8 @@ public class UpdateReminderFragment extends Fragment implements UpdateReminderCo
     public void fillExistData(Reminder reminder) {
         edt_Update.setText(reminder.getName());
         edt_Comment.setText(reminder.getComment());
-        txtDate.setText(DateTimeUtils.convertTimestampToDate(reminder.getDateTime()));
-        txtHour.setText(DateTimeUtils.convertTimestampToTime(reminder.getDateTime()));
+        txtDate.setText(DateTimeUtils.convertTimestampToDate(reminder.getDatetime()));
+        txtHour.setText(DateTimeUtils.convertTimestampToTime(reminder.getDatetime()));
         String frequency = reminder.getFrequency();
         ArrayAdapter<String> adapter = (ArrayAdapter<String>) sp.getAdapter();
         int spinnerPosition = adapter.getPosition(frequency);

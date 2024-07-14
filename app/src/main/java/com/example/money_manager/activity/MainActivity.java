@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             selectedFragment = new HomeFragment();
             setToolbarTitle("Home");
         } else if (id == R.id.nav_reminder) {
-            selectedFragment = new ListCategoryFragment();
+            selectedFragment = new ListReminderFragment();
             //selectedFragment = new CreateReminderFragment();
             //setToolbarTitle("Create Reminder");
         }

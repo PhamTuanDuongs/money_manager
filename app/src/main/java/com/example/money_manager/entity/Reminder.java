@@ -13,13 +13,10 @@ public class Reminder {
     private String frequency;
     private Timestamp datetime;
     private String comment;
-
-    public Reminder(String name, String frequency, String date, String time, String comment, String account) {
-
-    }
     private Account account;
 
     public Reminder() {}
+
     public Reminder(String name, String frequency, Timestamp datetime, String comment, Account account) {
         this.name = name;
         this.frequency = frequency;

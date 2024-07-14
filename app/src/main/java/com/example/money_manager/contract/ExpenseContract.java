@@ -10,7 +10,7 @@ public class ExpenseContract {
 
     public interface View {
         void showAddError(String title,String error);
-        void navigateToExpenseActivity();
+        void updateExpense(Transaction transaction);
         void showAddSuccess(String message);
         void setListExpense(ArrayList<Transaction> transactions);
         void DeleteExpense(String message);
@@ -19,9 +19,9 @@ public class ExpenseContract {
     public interface Presenter {
         void onAddButtonClick(Transaction transaction);
 
-        void onDeleteButtonClick(int id);
+        void onDeleteButtonClick(String autoID);
 
-        void onUpdateButtonClick(Transaction transaction, int id);
+        void onUpdateButtonClick(Transaction transaction);
 
         void onGetListExpenseByWeek(String date);
         void onGetListExpenseByMonth(String date);
@@ -34,9 +34,10 @@ public class ExpenseContract {
 
         void add(Transaction transaction, String email, onTransactionListener listener);
 
-        void delete(int id, onTransactionListener listener);
+        void delete(String autoID, onTransactionListener listener);
+        double getAccountBalance(String email, ExpenseContract.Model.onTransactionListener listener);
 
-        void update(Transaction transaction, int id, onTransactionListener listener);
+        void update(Transaction transaction, onTransactionListener listener);
 
         interface onTransactionListener {
             void onSuccess(Object object);

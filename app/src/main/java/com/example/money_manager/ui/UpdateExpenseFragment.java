@@ -39,9 +39,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 
-public class AddExpenseFragment extends Fragment implements ExpenseContract.View {
+public class UpdateExpenseFragment extends Fragment implements ExpenseContract.View {
 
     private Button btnDatePicker;
+    private Transaction transaction;
     private Category selectedCategory = new Category();
     private TextView tvDate;
     private String balance;
@@ -59,9 +60,15 @@ public class AddExpenseFragment extends Fragment implements ExpenseContract.View
     private Date choosenDate = new Date();
     private ExpenseContract.Presenter presenter;
 
-    public AddExpenseFragment() {
+
+    public UpdateExpenseFragment() {
         // Required empty public constructor
     }
+
+    public UpdateExpenseFragment(Transaction transaction) {
+        this.transaction = transaction;
+    }
+
     int[][] states = new int[][] {
 
             new int[] { android.R.attr.state_focused},
@@ -84,8 +91,8 @@ public class AddExpenseFragment extends Fragment implements ExpenseContract.View
     ColorStateList colorStateLisError = new ColorStateList(states, colorsError);
 
 
-    public static AddExpenseFragment newInstance(String param1, String param2) {
-        AddExpenseFragment fragment = new AddExpenseFragment();
+    public static UpdateExpenseFragment newInstance(String param1, String param2) {
+        UpdateExpenseFragment fragment = new UpdateExpenseFragment();
         Bundle args = new Bundle();
 
         fragment.setArguments(args);
@@ -103,7 +110,7 @@ public class AddExpenseFragment extends Fragment implements ExpenseContract.View
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_add_expense, container, false);
+        View v = inflater.inflate(R.layout.fragment_update_expense, container, false);
 
         return v;
     }
@@ -112,7 +119,7 @@ public class AddExpenseFragment extends Fragment implements ExpenseContract.View
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         categories.clear();
         super.onViewCreated(view, savedInstanceState);
-        presenter = new ExpensePresenter(new ExpenseModel(), AddExpenseFragment.this);
+        presenter = new ExpensePresenter(new ExpenseModel(), UpdateExpenseFragment.this);
         btnDatePicker = view.findViewById(R.id.btnSelectDate);
         tvDate = view.findViewById(R.id.tvExpenseDate);
         tvBalance = view.findViewById(R.id.txtBalance);
@@ -123,10 +130,14 @@ public class AddExpenseFragment extends Fragment implements ExpenseContract.View
         btnBack = view.findViewById(R.id.btnGoBack);
         gridViewCate = view.findViewById(R.id.gridViewCategories);
         String email = AccountState.getEmail(getContext(), "email");
-        Date d = new Date();
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String formattedDate = dateFormat.format(d);
+        String formattedDate = dateFormat.format(transaction.getCreateAt());
         tvDate.setText(formattedDate);
+        edtAmount.setText(transaction.getAmount()+"");
+        edtTitle.setText(transaction.getName());
+        edtDesc.setText(transaction.getDescription());
+        selectedCategory = transaction.getCategory();
         edtTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -203,6 +214,12 @@ public class AddExpenseFragment extends Fragment implements ExpenseContract.View
                     categories.add(c);
                 }
                 categoryAdapter = new CategoryAdapter(getContext(), categories);
+                for(int i=0;i<categories.size();i++){
+                   if( categories.get(i).getAutoID().equals(selectedCategory.getAutoID()))
+                   {
+                       categoryAdapter.setSelectedPosition(i);
+                   }
+                }
                 gridViewCate.setAdapter(categoryAdapter);
                 int rows = (int) Math.ceil(categories.size() / 2.0);
                 int totalHeight = 0;
@@ -216,7 +233,7 @@ public class AddExpenseFragment extends Fragment implements ExpenseContract.View
                 params.height = totalHeight + (gridViewCate.getVerticalSpacing() * (rows-1));
                 gridViewCate.setLayoutParams(params);
                 gridViewCate.requestLayout();
-                selectedCategory = (Category) categoryAdapter.getItem(0);
+
 
                 gridViewCate.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -287,20 +304,30 @@ public class AddExpenseFragment extends Fragment implements ExpenseContract.View
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadFragment(new ExpenseListFragment());
+                new AlertDialog.Builder(getContext())
+                        .setMessage("Your changes will not be saved!")
+                        .setTitle("Are you sure?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                loadFragment(new ExpenseListFragment());
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
             }
         });
 
         btnDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Calendar c = Calendar.getInstance();
+
 
                 // on below line we are getting
                 // our day, month and year.
-                int year = c.get(Calendar.YEAR);
-                int month = c.get(Calendar.MONTH);
-                int day = c.get(Calendar.DAY_OF_MONTH);
+                int year = transaction.getCreateAt().getYear();
+                int month = transaction.getCreateAt().getMonth();
+                int day = transaction.getCreateAt().getDay();
 
                 // on below line we are creating a variable for date picker dialog.
                 DatePickerDialog dialog = new DatePickerDialog(
@@ -309,9 +336,9 @@ public class AddExpenseFragment extends Fragment implements ExpenseContract.View
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                                 tvDate.setText(day + "/" + (month + 1) + "/" + year);
-                           Calendar cal = Calendar.getInstance();
-                               cal.set(year, month, day);
-                          choosenDate = cal.getTime();
+                                Calendar cal = Calendar.getInstance();
+                                cal.set(year, month, day);
+                                choosenDate = cal.getTime();
                             }
                         }, year, month, day
                 );
@@ -320,19 +347,19 @@ public class AddExpenseFragment extends Fragment implements ExpenseContract.View
         });
 
         double balanceAmount = expenseModel.getAccountBalance(email, new ExpenseContract.Model.onTransactionListener() {
-                    @Override
-                    public void onSuccess(Object object) {
+            @Override
+            public void onSuccess(Object object) {
 
 
 
-                    }
+            }
 
-                    @Override
-                    public void onError(String message) {
-                        tvBalance.setText("Balance: 0.0 VND" );
+            @Override
+            public void onError(String message) {
+                tvBalance.setText("Balance: 0.0 VND" );
 
-                    }
-                });
+            }
+        });
         DecimalFormat df = new DecimalFormat("#");
         df.setMaximumFractionDigits(0);
         balance = df.format(balanceAmount);
@@ -352,7 +379,7 @@ public class AddExpenseFragment extends Fragment implements ExpenseContract.View
                     validateDesc();
 
                 }else{
-                    presenter.onAddButtonClick(getTransaction());
+                    presenter.onUpdateButtonClick(getTransaction());
                 }
 
             }
@@ -413,6 +440,7 @@ public class AddExpenseFragment extends Fragment implements ExpenseContract.View
         t.setDescription(edtDesc.getText().toString());
         t.setCreateAt(choosenDate);
         Category category = new Category();
+        t.setAutoID(transaction.getAutoID());
         category.setAutoID(selectedCategory.getAutoID());
         t.setCategory(category);
         t.setType(1);
@@ -422,7 +450,7 @@ public class AddExpenseFragment extends Fragment implements ExpenseContract.View
     private void loadFragment(Fragment fragment) {
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.nav_host_fragment_content_main, fragment);
+        fragmentTransaction.replace(R.id.fragment_expense, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }

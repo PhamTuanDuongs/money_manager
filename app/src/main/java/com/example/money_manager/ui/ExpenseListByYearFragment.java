@@ -4,14 +4,18 @@ import static com.example.money_manager.utils.DateTimeUtils.getCurrentMonth;
 
 import static com.example.money_manager.utils.DateTimeUtils.getDateYearString;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,29 +67,6 @@ public class ExpenseListByYearFragment extends Fragment implements ExpenseContra
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_expense_list_year, container, false);
-
-
-
-
-
-
-        /*expenseAdapter.setListenerDelete(new ExpenseAdapter.ExpenseListClickListener() {
-            @Override
-            public void OnClick(View v, int position) {
-                expensePosition = position;
-                Transaction t = expenseAdapter.getItem(position);
-                presenter.onDeleteButtonClick(t.getId());
-            }
-        });
-
-        expenseAdapter.setListenerUpdate(new ExpenseAdapter.ExpenseListClickListener() {
-            @Override
-            public void OnClick(View v, int position) {
-                expensePosition = position;
-
-            }
-        });*/
-
         return v;
     }
 
@@ -104,6 +85,20 @@ public class ExpenseListByYearFragment extends Fragment implements ExpenseContra
         btnPrevious =view.findViewById(R.id.btnPreviousYear);
         txtNoExpense =view.findViewById(R.id.txtNoExpense);
         txtNoExpense.setText("");
+        expenseAdapter.setListener(new ExpenseAdapter.ExpenseListClickListener() {
+            @Override
+            public void OnDelete(View v, int position) {
+                expensePosition = position;
+                Transaction t = expenseAdapter.getItem(position);
+                presenter.onDeleteButtonClick(t.getAutoID());
+
+            }
+
+            @Override
+            public void OnUpdate(View v, Transaction transaction) {
+                loadFragment(new UpdateExpenseFragment(transaction));
+            }
+        });
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,14 +126,16 @@ public class ExpenseListByYearFragment extends Fragment implements ExpenseContra
         presenter.onGetListExpenseByYear(getDateYearString(getCurrentMonth().substring(4,8)));
     }
 
-    @Override
-    public void navigateToExpenseActivity() {
 
-    }
 
     @Override
     public void showAddSuccess(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+        new AlertDialog.Builder(getContext())
+
+                .setMessage(message)
+                .setIcon(R.drawable.check)
+                .setPositiveButton("OK", null)
+                .show();
     }
 
     @Override
@@ -165,13 +162,38 @@ public class ExpenseListByYearFragment extends Fragment implements ExpenseContra
 
     @Override
     public void DeleteExpense(String message) {
-        Toast.makeText(getContext(),message,Toast.LENGTH_LONG).show();
-        expenseAdapter.removeItem(expensePosition);
+        new AlertDialog.Builder(getContext())
+
+                .setMessage(message)
+                .setIcon(R.drawable.error)
+                .setPositiveButton("OK", null)
+                .show();
+
         expenseAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void showAddError(String title, String error) {
+        new AlertDialog.Builder(getContext())
+                .setTitle(title)
+                .setMessage(error)
+                .setIcon(R.drawable.error)
+                .setPositiveButton("OK", null)
+                .show();
 
+    }
+
+    @Override
+    public void updateExpense(Transaction transaction) {
+
+    }
+    private void loadFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getParentFragmentManager();
+
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.nav_host_fragment_content_main, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }

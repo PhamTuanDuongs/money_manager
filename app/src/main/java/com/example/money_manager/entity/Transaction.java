@@ -14,6 +14,15 @@ public class Transaction {
     private String name;
     private int type;
     private Category category;
+    private String autoID;
+
+    public String getAutoID() {
+        return autoID;
+    }
+
+    public void setAutoID(String autoID) {
+        this.autoID = autoID;
+    }
 
     public int getCategoryId() {
         return categoryId;

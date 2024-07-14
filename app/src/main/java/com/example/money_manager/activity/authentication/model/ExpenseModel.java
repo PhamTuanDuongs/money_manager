@@ -59,6 +59,7 @@ public class ExpenseModel implements ExpenseContract.Model {
                 .whereEqualTo("account_id", user)
                 .whereGreaterThanOrEqualTo("date", date1)
                 .whereLessThanOrEqualTo("date", date2)
+                .orderBy("date")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -66,7 +67,9 @@ public class ExpenseModel implements ExpenseContract.Model {
                         if (task.isSuccessful()) {
                             if (task.getResult().size()!=0){
                             for (QueryDocumentSnapshot q : task.getResult()) {
+                                DocumentReference dRef = q.getReference();
                                 Transaction t = new Transaction();
+                                t.setAutoID(dRef.getId());
                                 double amount = q.get("amount", double.class);
                                 Date createAt = q.get("date", Date.class);
                                 DocumentReference category=q.getDocumentReference("category");
@@ -163,7 +166,7 @@ public class ExpenseModel implements ExpenseContract.Model {
         docData.put("date", transaction.getCreateAt());
         docData.put("name", transaction.getName());
         docData.put("description", transaction.getDescription());
-        docData.put("type", transaction.getType());
+        docData.put("type", 1);
         docData.put("account_id", user);
         docData.put("category", category);
         firestore.collection(TRANSACTION_COLLECTION)
@@ -184,46 +187,97 @@ public class ExpenseModel implements ExpenseContract.Model {
     }
 
     @Override
-    public void delete(int id, onTransactionListener listener) {
-        Log.d("TEST_DELETE", "Id: " + id);
-        firestore
-                .collection(TRANSACTION_COLLECTION)
-                .whereEqualTo("id", id)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+    public void delete(String autoID, onTransactionListener listener) {
+
+
+        DocumentReference docRef = firestore
+                .collection(TRANSACTION_COLLECTION).document(autoID);
+        docRef.delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if (queryDocumentSnapshots.size() >= 1) {
-                            for (QueryDocumentSnapshot q : queryDocumentSnapshots) {
-                                firestore
-                                        .collection(TRANSACTION_COLLECTION)
-                                        .document(q.getId())
-                                        .delete();
-                            }
+                    public void onSuccess(Void aVoid) {
+                        listener.onSuccess("Delete successfully!");
 
-                            listener.onSuccess(null);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onSuccess("Delete failed!");
 
-                        } else {
-                            listener.onError("Delete failed");
-                        }
-
-                        Log.d("TEST_DELETE", queryDocumentSnapshots.size() + "");
                     }
                 });
+    }
 
+
+
+
+
+
+    @Override
+    public double getAccountBalance(String email, onTransactionListener listener) {
+        DocumentReference user = firestore
+                .collection("accounts")
+                .document(email);
+        ArrayList<Double> accountBalance = new ArrayList<>();
+        firestore
+                .collection(TRANSACTION_COLLECTION)
+                .whereEqualTo("account_id", user)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot q : task.getResult()) {
+                                double amount = q.get("amount", double.class);
+                                int type = q.get("type", int.class);
+                                if (type ==0){
+                                    accountBalance.add(amount);
+                                }else{
+                                    accountBalance.add(-amount);
+                                }
+
+                            }
+                            listener.onSuccess(accountBalance);
+                        }
+
+                    }
+                });
+        double sum = 0.0;
+        for (Double number : accountBalance) {
+            sum += number;
+        }
+        return sum;
 
     }
 
     @Override
-    public void update(Transaction transactionn, int id, onTransactionListener listener) {
+    public void update(Transaction transactionn, onTransactionListener listener) {
+        DocumentReference docRef = firestore
+                .collection(TRANSACTION_COLLECTION).document(transactionn.getAutoID());
         Map<String, Object> result = new HashMap<>();
         result.put("amount", transactionn.getAmount());
         result.put("description", transactionn.getDescription());
-        firestore.collection(TRANSACTION_COLLECTION).document(id + "").update(result);
+        result.put("date", transactionn.getCreateAt());
+        result.put("name",transactionn.getName());
+        result.put("category", "/categories/"+transactionn.getCategory().getAutoID());
+        docRef.update(result)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Document successfully updated
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+
     }
 
-    private int getTransactionId() {
-        int time = (int) new Date().getTime();
-        return time;
-    }
+
 }

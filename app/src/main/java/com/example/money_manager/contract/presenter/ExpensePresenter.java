@@ -41,9 +41,10 @@ public class ExpensePresenter implements ExpenseContract.Presenter {
     }
 
     @Override
-    public void onDeleteButtonClick(int id) {
-        Log.d("TEST_DELETE", "Onclick Delete");
-        model.delete(id, new ExpenseContract.Model.onTransactionListener() {
+    public void onDeleteButtonClick(String autoID) {
+        Log.d("Presenter", "onDeleteButtonClick");
+
+        model.delete(autoID, new ExpenseContract.Model.onTransactionListener() {
             @Override
             public void onSuccess(Object object) {
                 view.DeleteExpense("Delete successfully");
@@ -51,13 +52,13 @@ public class ExpensePresenter implements ExpenseContract.Presenter {
 
             @Override
             public void onError(String message) {
-                view.showAddError("Delete income", message);
+                view.showAddError("Delete expense failed", message);
             }
         });
     }
 
     @Override
-    public void onUpdateButtonClick(Transaction transaction, int id) {
+    public void onUpdateButtonClick(Transaction transaction) {
 
     }
 

@@ -8,6 +8,7 @@ import static com.example.money_manager.utils.DateTimeUtils.getNextWeek;
 import static com.example.money_manager.utils.DateTimeUtils.getPreviousMonth;
 import static com.example.money_manager.utils.DateTimeUtils.getPreviousWeek;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -69,29 +70,6 @@ public class ExpenseListByMonthFragment extends Fragment implements ExpenseContr
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_expense_list_month, container, false);
-
-
-
-
-
-
-        /*expenseAdapter.setListenerDelete(new ExpenseAdapter.ExpenseListClickListener() {
-            @Override
-            public void OnClick(View v, int position) {
-                expensePosition = position;
-                Transaction t = expenseAdapter.getItem(position);
-                presenter.onDeleteButtonClick(t.getId());
-            }
-        });
-
-        expenseAdapter.setListenerUpdate(new ExpenseAdapter.ExpenseListClickListener() {
-            @Override
-            public void OnClick(View v, int position) {
-                expensePosition = position;
-
-            }
-        });*/
-
         return v;
     }
 
@@ -110,6 +88,21 @@ public class ExpenseListByMonthFragment extends Fragment implements ExpenseContr
         btnPrevious =view.findViewById(R.id.btnPreviousMonth);
         txtNoExpense =view.findViewById(R.id.txtNoExpense);
         txtNoExpense.setText("");
+        expenseAdapter.setListener(new ExpenseAdapter.ExpenseListClickListener() {
+            @Override
+            public void OnDelete(View v, int position) {
+                expensePosition = position;
+                Transaction t = expenseAdapter.getItem(position);
+                presenter.onDeleteButtonClick(t.getAutoID());
+
+            }
+
+            @Override
+            public void OnUpdate(View v, Transaction transaction) {
+
+            }
+        });
+
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,14 +131,17 @@ public class ExpenseListByMonthFragment extends Fragment implements ExpenseContr
         presenter.onGetListExpenseByMonth(getDateMonthString(getCurrentMonth()));
     }
 
-    @Override
-    public void navigateToExpenseActivity() {
 
-    }
 
     @Override
     public void showAddSuccess(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+        new AlertDialog.Builder(getContext())
+
+                .setMessage(message)
+                .setIcon(R.drawable.check)
+                .setPositiveButton("OK", null)
+                .show();
+
     }
 
     @Override
@@ -172,13 +168,28 @@ public class ExpenseListByMonthFragment extends Fragment implements ExpenseContr
 
     @Override
     public void DeleteExpense(String message) {
-        Toast.makeText(getContext(),message,Toast.LENGTH_LONG).show();
-        expenseAdapter.removeItem(expensePosition);
+        new AlertDialog.Builder(getContext())
+
+                .setMessage(message)
+                .setIcon(R.drawable.error)
+                .setPositiveButton("OK", null)
+                .show();
         expenseAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void showAddError(String title, String error) {
+        new AlertDialog.Builder(getContext())
+                .setTitle(title)
+                .setMessage(error)
+                .setIcon(R.drawable.error)
+                .setPositiveButton("OK", null)
+                .show();
+
+    }
+
+    @Override
+    public void updateExpense(Transaction transaction) {
 
     }
 }

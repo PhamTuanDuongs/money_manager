@@ -8,7 +8,7 @@
     android:isScrollContainer="true"
     android:scrollbarAlwaysDrawVerticalTrack="true"
     android:scrollbars="vertical"
-    tools:context=".ui.AddExpenseFragment">
+    tools:context=".ui.UpdateExpenseFragment">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

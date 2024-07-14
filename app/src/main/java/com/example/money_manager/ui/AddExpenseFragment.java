@@ -362,17 +362,7 @@ public class AddExpenseFragment extends Fragment implements ExpenseContract.View
 
     @Override
     public void showAddSuccess(String message) {
-        new AlertDialog.Builder(getContext())
-                .setTitle("Success")
-                .setMessage(message)
-                .setIcon(R.drawable.check)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        loadFragment(new ExpenseListFragment());
-                    }
-                })
-                .show();
+        loadFragment(new DetailExpenseFragment(getTransaction()));
     }
 
     @Override
@@ -393,6 +383,7 @@ public class AddExpenseFragment extends Fragment implements ExpenseContract.View
         t.setDescription(edtDesc.getText().toString());
         t.setCreateAt(choosenDate);
         Category category = new Category();
+        category.setName(selectedCategory.getName());
         category.setAutoID(selectedCategory.getAutoID());
         t.setCategory(category);
         t.setType(1);

@@ -14,6 +14,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -99,6 +101,7 @@ public class ExpenseListByMonthFragment extends Fragment implements ExpenseContr
 
             @Override
             public void OnUpdate(View v, Transaction transaction) {
+                loadFragment(new UpdateExpenseFragment(transaction));
 
             }
         });
@@ -190,6 +193,15 @@ public class ExpenseListByMonthFragment extends Fragment implements ExpenseContr
 
     @Override
     public void updateExpense(Transaction transaction) {
+
+    }
+    private void loadFragment(Fragment fragment) {
+
+        FragmentManager manager = getParentFragment().getParentFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment_content_main,fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
 
     }
 }

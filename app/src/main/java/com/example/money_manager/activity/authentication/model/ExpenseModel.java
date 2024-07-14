@@ -203,7 +203,7 @@ public class ExpenseModel implements ExpenseContract.Model {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        listener.onSuccess("Delete failed!");
+                        listener.onError("Delete failed!");
 
                     }
                 });
@@ -256,16 +256,20 @@ public class ExpenseModel implements ExpenseContract.Model {
     public void update(Transaction transactionn, onTransactionListener listener) {
         DocumentReference docRef = firestore
                 .collection(TRANSACTION_COLLECTION).document(transactionn.getAutoID());
+        DocumentReference category = firestore
+                .collection("categories")
+                .document(transactionn.getCategory().getAutoID());
         Map<String, Object> result = new HashMap<>();
         result.put("amount", transactionn.getAmount());
         result.put("description", transactionn.getDescription());
         result.put("date", transactionn.getCreateAt());
         result.put("name",transactionn.getName());
-        result.put("category", "/categories/"+transactionn.getCategory().getAutoID());
+        result.put("category", category);
         docRef.update(result)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        listener.onSuccess("update successfully!");
                         // Document successfully updated
 
                     }
@@ -273,6 +277,7 @@ public class ExpenseModel implements ExpenseContract.Model {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        listener.onError("Update failed!");
 
                     }
                 });

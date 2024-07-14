@@ -329,7 +329,7 @@ public class UpdateExpenseFragment extends Fragment implements ExpenseContract.V
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(transaction.getCreateAt());
                 int year = calendar.get(Calendar.YEAR);
-                int month = calendar.get(Calendar.MONTH) + 1;
+                int month = calendar.get(Calendar.MONTH);
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
 
                 DatePickerDialog dialog = new DatePickerDialog(
@@ -393,17 +393,7 @@ public class UpdateExpenseFragment extends Fragment implements ExpenseContract.V
 
     @Override
     public void showAddSuccess(String message) {
-        new AlertDialog.Builder(getContext())
-                .setTitle("Success")
-                .setMessage(message)
-                .setIcon(R.drawable.check)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        loadFragment(new ExpenseListFragment());
-                    }
-                })
-                .show();
+        loadFragment(new DetailExpenseFragment(getTransaction()));
     }
 
     @Override
@@ -426,6 +416,7 @@ public class UpdateExpenseFragment extends Fragment implements ExpenseContract.V
         Category category = new Category();
         t.setAutoID(transaction.getAutoID());
         category.setAutoID(selectedCategory.getAutoID());
+        category.setName(selectedCategory.getName());
         t.setCategory(category);
         t.setType(1);
         t.setName(edtTitle.getText().toString());

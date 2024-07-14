@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -11,13 +12,19 @@ import com.example.money_manager.AlarmReceiver;
 import com.example.money_manager.contract.CreateReminderContract;
 import com.example.money_manager.contract.UpdateReminderContract;
 import com.example.money_manager.entity.Reminder;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UpdateReminderModel implements UpdateReminderContract.Model {
 
@@ -30,18 +37,34 @@ public class UpdateReminderModel implements UpdateReminderContract.Model {
     @Override
     public void getReminderById(int id, FireStoreReminderCallBack fireStoreReminderCallBack) {
         DocumentReference docRef = db.collection("reminders").document(Integer.toString(id));
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Reminder reminder = documentSnapshot.toObject(Reminder.class);
-                fireStoreReminderCallBack.onCallBack(reminder);
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+               if(task.isSuccessful()) {
+                   DocumentSnapshot document = task.getResult();
+                   Reminder reminder = new Reminder();
+                   reminder.setName(document.get("name", String.class));
+                   reminder.setComment(document.get("comment", String.class));
+                   reminder.setDateTime(document.get("dateTime", Timestamp.class));
+                   reminder.setFrequency(document.get("frequency", String.class));
+                   fireStoreReminderCallBack.onCallBack(reminder);
+               }
             }
         });
     }
     @Override
     public void updateReminderToDB(Reminder reminder, String notificationId, CreateReminderContract.Model.OnCreateNewReminderListener listener) {
+        DocumentReference user = db
+                .collection("accounts")
+                .document(reminder.getAccount().getEmail());
+        Map<String, Object> reminderData = new HashMap<>();
+        reminderData.put("name", reminder.getName());
+        reminderData.put("frequency", reminder.getFrequency());
+        reminderData.put("dateTime", reminder.getDateTime());
+        reminderData.put("comment", reminder.getComment());
+        reminderData.put("account", user);
         db.collection("reminders").document(notificationId)
-                .set(reminder)
+                .set(reminderData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
@@ -65,7 +88,7 @@ public class UpdateReminderModel implements UpdateReminderContract.Model {
         intent.putExtra("title", title);
         intent.putExtra("message", message);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_IMMUTABLE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
@@ -78,7 +101,7 @@ public class UpdateReminderModel implements UpdateReminderContract.Model {
         intent.putExtra("title", title);
         intent.putExtra("message", message);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_IMMUTABLE);
 
         if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
             calendar.add(Calendar.MINUTE, 1);
@@ -96,7 +119,7 @@ public class UpdateReminderModel implements UpdateReminderContract.Model {
         intent.putExtra("title", title);
         intent.putExtra("message", message);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_IMMUTABLE);
 
         if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
             calendar.add(Calendar.DAY_OF_MONTH, 1);
@@ -113,7 +136,7 @@ public class UpdateReminderModel implements UpdateReminderContract.Model {
         intent.putExtra("title", title);
         intent.putExtra("message", message);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_IMMUTABLE);
 
         if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
             calendar.add(Calendar.WEEK_OF_YEAR, 1);

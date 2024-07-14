@@ -16,8 +16,11 @@ import com.example.money_manager.AlarmReceiver;
 import com.example.money_manager.activity.authentication.WelcomeActivity;
 import com.example.money_manager.contract.CreateReminderContract;
 import com.example.money_manager.contract.model.CreateReminderModel;
+import com.example.money_manager.entity.Account;
 import com.example.money_manager.entity.Reminder;
+import com.google.firebase.Timestamp;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -70,7 +73,7 @@ public class CreateReminderPresenter implements CreateReminderContract.Presenter
 
     @SuppressLint("ScheduleExactAlarm")
     @Override
-    public void createNewReminder(Context context, String title, String frequencey, String strDate, String strTime, String comment, String account ) {
+    public void createNewReminder(Context context, String title, String frequencey, String strDate, String strTime, String comment, String email ) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 
             String[]date = strDate.split("-");
@@ -91,8 +94,17 @@ public class CreateReminderPresenter implements CreateReminderContract.Presenter
             calendar.set(Calendar.MINUTE, minute);
             calendar.set(Calendar.SECOND, 0);
 
-
-            Reminder reminder = new Reminder(title, frequencey, strDate, strTime, comment, account);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String datetimeString = strDate + " " +  strTime + ":00";
+            Date datetime = null;
+            try {
+                datetime = sdf.parse(datetimeString);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            Timestamp timestamp = new Timestamp(datetime);
+            Account account = new Account(email);
+            Reminder reminder = new Reminder(title, frequencey, timestamp, comment, account);
 
             switch (frequencey){
                 case "Once":

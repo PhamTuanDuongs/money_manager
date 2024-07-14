@@ -13,9 +13,12 @@ import com.example.money_manager.contract.CreateReminderContract;
 import com.example.money_manager.entity.Reminder;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CreateReminderModel implements CreateReminderContract.Model {
 
@@ -27,8 +30,17 @@ public class CreateReminderModel implements CreateReminderContract.Model {
 
     @Override
     public void createNewReminderToDB(Reminder reminder, String notificationId, OnCreateNewReminderListener listener) {
+        DocumentReference user = db
+                .collection("accounts")
+                .document(reminder.getAccount().getEmail());
+        Map<String, Object> reminderData = new HashMap<>();
+        reminderData.put("name", reminder.getName());
+        reminderData.put("frequency", reminder.getFrequency());
+        reminderData.put("dateTime", reminder.getDateTime());
+        reminderData.put("comment", reminder.getComment());
+        reminderData.put("account", user);
         db.collection("reminders").document(notificationId)
-                .set(reminder)
+                .set(reminderData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {

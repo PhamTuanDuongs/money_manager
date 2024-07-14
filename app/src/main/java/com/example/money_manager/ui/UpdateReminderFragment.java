@@ -182,8 +182,8 @@ public class UpdateReminderFragment extends Fragment implements UpdateReminderCo
     public void fillExistData(Reminder reminder) {
         edt_Update.setText(reminder.getName());
         edt_Comment.setText(reminder.getComment());
-        txtDate.setText(reminder.getDate());
-        txtHour.setText(reminder.getTime());
+        txtDate.setText(DateTimeUtils.convertTimestampToDate(reminder.getDateTime()));
+        txtHour.setText(DateTimeUtils.convertTimestampToTime(reminder.getDateTime()));
         String frequency = reminder.getFrequency();
         ArrayAdapter<String> adapter = (ArrayAdapter<String>) sp.getAdapter();
         int spinnerPosition = adapter.getPosition(frequency);

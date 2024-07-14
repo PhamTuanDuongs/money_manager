@@ -122,7 +122,7 @@ public class CreateReminderFragment extends Fragment implements CreateReminderCo
             public void onClick(View v) {
                 UpdateReminderFragment updateFragment = new UpdateReminderFragment();
                 Bundle args = new Bundle();
-                args.putString("id", "1991755196");
+                args.putString("id", "-1330938635");
                 updateFragment.setArguments(args);
                 getParentFragmentManager().beginTransaction()
                         .replace(R.id.nav_host_fragment_content_main, updateFragment)

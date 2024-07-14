@@ -188,12 +188,12 @@ public class ExpenseListByYearFragment extends Fragment implements ExpenseContra
 
     }
     private void loadFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getParentFragmentManager();
 
+        FragmentManager manager = getParentFragment().getParentFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.nav_host_fragment_content_main,fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
 
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.nav_host_fragment_content_main, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
     }
 }

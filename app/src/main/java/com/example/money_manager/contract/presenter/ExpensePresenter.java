@@ -59,6 +59,18 @@ public class ExpensePresenter implements ExpenseContract.Presenter {
 
     @Override
     public void onUpdateButtonClick(Transaction transaction) {
+        model.update(transaction, new ExpenseContract.Model.onTransactionListener() {
+            @Override
+            public void onSuccess(Object object) {
+                view.showAddSuccess("Update successfully");
+            }
+
+            @Override
+            public void onError(String message) {
+                view.showAddError("Error Update: ", message);
+
+            }
+        });
 
     }
 

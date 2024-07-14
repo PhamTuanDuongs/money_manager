@@ -15,6 +15,8 @@ public class Reminder {
     private String comment;
     private Account account;
 
+    private boolean isActive;
+
     public Reminder() {}
 
     public Reminder(String name, String frequency, Timestamp datetime, String comment, Account account) {
@@ -25,13 +27,14 @@ public class Reminder {
         this.account = account;
     }
 
-    public Reminder(String id, String name, String frequency, Timestamp datetime, String comment, Account account) {
+    public Reminder(String id, String name, String frequency, Timestamp datetime, String comment, Account account, boolean isActive) {
         this.id = id;
         this.name = name;
         this.frequency = frequency;
         this.datetime = datetime;
         this.comment = comment;
         this.account = account;
+        this.isActive = isActive;
     }
 
     public String getId(){return id;}
@@ -62,7 +65,6 @@ public class Reminder {
         this.datetime = date;
     }
 
-
     public String getComment() {
         return comment;
     }
@@ -77,5 +79,13 @@ public class Reminder {
 
     public void setAccount(Account account) {
         this.account = account;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

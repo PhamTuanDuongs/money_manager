@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.text.Editable;
 import android.text.TextUtils;
@@ -114,6 +115,12 @@ public class CreateReminderFragment extends Fragment implements CreateReminderCo
                 String comment = edt_Comment.getText().toString();
                 String account = AccountState.getEmail(requireContext(), "email");
                 presenter.createNewReminder(requireContext(), name,frequencey,date, time, comment, account);
+
+                Fragment listReminderFragment = new ListReminderFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.nav_host_fragment_content_main, listReminderFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
 

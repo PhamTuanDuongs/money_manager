@@ -1,9 +1,8 @@
 package com.example.money_manager.contract.model;
 
-import android.util.Log;
-
 import com.example.money_manager.contract.ListReminderContract;
 import com.example.money_manager.entity.Reminder;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -25,13 +24,18 @@ public class ListReminderModel implements ListReminderContract.Model {
         if (currentUser != null) {
             String currentAccount = currentUser.getEmail();
 
-            remindersRef.whereEqualTo("account", currentAccount).get().addOnCompleteListener(task -> {
+            remindersRef.whereEqualTo("account", firestore.document("accounts/" + currentAccount)).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     List<Reminder> reminders = new ArrayList<>();
                     QuerySnapshot querySnapshot = task.getResult();
                     for (QueryDocumentSnapshot doc : querySnapshot) {
-                        Reminder reminder = doc.toObject(Reminder.class);
+                        Reminder reminder = new Reminder();
                         reminder.setId(doc.getId());
+                        reminder.setName(doc.get("name", String.class));
+                        reminder.setComment(doc.get("comment", String.class));
+                        reminder.setDateTime(doc.get("dateTime", Timestamp.class));
+                        reminder.setFrequency(doc.get("frequency", String.class));
+                        //reminder.setActive(doc.get("isActive",Boolean.class));
                         reminders.add(reminder);
                     }
                     listener.onFinished(reminders);

@@ -39,16 +39,6 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class ListReminderFragment extends Fragment implements ListReminderContract.View, ReminderAdapter.OnReminderClickListener{
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private RecyclerView recyclerView;
     private ReminderAdapter adapter;
     private ListReminderPresenter presenter;
@@ -56,22 +46,14 @@ public class ListReminderFragment extends Fragment implements ListReminderContra
         // Required empty public constructor
     }
 
-    public static ListReminderFragment newInstance(String param1, String param2) {
+    public static ListReminderFragment newInstance() {
         ListReminderFragment fragment = new ListReminderFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         presenter = new ListReminderPresenter(this);
     }
 
@@ -80,7 +62,7 @@ public class ListReminderFragment extends Fragment implements ListReminderContra
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list_reminder, container, false);
 
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_reminders);
+        recyclerView = view.findViewById(R.id.recycler_view_reminders);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         List<Reminder> reminders = new ArrayList<>();
@@ -116,15 +98,15 @@ public class ListReminderFragment extends Fragment implements ListReminderContra
 
     @Override
     public void navigateToUpdateReminder(Reminder reminder) {
-        presenter.onReminderClicked(reminder);
-    }
-
-    @Override
-    public void onReminderClick(Reminder reminder) {
         Fragment updateFragment = UpdateReminderFragment.newInstance(reminder.getId());
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
         transaction.replace(R.id.nav_host_fragment_content_main, updateFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public void onReminderClick(Reminder reminder) {
+        navigateToUpdateReminder(reminder);
     }
 }

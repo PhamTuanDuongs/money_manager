@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.text.Editable;
 import android.text.TextUtils;
@@ -78,7 +79,7 @@ public class UpdateReminderFragment extends Fragment implements UpdateReminderCo
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_dropdown_item_1line, values);
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         sp.setAdapter(adapter);
-        String value = getArguments().getString("id");
+        String value = getArguments().getString("reminderId");
         presenter.getReminderById(Integer.parseInt(value));
         return v;
     }
@@ -122,8 +123,14 @@ public class UpdateReminderFragment extends Fragment implements UpdateReminderCo
                 String time = txtHour.getText().toString();
                 String comment = edt_Comment.getText().toString();
                 String account = AccountState.getEmail(requireContext(), "email");
-                String value = getArguments().getString("id");
+                String value = getArguments().getString("reminderId");
                 presenter.onClickUpdateReminder(requireContext(), name,frequencey,date, time, comment, account, Integer.parseInt(value));
+
+                Fragment listReminderFragment = new ListReminderFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.nav_host_fragment_content_main, listReminderFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
     }

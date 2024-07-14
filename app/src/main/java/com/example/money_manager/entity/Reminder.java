@@ -1,5 +1,7 @@
 package com.example.money_manager.entity;
 
+import com.google.firebase.Timestamp;
+
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -9,30 +11,28 @@ public class Reminder {
     private String id;
     private String name;
     private String frequency;
-    private String date;
-    private String time;
+    private Timestamp datetime;
     private String comment;
-    private String account;
-
-    public  Reminder(){
-
-    }
 
     public Reminder(String name, String frequency, String date, String time, String comment, String account) {
+
+    }
+    private Account account;
+
+    public Reminder() {}
+    public Reminder(String name, String frequency, Timestamp datetime, String comment, Account account) {
         this.name = name;
         this.frequency = frequency;
-        this.date = date;
-        this.time = time;
+        this.datetime = datetime;
         this.comment = comment;
         this.account = account;
     }
 
-    public Reminder(String id, String name, String frequency, String date, String time, String comment, String account) {
+    public Reminder(String id, String name, String frequency, Timestamp datetime, String comment, Account account) {
         this.id = id;
         this.name = name;
         this.frequency = frequency;
-        this.date = date;
-        this.time = time;
+        this.datetime = datetime;
         this.comment = comment;
         this.account = account;
     }
@@ -57,21 +57,14 @@ public class Reminder {
         this.frequency = frequency;
     }
 
-    public String getDate() {
-        return date;
+    public Timestamp getDateTime() {
+        return datetime;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDateTime(Timestamp date) {
+        this.datetime = date;
     }
 
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
 
     public String getComment() {
         return comment;
@@ -81,11 +74,11 @@ public class Reminder {
         this.comment = comment;
     }
 
-    public String getAccount() {
+    public Account getAccount() {
         return account;
     }
 
-    public void setAccount(String account) {
+    public void setAccount(Account account) {
         this.account = account;
     }
 }

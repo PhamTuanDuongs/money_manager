@@ -1,11 +1,6 @@
 package com.example.money_manager.ui;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -20,9 +15,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.example.money_manager.R;
 import com.example.money_manager.contract.UpdateReminderContract;
-import com.example.money_manager.contract.presenter.CreateReminderPresenter;
 import com.example.money_manager.contract.presenter.UpdateReminderPresenter;
 import com.example.money_manager.entity.Reminder;
 import com.example.money_manager.utils.AccountState;
@@ -45,10 +43,9 @@ public class UpdateReminderFragment extends Fragment implements UpdateReminderCo
     }
 
 
-    public static UpdateReminderFragment newInstance(String reminderId) {
+    public static UpdateReminderFragment newInstance(String param1, String param2) {
         UpdateReminderFragment fragment = new UpdateReminderFragment();
         Bundle args = new Bundle();
-        args.putString("reminderId", reminderId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -91,13 +88,14 @@ public class UpdateReminderFragment extends Fragment implements UpdateReminderCo
         txtDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.onDateClicked();
+                presenter.onDateClicked(DateTimeUtils.parseDate(txtDate.getText().toString(), "yyyy-MM-dd"));
             }
         });
         txtHour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.onTimeClicked();
+                String datetime = txtDate.getText().toString() + " " +  txtHour.getText().toString() + ":00";
+                presenter.onTimeClicked(DateTimeUtils.parseDate(datetime, "yyyy-MM-dd HH:mm:ss"));
             }
         });
         sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -183,8 +181,8 @@ public class UpdateReminderFragment extends Fragment implements UpdateReminderCo
     public void fillExistData(Reminder reminder) {
         edt_Update.setText(reminder.getName());
         edt_Comment.setText(reminder.getComment());
-        txtDate.setText(DateTimeUtils.convertTimestampToDate(reminder.getDateTime()));
-        txtHour.setText(DateTimeUtils.convertTimestampToTime(reminder.getDateTime()));
+        txtDate.setText(DateTimeUtils.convertTimestampToDate(reminder.getDatetime()));
+        txtHour.setText(DateTimeUtils.convertTimestampToTime(reminder.getDatetime()));
         String frequency = reminder.getFrequency();
         ArrayAdapter<String> adapter = (ArrayAdapter<String>) sp.getAdapter();
         int spinnerPosition = adapter.getPosition(frequency);

@@ -10,13 +10,17 @@
         android:id="@+id/category_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:contentDescription="category icon" />
+        android:clickable="true"
+        android:contentDescription="category icon"
+        android:focusable="true" />
 
     <TextView
         android:id="@+id/category_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:focusable="true"
         android:gravity="center"
+        android:clickable="true"
         android:textSize="14sp" />
 </LinearLayout>

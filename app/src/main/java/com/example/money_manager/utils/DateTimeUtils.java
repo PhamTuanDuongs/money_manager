@@ -2,10 +2,11 @@ package com.example.money_manager.utils;
 
 import android.icu.util.TimeZone;
 
-import com.google.firebase.Timestamp;
-
+import android.util.Log;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import com.google.firebase.Timestamp;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -66,7 +67,7 @@ public final class DateTimeUtils {
         Date first = calendar.getTime();
         calendar.add(Calendar.DAY_OF_MONTH, 6);
         Date last = calendar.getTime();
-        java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("d MMM yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("d MMM yyyy");
 
         // Format the date to a string
         String formattedDate = formatter.format(first) + " - " + formatter.format(last);
@@ -76,7 +77,7 @@ public final class DateTimeUtils {
 
     public static String getNextWeek(String week) {
         String[] dates = week.split(" - ");
-        java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("d MMM yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("d MMM yyyy");
         String nextWeek = "";
 
         for (String d : dates) {
@@ -100,7 +101,7 @@ public final class DateTimeUtils {
 
     public static String getPreviousWeek(String week) {
         String[] dates = week.split(" - ");
-        java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("d MMM yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("d MMM yyyy");
         String nextWeek = "";
 
         for (String d : dates) {
@@ -124,7 +125,7 @@ public final class DateTimeUtils {
 
     public static String getCurrentMonth() {
         Date currentDate = new Date();
-        java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("MMM yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM yyyy");
 
 
         String formattedDate = formatter.format(currentDate);
@@ -133,19 +134,19 @@ public final class DateTimeUtils {
     }
 
     public static String getNextMonth(String month) {
-        java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("MMM yyyy");
+        SimpleDateFormat format = new SimpleDateFormat("MMM yyyy");
         Calendar calendar = Calendar.getInstance();
         try {
             Date date = format.parse(month);
             calendar.setTime(date);
             calendar.add(Calendar.MONTH, 1);
-        } catch (ParseException e) {
+     } catch (ParseException e) {
             throw new RuntimeException(e);
         }
         return format.format(calendar.getTime());
     }
     public static String getPreviousMonth(String month) {
-        java.text.SimpleDateFormat format = new SimpleDateFormat("MMM yyyy");
+        SimpleDateFormat format = new SimpleDateFormat("MMM yyyy");
         Calendar calendar = Calendar.getInstance();
         try {
             Date date = format.parse(month);
@@ -165,7 +166,7 @@ public final class DateTimeUtils {
 
         String date = "1 "+month+ " - ";
         if (month.substring(0,3).equals("Jan")||month.substring(0,3).equals("Mar")||month.substring(0,3).equals("May")
-                ||month.substring(0,3).equals("Jul")||month.substring(0,3).equals("Aug")||month.substring(0,3).equals("Oct")||month.substring(0,3).equals("Dec")){
+        ||month.substring(0,3).equals("Jul")||month.substring(0,3).equals("Aug")||month.substring(0,3).equals("Oct")||month.substring(0,3).equals("Dec")){
             date= date+ "31 "+month;
         }
         if (isLeapYear(Integer.parseInt(month.substring(4,8)))&&month.substring(0,3).equals("Feb")){
@@ -181,7 +182,7 @@ public final class DateTimeUtils {
         return date;
     }
     public static String getDateYearString(String year) {
-        String date = "1 Jan "+year+ " - 31 Dec "+year;
+        String date = "1 Jan " + year + " - 31 Dec " + year;
         return date;
     }
 
@@ -195,4 +196,17 @@ public final class DateTimeUtils {
         String timePart = timeFormat.format(timestamp.toDate());
         return timePart;
     }
+
+    public  static  Date parseDate(String strDate, String pattern) {
+        Date result = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+        try {
+            result = dateFormat.parse(strDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+
+    }
+
 }

@@ -14,28 +14,28 @@ import java.util.Objects;
 
 public class LandingPagePresenter implements LandingPageContract.Presenter {
 
-     private LandingPageContract.View view;
-     private FirebaseAuth mAuth;
+    private LandingPageContract.View view;
+    private FirebaseAuth mAuth;
 
     public LandingPagePresenter(LandingPageContract.View view) {
-         this.view = view;
-         mAuth = FirebaseAuth.getInstance();
+        this.view = view;
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
     public void checkAuthentication() {
-            String email = AccountState.getEmail((LandingPageActivity)view, "email");
-           if(email != null && !email.isEmpty()  ){
-               FirebaseUser currentUser = mAuth.getCurrentUser();
-               if(Objects.equals(currentUser.getEmail(), email)){
-                   view.navigateToHome();
-                   Log.d("Usersdadasdasd", currentUser.getEmail());
-               }else{
-                   view.navigateToAuthentication();
-                   Log.d("Usersdadasdasd", currentUser.getEmail());
-               }
-           }else{
-               view.navigateToAuthentication();
-           }
+        String email = AccountState.getEmail((LandingPageActivity)view, "email");
+        if(email != null && !email.isEmpty()  ){
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if(Objects.equals(currentUser.getEmail(), email)){
+                view.navigateToHome();
+                Log.d("Usersdadasdasd", currentUser.getEmail());
+            }else{
+                view.navigateToAuthentication();
+                Log.d("Usersdadasdasd", currentUser.getEmail());
+            }
+        }else{
+            view.navigateToAuthentication();
+        }
     }
 }

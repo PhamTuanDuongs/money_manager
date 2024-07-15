@@ -2,9 +2,11 @@ package com.example.money_manager.contract;
 
 import android.content.Context;
 
+import com.example.money_manager.contract.CreateReminderContract;
 import com.example.money_manager.entity.Reminder;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class UpdateReminderContract {
     public interface View {
@@ -22,9 +24,9 @@ public class UpdateReminderContract {
     }
 
     public interface Presenter {
-        void onDateClicked();
+        void onDateClicked(Date date);
 
-        void onTimeClicked();
+        void onTimeClicked(Date date);
 
         void getReminderById(int id);
 

@@ -36,7 +36,6 @@ public class CreateReminderFragment extends Fragment implements CreateReminderCo
     private String frequencey = "";
 
 
-
     public CreateReminderFragment() {
     }
 
@@ -122,7 +121,7 @@ public class CreateReminderFragment extends Fragment implements CreateReminderCo
             public void onClick(View v) {
                 UpdateReminderFragment updateFragment = new UpdateReminderFragment();
                 Bundle args = new Bundle();
-                args.putString("id", "-1330938635");
+                args.putString("id", "-1309822290");
                 updateFragment.setArguments(args);
                 getParentFragmentManager().beginTransaction()
                         .replace(R.id.nav_host_fragment_content_main, updateFragment)

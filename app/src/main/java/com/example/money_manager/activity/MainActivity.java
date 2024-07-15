@@ -20,6 +20,7 @@ import com.example.money_manager.ui.CreateReminderFragment;
 import com.example.money_manager.ui.ExpenseListFragment;
 import com.example.money_manager.ui.HomeFragment;
 import com.example.money_manager.ui.ProfileFragment;
+import com.example.money_manager.ui.ReportFragment;
 import com.example.money_manager.utils.AccountState;
 import com.google.android.material.navigation.NavigationView;
 
@@ -74,7 +75,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         else if (id == R.id.nav_reminder) {
             selectedFragment = new CreateReminderFragment();
-            setToolbarTitle("Expense");
+            setToolbarTitle("Reminder");
+        }
+        if (id == R.id.nav_report) {
+            selectedFragment = new ReportFragment();
+            setToolbarTitle("Report");
         }
         if (selectedFragment != null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, selectedFragment).commit();

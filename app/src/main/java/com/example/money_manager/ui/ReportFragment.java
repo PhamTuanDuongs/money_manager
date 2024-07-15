@@ -51,8 +51,8 @@ public class ReportFragment extends Fragment implements ReportContract.View {
 
 
     private ReportContract.Presenter presenter;
-    private Double[] expenses = new Double[]{0.0,2.0,6.0,7.0,2.0,8.0,1.0,9.0,2.0,5.0,5.0,9.0,2.0};
-    private Double[] incomes = new Double[]{9.0,6.0,2.0,5.0,10.0,4.0,6.0,9.0,9.0,2.0,5.0,0.0,5.0};
+    private Double[] expenses = new Double[]{0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+    private Double[] incomes = new Double[]{0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
     private RecyclerView expenseRecyclerView;
     private RecyclerView incomeRecyclerView;
     private ReportAdapter expenseAdapter;
@@ -60,7 +60,7 @@ public class ReportFragment extends Fragment implements ReportContract.View {
     private ArrayList<CategorySum> categorySumByExpense = new ArrayList<>();
     private ArrayList<CategorySum> categorySumByIncome = new ArrayList<>();
     private ProgressBar pbLoading;
-    private TextView txtDate;
+    private TextView txtDate,txtExpense, txtIncome, txtNoData;
     private Button btnPrevious;
     private Button btnNext;
     private CombinedChart mChart;
@@ -87,11 +87,14 @@ public class ReportFragment extends Fragment implements ReportContract.View {
         pbLoading = v.findViewById(R.id.progressBar);
         incomeRecyclerView = v.findViewById(R.id.report_income_recycle_view_year);
         expenseRecyclerView = v.findViewById(R.id.report_expense_recycle_view_year);
+        txtExpense = v.findViewById(R.id.txtExpense);
+        txtIncome=v.findViewById(R.id.txtIncome);
+        txtNoData =v.findViewById(R.id.txtNoData);
         String email = AccountState.getEmail(getContext(), "email");
-        presenter.onGetExpenseSumReport(2024,email);
-        presenter.onGetIncomeSumReport(2024,email);
-        presenter.onGetCategoryByExpenseReport(2024,email);
-        presenter.onGetCategoryByIncomeReport(2024,email);
+        presenter.onGetExpenseSumReport(Integer.parseInt(getCurrentMonth().substring(4, 8)),email);
+        presenter.onGetIncomeSumReport(Integer.parseInt(getCurrentMonth().substring(4, 8)),email);
+        presenter.onGetCategoryByExpenseReport(Integer.parseInt(getCurrentMonth().substring(4, 8)),email);
+        presenter.onGetCategoryByIncomeReport(Integer.parseInt(getCurrentMonth().substring(4, 8)),email);
         mChart = v.findViewById(R.id.combinedChart);
         mChart.getDescription().setEnabled(false);
         mChart.setBackgroundColor(Color.WHITE);
@@ -118,6 +121,7 @@ public class ReportFragment extends Fragment implements ReportContract.View {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         String email = AccountState.getEmail(getContext(), "email");
+        isLoading();
 
         mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
@@ -136,7 +140,7 @@ public class ReportFragment extends Fragment implements ReportContract.View {
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                isLoading();
                 String w = txtDate.getText().toString();
                 pbLoading.setVisibility(View.VISIBLE);
                 txtDate.setText(Integer.parseInt(w)+1+"");
@@ -149,7 +153,7 @@ public class ReportFragment extends Fragment implements ReportContract.View {
         btnPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pbLoading.setVisibility(View.VISIBLE);
+                isLoading();
                 String w = txtDate.getText().toString();
                 txtDate.setText(Integer.parseInt(w) - 1 + "");
                 presenter.onGetExpenseSumReport(Integer.parseInt(w)-1,email);
@@ -167,19 +171,16 @@ public class ReportFragment extends Fragment implements ReportContract.View {
     public void setListExpenseSum(Map<Integer, Double> monthlyTotals) {
         Collection<Double> values = monthlyTotals.values();
         expenses = values.toArray(new Double[values.size()]);
-        pbLoading.setVisibility(View.GONE);
-        for(Double d: expenses){
-            Log.d("setView", d+"");
-        }
         fillDataToChart();
+        loadingCompleted();
     }
 
     @Override
     public void setListIncomeSum(Map<Integer, Double> monthlyTotals) {
         Collection<Double> values = monthlyTotals.values();
         incomes = values.toArray(new Double[values.size()]);
-        pbLoading.setVisibility(View.GONE);
         fillDataToChart();
+        loadingCompleted();
     }
 
     @Override
@@ -198,11 +199,11 @@ public class ReportFragment extends Fragment implements ReportContract.View {
         }
         for (CategorySum cate:categories){
             cate.setPercent(Math.round(cate.getTotalAmount()/total*100.0f)+"%");
-            Log.d("category setView expense","name: "+cate.getName()+"  amount:  "+ cate.getPercent());
-        }
+               }
         incomeAdapter = new ReportAdapter(getContext(), categories);
         incomeRecyclerView.setAdapter(incomeAdapter);
         incomeRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        loadingCompleted();
 
     }
 
@@ -221,11 +222,12 @@ public class ReportFragment extends Fragment implements ReportContract.View {
         }
         for (CategorySum cate:categories){
             cate.setPercent(Math.round(cate.getTotalAmount()/total*100.0f)+"%");
-            Log.d("category setView expense","name: "+cate.getName()+"  amount:  "+ cate.getTotalAmount());
+
         }
         expenseAdapter = new ReportAdapter(getContext(), categories);
         expenseRecyclerView.setAdapter(expenseAdapter);
         expenseRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        loadingCompleted();
     }
     public boolean isContained (ArrayList<CategorySum> cates, CategorySum c){
         for (CategorySum cate : cates)
@@ -339,5 +341,46 @@ public class ReportFragment extends Fragment implements ReportContract.View {
         mChart.setData(data);
         mChart.invalidate();
 
+    }
+    public void isLoading(){
+        pbLoading.setVisibility(View.VISIBLE);
+        txtNoData.setVisibility(View.GONE);
+        txtIncome.setVisibility(View.GONE);
+        txtExpense.setVisibility(View.GONE);
+        mChart.setVisibility(View.GONE);
+        incomeRecyclerView.setVisibility(View.GONE);
+        expenseRecyclerView.setVisibility(View.GONE);
+    }
+    public void loadingCompleted(){
+        pbLoading.setVisibility(View.GONE);
+        if(isNotNullData()){
+            txtNoData.setVisibility(View.GONE);
+            txtIncome.setVisibility(View.VISIBLE);
+            txtExpense.setVisibility(View.VISIBLE);
+            mChart.setVisibility(View.VISIBLE);
+            incomeRecyclerView.setVisibility(View.VISIBLE);
+            expenseRecyclerView.setVisibility(View.VISIBLE);
+        }else{
+            txtNoData.setVisibility(View.VISIBLE);
+            txtIncome.setVisibility(View.GONE);
+            txtExpense.setVisibility(View.GONE);
+            mChart.setVisibility(View.GONE);
+            incomeRecyclerView.setVisibility(View.GONE);
+            expenseRecyclerView.setVisibility(View.GONE);
+        }
+
+    }
+    public boolean isNotNullData(){
+        for(Double d:expenses){
+            if(d!=0){
+                return true;
+            }
+        }
+        for(Double d:incomes){
+            if(d!=0){
+                return true;
+            }
+        }
+        return false;
     }
 }

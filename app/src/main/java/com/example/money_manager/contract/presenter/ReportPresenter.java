@@ -44,7 +44,7 @@ public class ReportPresenter implements ReportContract.Presenter {
 
             @Override
             public void onSuccess(Object object) {
-                view.setListExpenseSum((Map<Integer, Double>) object);
+                view.setListIncomeSum((Map<Integer, Double>) object);
 
             }
 

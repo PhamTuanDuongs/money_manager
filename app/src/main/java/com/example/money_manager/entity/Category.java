@@ -1,14 +1,28 @@
 package com.example.money_manager.entity;
 
 public class Category {
+
     private int id;
     private String name;
     private int type;
     private String account;
     private String image;
+    private String autoID;
 
     public Category(){
 
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getAutoID() {
+        return autoID;
+    }
+
+    public void setAutoID(String autoID) {
+        this.autoID = autoID;
     }
 
     public Category(int id, String name, int type, String account, String image) {
@@ -25,6 +39,7 @@ public class Category {
 
     public void setId(int id) {
         this.id = id;
+
     }
 
     public String getName() {
@@ -43,6 +58,8 @@ public class Category {
         this.type = type;
     }
 
+
+
     public String getAccount() {
         return account;
     }
@@ -58,4 +75,6 @@ public class Category {
     public void setIconImageId(String image) {
         this.image = image;
     }
+
 }
+

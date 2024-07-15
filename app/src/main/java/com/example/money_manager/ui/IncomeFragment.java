@@ -1,6 +1,5 @@
 package com.example.money_manager.ui;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,16 +7,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.money_manager.R;
@@ -25,12 +21,10 @@ import com.example.money_manager.adapter.IncomeAdapter;
 import com.example.money_manager.contract.IncomeContract;
 import com.example.money_manager.contract.model.IncomeModel;
 import com.example.money_manager.contract.presenter.IncomePresenter;
+import com.example.money_manager.entity.Category;
 import com.example.money_manager.entity.Transaction;
-import com.example.money_manager.ui.placeholder.PlaceholderContent;
 
 import java.util.ArrayList;
-
-import io.github.muddz.styleabletoast.StyleableToast;
 
 /**
  * A fragment representing a list of Items.
@@ -83,7 +77,7 @@ public class IncomeFragment extends Fragment implements IncomeContract.View {
             @Override
             public void OnClick(View v, int position) {
                 incomePosition = position;
-                IncomeDialogFragment fragment = new IncomeDialogFragment(incomeAdapter.getItem(position).getId());
+                IncomeUpdateFragment fragment = new IncomeUpdateFragment(incomeAdapter.getItem(position).getId());
                 FragmentManager manager = getParentFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.replace(R.id.nav_host_fragment_content_main, fragment);
@@ -147,6 +141,16 @@ public class IncomeFragment extends Fragment implements IncomeContract.View {
 
     @Override
     public void updateIncomeOnSuccess(String message) {
+
+    }
+
+    @Override
+    public void setBalance(String balance) {
+
+    }
+
+    @Override
+    public void setCategory(ArrayList<Category> categories) {
 
     }
 

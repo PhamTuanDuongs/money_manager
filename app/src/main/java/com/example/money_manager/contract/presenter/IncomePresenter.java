@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.money_manager.adapter.IncomeAdapter;
 import com.example.money_manager.contract.IncomeContract;
+import com.example.money_manager.entity.Category;
 import com.example.money_manager.entity.Transaction;
 import com.example.money_manager.ui.AddIncomeFragment;
 import com.example.money_manager.ui.IncomeFragment;
@@ -125,7 +126,7 @@ public class IncomePresenter implements IncomeContract.Presenter {
     @Override
     public void onGetListIncomeByMonth(String date) {
         String email = AccountState.getEmail(((IncomeListByMonthFragment) view).getContext(), "email");
-        ArrayList<Transaction> trans = model.getTransactions(email,date, new IncomeContract.Model.onTransactionListener() {
+        ArrayList<Transaction> trans = model.getTransactions(email, date, new IncomeContract.Model.onTransactionListener() {
             @Override
             public void onSuccess(Object object) {
                 view.setListIncome((ArrayList<Transaction>) object);
@@ -134,7 +135,7 @@ public class IncomePresenter implements IncomeContract.Presenter {
 
             @Override
             public void onError(String message) {
-                view.showAddError("Error","Error");
+                view.showAddError("Error", "Error");
 
             }
         });
@@ -143,7 +144,7 @@ public class IncomePresenter implements IncomeContract.Presenter {
     @Override
     public void onGetListIncomeByYear(String date) {
         String email = AccountState.getEmail(((IncomeListByYearFragment) view).getContext(), "email");
-        ArrayList<Transaction> trans = model.getTransactions(email,date, new IncomeContract.Model.onTransactionListener() {
+        ArrayList<Transaction> trans = model.getTransactions(email, date, new IncomeContract.Model.onTransactionListener() {
             @Override
             public void onSuccess(Object object) {
                 view.setListIncome((ArrayList<Transaction>) object);
@@ -152,8 +153,47 @@ public class IncomePresenter implements IncomeContract.Presenter {
 
             @Override
             public void onError(String message) {
-                view.showAddError("Error","Error");
+                view.showAddError("Error", "Error");
 
+            }
+        });
+    }
+
+    @Override
+    public void onGetBalance(String email) {
+        model.getAccountBalance(email, new IncomeContract.Model.onTransactionListener() {
+            @Override
+            public void onSuccess(Object object) {
+                double sum = 0;
+                ArrayList<Double> accountBalance = (ArrayList<Double>) object;
+                for (double number : accountBalance
+                ) {
+                    sum += number;
+                }
+                view.setBalance("Balance: " + sum + " " + "VND");
+
+            }
+
+            @Override
+            public void onError(String message) {
+                view.setBalance("Balance: 0.0 VND");
+
+            }
+        });
+    }
+
+    @Override
+    public void onGetCategoryListByEmailAndType(String email, int type) {
+        model.getCategoryListByEmailAndType(email, type, new IncomeContract.Model.onTransactionListener() {
+            @Override
+            public void onSuccess(Object object) {
+                view.setCategory((ArrayList<Category>) object);
+
+            }
+
+            @Override
+            public void onError(String message) {
+                view.showAddError("Error", "Load category error");
             }
         });
     }

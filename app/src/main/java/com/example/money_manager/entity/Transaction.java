@@ -8,11 +8,37 @@ public class Transaction {
     private Account account_id;
     private double amount;
     private int categoryId;
-    private Timestamp date;
+    private Date createAt;
     private String description;
     private int id;
     private String name;
     private int type;
+    private Category category;
+    private String autoID;
+
+    public String getAutoID() {
+        return autoID;
+    }
+
+    public void setAutoID(String autoID) {
+        this.autoID = autoID;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
     public Transaction() {
     }
@@ -33,20 +59,12 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public int getCategoryId() {
-        return categoryId;
+    public Date getCreateAt() {
+        return createAt;
     }
 
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public Timestamp getCreateAt() {
-        return date;
-    }
-
-    public void setCreateAt(Timestamp createAt) {
-        this.date = createAt;
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
     }
 
     public String getDescription() {

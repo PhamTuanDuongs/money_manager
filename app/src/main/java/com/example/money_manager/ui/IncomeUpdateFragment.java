@@ -6,13 +6,6 @@ import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -27,6 +20,12 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.example.money_manager.R;
 import com.example.money_manager.adapter.CategoryAdapter;
 import com.example.money_manager.contract.IncomeContract;
@@ -35,7 +34,6 @@ import com.example.money_manager.contract.presenter.IncomePresenter;
 import com.example.money_manager.entity.Category;
 import com.example.money_manager.entity.Transaction;
 import com.example.money_manager.utils.AccountState;
-import com.google.firebase.Timestamp;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -43,10 +41,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-
-public class AddIncomeFragment extends Fragment implements IncomeContract.View {
+public class IncomeUpdateFragment extends Fragment implements IncomeContract.View {
 
     private Button btnDatePicker;
+    private Transaction transaction = new Transaction();
     private Category selectedCategory = new Category();
     private TextView tvDate;
     private String balance;
@@ -55,32 +53,40 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
     private EditText edtDesc;
     private EditText edtTitle;
     private GridView gridViewCate;
-    private ArrayList<Category> categories= new ArrayList<>();
-    private com.example.money_manager.adapter.CategoryAdapter categoryAdapter;
+    private ArrayList<Category> categories = new ArrayList<>();
+    private CategoryAdapter categoryAdapter;
     private Button btnAdd;
     private ImageButton btnBack;
     private IncomeModel incomeModel = new IncomeModel();
 
+    private String email;
+
     private Date choosenDate = new Date();
     private IncomeContract.Presenter presenter;
 
-    public AddIncomeFragment() {
+
+    public IncomeUpdateFragment() {
         // Required empty public constructor
     }
-    int[][] states = new int[][] {
 
-            new int[] { android.R.attr.state_focused},
-            new int[] { -android.R.attr.state_focused}
+    public IncomeUpdateFragment(int id) {
+        this.transaction.setId(id);
+    }
+
+    int[][] states = new int[][]{
+
+            new int[]{android.R.attr.state_focused},
+            new int[]{-android.R.attr.state_focused}
     };
 
-    int[] colorsError = new int[] {
+    int[] colorsError = new int[]{
 
             Color.RED,
             Color.GRAY,
     };
-    int[] colors = new int[] {
+    int[] colors = new int[]{
 
-            Color.rgb(1,87,86),
+            Color.rgb(1, 87, 86),
             Color.GRAY,
     };
 
@@ -89,8 +95,8 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
     ColorStateList colorStateLisError = new ColorStateList(states, colorsError);
 
 
-    public static AddIncomeFragment newInstance(String param1, String param2) {
-        AddIncomeFragment fragment = new AddIncomeFragment();
+    public static IncomeUpdateFragment newInstance(String param1, String param2) {
+        IncomeUpdateFragment fragment = new IncomeUpdateFragment();
         Bundle args = new Bundle();
 
         fragment.setArguments(args);
@@ -102,13 +108,12 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
         super.onCreate(savedInstanceState);
 
 
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_add_income, container, false);
+        View v = inflater.inflate(R.layout.fragment_update_income, container, false);
 
         return v;
     }
@@ -127,11 +132,12 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
         edtTitle = view.findViewById(R.id.edtExpenseTitle);
         btnBack = view.findViewById(R.id.btnGoBack);
         gridViewCate = view.findViewById(R.id.gridViewCategories);
-        String email = AccountState.getEmail(getContext(), "email");
-        Date d = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String formattedDate = dateFormat.format(d);
-        tvDate.setText(formattedDate);
+        email = AccountState.getEmail(getContext(), "email");
+
+
+        presenter.onLoadIncome(transaction.getId());
+
+
         edtTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -145,9 +151,9 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(!isValidateTitle()){
+                if (!isValidateTitle()) {
                     edtTitle.setBackgroundTintList(colorStateLisError);
-                }else{
+                } else {
                     edtTitle.setBackgroundTintList(colorStateList);
                 }
 
@@ -166,9 +172,9 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(!isValidateAmount()){
+                if (!isValidateAmount()) {
                     edtAmount.setBackgroundTintList(colorStateLisError);
-                }else{
+                } else {
                     edtAmount.setBackgroundTintList(colorStateList);
                 }
 
@@ -187,123 +193,42 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(!isValidateDesc()){
+                if (!isValidateDesc()) {
                     edtDesc.setBackgroundTintList(colorStateLisError);
-                }else{
+                } else {
                     edtDesc.setBackgroundTintList(colorStateList);
                 }
             }
         });
 
 
-
-        incomeModel.getCategoryListByEmailAndType(email,0, new IncomeContract.Model.onTransactionListener() {
-            @Override
-            public void onSuccess(Object object) {
-                categories.clear();
-
-                for (Category c : (ArrayList<Category>)object) {
-                    categories.add(c);
-                }
-                categoryAdapter = new CategoryAdapter(getContext(),categories);
-                gridViewCate.setAdapter(categoryAdapter);
-                int rows = (int) Math.ceil(categories.size() / 2.0);
-                int totalHeight = 0;
-                for (int i = 0; i < rows; i++) {
-                    View listItem = categoryAdapter.getView(i, null, gridViewCate);
-                    listItem.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-                    totalHeight += listItem.getMeasuredHeight();
-                }
-
-                ViewGroup.LayoutParams params = gridViewCate.getLayoutParams();
-                params.height = totalHeight + (gridViewCate.getVerticalSpacing() * (rows-1));
-                gridViewCate.setLayoutParams(params);
-                gridViewCate.requestLayout();
-                selectedCategory = (Category) categoryAdapter.getItem(0);
-
-                gridViewCate.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        for (int i = 0; i < parent.getChildCount(); i++) {
-                            View listItem = parent.getChildAt(i);
-                            listItem.setBackgroundColor(Color.rgb(255,255,255)); // Set default background color
-                        }
-
-                        categoryAdapter.setSelectedPosition(position);
-                        selectedCategory = (Category) categoryAdapter.getItem(position);
-                        Toast.makeText(getContext(),selectedCategory.getAutoID(), Toast.LENGTH_SHORT).show();
-                        view.setBackgroundColor(Color.rgb(228, 255, 255));// Ensure setSelectedPosition method works as expected
-                    }
-                });
-                gridViewCate.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                        for (int i = 0; i < parent.getChildCount(); i++) {
-                            View listItem = parent.getChildAt(i);
-                            listItem.setBackgroundColor(Color.rgb(255,255,255)); // Set default background color
-                        }
-
-                        categoryAdapter.setSelectedPosition(position);
-                        selectedCategory = (Category) categoryAdapter.getItem(position);
-                        Toast.makeText(getContext(),selectedCategory.getAutoID(), Toast.LENGTH_SHORT).show();
-                        view.setBackgroundColor(Color.rgb(228, 255, 255));// E
-                        return true;// nsure setSelectedPosition method works as expected
-
-                    }
-                });
-
-                gridViewCate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
-
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        for (int i = 0; i < parent.getChildCount(); i++) {
-                            View listItem = parent.getChildAt(i);
-                            listItem.setBackgroundColor(Color.rgb(255,255,255)); // Set default background color
-                        }
-
-                        categoryAdapter.setSelectedPosition(position);
-                        selectedCategory = (Category) categoryAdapter.getItem(position);
-                        Toast.makeText(getContext(),selectedCategory.getAutoID(), Toast.LENGTH_SHORT).show();
-                        view.setBackgroundColor(Color.rgb(228, 255, 255));// Ensure setSelectedPosition method works as expected
-
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-
-                    }
-                });
-            }
-
-            @Override
-            public void onError(String message) {
-                Toast.makeText(getContext(),"Error", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-
-
-
-
-
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadFragment(new IncomeListFragment());
+                new AlertDialog.Builder(getContext())
+                        .setMessage("Your changes will not be saved!")
+                        .setTitle("Are you sure?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                loadFragment(new IncomeListFragment());
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
             }
         });
 
         btnDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Calendar c = Calendar.getInstance();
+
 
                 // on below line we are getting
                 // our day, month and year.
-                int year = c.get(Calendar.YEAR);
-                int month = c.get(Calendar.MONTH);
-                int day = c.get(Calendar.DAY_OF_MONTH);
+                int year = transaction.getCreateAt().getYear();
+                int month = transaction.getCreateAt().getMonth();
+                int day = transaction.getCreateAt().getDay();
 
                 // on below line we are creating a variable for date picker dialog.
                 DatePickerDialog dialog = new DatePickerDialog(
@@ -325,23 +250,20 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
         presenter.onGetBalance(email);
 
 
-
-
-
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isValidateTitle()){
+                if (!isValidateTitle()) {
                     validateTitle();
 
-                }else if (!isValidateAmount()){
+                } else if (!isValidateAmount()) {
                     validateAmount();
 
-                } else if(!isValidateDesc()){
+                } else if (!isValidateDesc()) {
                     validateDesc();
 
-                }else{
-                    presenter.onAddButtonClick(getTransaction());
+                } else {
+                    presenter.onUpdateButtonClick(getTransaction(), transaction.getId());
                 }
 
             }
@@ -366,11 +288,22 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
 
     }
 
+    @Override
+    public void updateIncome(Transaction transaction) {
+        this.transaction = transaction;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String formattedDate = dateFormat.format(transaction.getCreateAt());
+        tvDate.setText(formattedDate);
+        edtAmount.setText(transaction.getAmount() + "");
+        edtTitle.setText(transaction.getName());
+        edtDesc.setText(transaction.getDescription());
+        selectedCategory = transaction.getCategory();
+        presenter.onGetCategoryListByEmailAndType(email, 0);
 
-
+    }
 
     @Override
-    public void showAddSuccess(String message) {
+    public void updateIncomeOnSuccess(String message) {
         new AlertDialog.Builder(getContext())
                 .setTitle("Success")
                 .setMessage(message)
@@ -385,35 +318,111 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
     }
 
     @Override
+    public void setBalance(String balance) {
+        tvBalance.setText("Balance: " + balance + " VND");
+        tvBalance.setText(balance);
+    }
+
+    @Override
+    public void setCategory(ArrayList<Category> cates) {
+        categories.clear();
+
+        for (Category c : (ArrayList<Category>) cates) {
+            categories.add(c);
+        }
+        categoryAdapter = new CategoryAdapter(getContext(), categories);
+        for (int i = 0; i < categories.size(); i++) {
+            if (categories.get(i).getAutoID().equals(selectedCategory.getAutoID())) {
+                categoryAdapter.setSelectedPosition(i);
+                break;
+            }
+        }
+
+
+        gridViewCate.setAdapter(categoryAdapter);
+        int rows = (int) Math.ceil(categories.size() / 2.0);
+        int totalHeight = 0;
+        for (int i = 0; i < rows; i++) {
+            View listItem = categoryAdapter.getView(i, null, gridViewCate);
+            listItem.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = gridViewCate.getLayoutParams();
+        params.height = totalHeight + (gridViewCate.getVerticalSpacing() * (rows - 1));
+        gridViewCate.setLayoutParams(params);
+        gridViewCate.requestLayout();
+
+
+        gridViewCate.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                for (int i = 0; i < parent.getChildCount(); i++) {
+                    View listItem = parent.getChildAt(i);
+                    listItem.setBackgroundColor(Color.rgb(255, 255, 255)); // Set default background color
+                }
+
+                categoryAdapter.setSelectedPosition(position);
+                selectedCategory = (Category) categoryAdapter.getItem(position);
+                Toast.makeText(getContext(), selectedCategory.getAutoID(), Toast.LENGTH_SHORT).show();
+                view.setBackgroundColor(Color.rgb(228, 255, 255));// Ensure setSelectedPosition method works as expected
+            }
+        });
+        gridViewCate.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                for (int i = 0; i < parent.getChildCount(); i++) {
+                    View listItem = parent.getChildAt(i);
+                    listItem.setBackgroundColor(Color.rgb(255, 255, 255)); // Set default background color
+                }
+
+                categoryAdapter.setSelectedPosition(position);
+                selectedCategory = (Category) categoryAdapter.getItem(position);
+                Toast.makeText(getContext(), selectedCategory.getAutoID(), Toast.LENGTH_SHORT).show();
+                view.setBackgroundColor(Color.rgb(228, 255, 255));// E
+                return true;// nsure setSelectedPosition method works as expected
+
+            }
+        });
+
+        gridViewCate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                for (int i = 0; i < parent.getChildCount(); i++) {
+                    View listItem = parent.getChildAt(i);
+                    listItem.setBackgroundColor(Color.rgb(255, 255, 255)); // Set default background color
+                }
+
+                categoryAdapter.setSelectedPosition(position);
+                selectedCategory = (Category) categoryAdapter.getItem(position);
+                Toast.makeText(getContext(), selectedCategory.getAutoID(), Toast.LENGTH_SHORT).show();
+                view.setBackgroundColor(Color.rgb(228, 255, 255));// Ensure setSelectedPosition method works as expected
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        categoryAdapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    public void showAddSuccess(String message) {
+
+    }
+
+    @Override
     public void setListIncome(ArrayList<Transaction> transactions) {
 
     }
 
 
-
     @Override
     public void DeleteIncome(String message) {
-
-    }
-
-    @Override
-    public void updateIncome(Transaction transaction) {
-
-    }
-
-    @Override
-    public void updateIncomeOnSuccess(String message) {
-
-    }
-
-    @Override
-    public void setBalance(String balance) {
-        tvBalance.setText("Balance: " + balance +" VND" );
-        tvBalance.setText(balance);
-    }
-
-    @Override
-    public void setCategory(ArrayList<Category> categories) {
 
     }
 
@@ -423,12 +432,14 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
         t.setDescription(edtDesc.getText().toString());
         t.setCreateAt(choosenDate);
         Category category = new Category();
+        t.setAutoID(transaction.getAutoID());
         category.setAutoID(selectedCategory.getAutoID());
         t.setCategory(category);
-        t.setType(0);
+        t.setType(1);
         t.setName(edtTitle.getText().toString());
         return t;
     }
+
     private void loadFragment(Fragment fragment) {
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -436,8 +447,9 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+
     private void validateTitle() {
-        if(edtTitle.getText().toString().trim().isEmpty()||edtTitle.getText().toString().trim().length()>100){
+        if (edtTitle.getText().toString().trim().isEmpty() || edtTitle.getText().toString().trim().length() > 100) {
             edtTitle.setBackgroundTintList(colorStateLisError);
 
             edtTitle.requestFocus();
@@ -445,38 +457,43 @@ public class AddIncomeFragment extends Fragment implements IncomeContract.View {
         }
 
     }
+
     private void validateAmount() {
-        if(edtAmount.getText().toString().trim().isEmpty()){
+        if (edtAmount.getText().toString().trim().isEmpty()) {
             edtAmount.setBackgroundTintList(colorStateLisError);
             edtAmount.requestFocus();
         }
     }
+
     private void validateDesc() {
-        if(edtDesc.getText().toString().trim().isEmpty()||edtDesc.getText().toString().trim().length()>500){
+        if (edtDesc.getText().toString().trim().isEmpty() || edtDesc.getText().toString().trim().length() > 500) {
             edtDesc.setBackgroundTintList(colorStateLisError);
 
             edtDesc.requestFocus();
 
         }
     }
+
     private boolean isValidateTitle() {
-        if(edtTitle.getText().toString().trim().isEmpty()||edtTitle.getText().toString().trim().length()>100){
+        if (edtTitle.getText().toString().trim().isEmpty() || edtTitle.getText().toString().trim().length() > 100) {
             return false;
-        } else{
+        } else {
             return true;
         }
     }
+
     private boolean isValidateAmount() {
-        if(edtAmount.getText().toString().trim().isEmpty()){
+        if (edtAmount.getText().toString().trim().isEmpty()) {
             return false;
-        } else{
+        } else {
             return true;
         }
     }
+
     private boolean isValidateDesc() {
-        if(edtDesc.getText().toString().trim().isEmpty()||edtDesc.getText().toString().trim().length()>500){
+        if (edtDesc.getText().toString().trim().isEmpty() || edtDesc.getText().toString().trim().length() > 500) {
             return false;
-        } else{
+        } else {
             return true;
         }
     }

@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.money_manager.contract.IncomeContract;
+import com.example.money_manager.entity.Category;
 import com.example.money_manager.entity.Transaction;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -12,6 +13,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -27,6 +29,7 @@ import java.util.Map;
 public class IncomeModel implements IncomeContract.Model {
 
     private static final String TRANSACTION_COLLECTION = "transactions";
+    private static final String CATEGORY_COLLECTION = "categories";
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
     @Override
@@ -40,8 +43,9 @@ public class IncomeModel implements IncomeContract.Model {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-        Timestamp timestamp1 = new Timestamp(date1);
-        Timestamp timestamp2 = new Timestamp(date2);
+        date2.setHours(23);
+        date2.setMinutes(59);
+        date2.setSeconds(59);
 
         DocumentReference user = firestore
                 .collection("accounts")
@@ -54,27 +58,53 @@ public class IncomeModel implements IncomeContract.Model {
                 .whereEqualTo("account_id", user)
                 .whereGreaterThanOrEqualTo("date", date1)
                 .whereLessThanOrEqualTo("date", date2)
+                .orderBy("date")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot q : task.getResult()) {
-                                double amount = q.get("amount", double.class);
-                                Timestamp createAt = q.get("date", Timestamp.class);
-                                String description = q.get("description", String.class);
-                                int id = q.get("id", int.class);
-                                String name = q.get("name", String.class);
-                                Transaction t = new Transaction();
-                                t.setAmount(amount);
-                                t.setCreateAt(createAt);
-                                t.setDescription(description);
-                                t.setId(id);
-                                t.setName(name);
-                                incomes.add(t);
+                            if (task.getResult().size()!=0){
+                                for (QueryDocumentSnapshot q : task.getResult()) {
+                                    DocumentReference dRef = q.getReference();
+                                    Transaction t = new Transaction();
+                                    t.setAutoID(dRef.getId());
+                                    double amount = q.get("amount", double.class);
+                                    Date createAt = q.get("date", Date.class);
+                                    int id = q.get("id",int.class);
+                                    DocumentReference category=q.getDocumentReference("category");
+                                    Category c= new Category();
+                                    c.setAutoID(category.getId());
+                                    category.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
 
+                                                DocumentSnapshot document = task.getResult();
+                                                if (document.exists()) {
+                                                    String categoryName = document.get("name",String.class);
+                                                    c.setName(categoryName);
+                                                    t.setCategory(c);
+                                                    incomes.add(t);
+                                                }
+
+
+                                                listener.onSuccess(incomes);
+                                            }
+                                        }
+                                    });
+                                    String description = q.get("description", String.class);
+
+                                    String name = q.get("name", String.class);
+                                    t.setId(id);
+                                    t.setAmount(amount);
+                                    t.setCreateAt(createAt);
+                                    t.setDescription(description);
+                                    t.setName(name);
+                                }
+                            }else{
+                                listener.onSuccess(incomes);
                             }
-                            listener.onSuccess(incomes);
                         }
                     }
                 });
@@ -88,6 +118,9 @@ public class IncomeModel implements IncomeContract.Model {
         DocumentReference user = firestore
                 .collection("accounts")
                 .document(email);
+        DocumentReference category = firestore
+                .collection("categories")
+                .document(transaction.getCategory().getAutoID());
 
         Map<String, Object> docData = new HashMap<>();
         docData.put("amount", transaction.getAmount());
@@ -97,6 +130,7 @@ public class IncomeModel implements IncomeContract.Model {
         docData.put("account_id", user);
         docData.put("id", getTransactionId());
         docData.put("name",transaction.getName());
+        docData.put("category", category);
 
         transaction.setId(getTransactionId());
         firestore.collection(TRANSACTION_COLLECTION)
@@ -150,10 +184,15 @@ public class IncomeModel implements IncomeContract.Model {
 
     @Override
     public void update(Transaction transactionn, int id, onTransactionListener listener) {
+        DocumentReference category = firestore
+                .collection("categories")
+                .document(transactionn.getCategory().getAutoID());
         Map<String, Object> docData = new HashMap<>();
         docData.put("amount", transactionn.getAmount());
         docData.put("date", transactionn.getCreateAt());
         docData.put("description", transactionn.getDescription());
+        docData.put("name",transactionn.getName());
+        docData.put("category", category);
         firestore
                 .collection(TRANSACTION_COLLECTION)
                 .whereEqualTo("id", id)
@@ -199,17 +238,114 @@ public class IncomeModel implements IncomeContract.Model {
                                 Timestamp createAt = q.get("date", Timestamp.class);
                                 String name = q.get("name", String.class);
                                 Transaction t = new Transaction();
-                                t.setCreateAt(createAt);
+                                t.setCreateAt(createAt.toDate());
                                 t.setAmount(amount);
                                 t.setDescription(description);
                                 t.setId(id);
                                 t.setName(name);
-                                listener.onSuccess(t);
+
+                                DocumentReference category=q.getDocumentReference("category");
+                                Category c= new Category();
+                                c.setAutoID(category.getId());
+                                category.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+
+                                            DocumentSnapshot document = task.getResult();
+                                            if (document.exists()) {
+                                                String categoryName = document.get("name",String.class);
+                                                c.setName(categoryName);
+                                                t.setCategory(c);
+                                                listener.onSuccess(t);
+
+                                            }
+
+
+
+                                        }
+                                    }
+                                });
                                 break;
                             }
                         }
                     }
                 });
+    }
+
+    @Override
+    public double getAccountBalance(String email, onTransactionListener listener) {
+        DocumentReference user = firestore
+                .collection("accounts")
+                .document(email);
+        ArrayList<Double> accountBalance = new ArrayList<>();
+        firestore
+                .collection(TRANSACTION_COLLECTION)
+                .whereEqualTo("account_id", user)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot q : task.getResult()) {
+                                double amount = q.get("amount", double.class);
+                                int type = q.get("type", int.class);
+                                if (type ==0){
+                                    accountBalance.add(amount);
+                                }else{
+                                    accountBalance.add(-amount);
+                                }
+
+                            }
+                            listener.onSuccess(accountBalance);
+                        }
+
+                    }
+                });
+        double sum = 0.0;
+        for (Double number : accountBalance) {
+            sum += number;
+        }
+        return sum;
+    }
+
+    @Override
+    public void getCategoryListByEmailAndType(String email, int type, onTransactionListener listener) {
+        DocumentReference user = firestore
+                .collection("accounts")
+                .document(email);
+
+        ArrayList<Category> categories = new ArrayList<>();
+        firestore
+                .collection(CATEGORY_COLLECTION)
+                .whereEqualTo("type", type)
+                .whereEqualTo("account_id", user)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            for (QueryDocumentSnapshot q : task.getResult()) {
+
+                                DocumentReference dRef = q.getReference();
+
+                                Category c = new Category();
+                                String autoID= dRef.getId();
+                                String name = q.get("name", String.class);
+                                String img = q.get("image", String.class);
+                                c.setName(name);
+                                c.setAutoID(autoID);
+                                c.setIconImageId(img);
+                                categories.add(c);
+
+                            }
+                            listener.onSuccess(categories);
+
+
+                        }
+                    }});
     }
 
     private int getTransactionId() {

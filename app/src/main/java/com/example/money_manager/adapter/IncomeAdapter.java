@@ -55,7 +55,7 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeView
     public void onBindViewHolder(@NonNull IncomeViewHolder holder, int position) {
         int pos = holder.getLayoutPosition();
         Transaction t = incomes.get(position);
-        Date date = t.getCreateAt().toDate();
+        Date date = t.getCreateAt();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String formattedDate = formatter.format(date);
 
@@ -63,6 +63,7 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeView
         holder.tvAmount.setText("+" +t.getAmount());
 //        holder.tvDesc.setText(t.getDescription());
         holder.tvDate.setText(formattedDate);
+        holder.tvCate.setText(t.getCategory().getName());
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -96,11 +97,14 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeView
         private Button btnUpdate;
         private Button btnDelete;
 
+        private TextView tvCate;
+
         public IncomeViewHolder(@NonNull View itemView) {
             super(itemView);
             tvAmount = itemView.findViewById(R.id.txtIncomeValue);
             tvName = itemView.findViewById(R.id.txtIncomeName);
             tvDate = itemView.findViewById(R.id.txtIncomeDateCreated);
+            tvCate = itemView.findViewById(R.id.txtIncomeCate);
 
         }
     }

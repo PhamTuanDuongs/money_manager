@@ -1,5 +1,6 @@
 package com.example.money_manager.contract;
 
+import com.example.money_manager.entity.Category;
 import com.example.money_manager.entity.Transaction;
 
 import java.util.ArrayList;
@@ -18,6 +19,10 @@ public class IncomeContract {
 
         void updateIncomeOnSuccess(String message);
 
+        void setBalance(String balance);
+
+        void setCategory(ArrayList<Category> categories);
+
 
     }
 
@@ -35,6 +40,10 @@ public class IncomeContract {
         void onGetListIncomeByWeek(String date);
         void onGetListIncomeByMonth(String date);
         void onGetListIncomeByYear(String date);
+
+        void onGetBalance(String email);
+
+        void onGetCategoryListByEmailAndType(String email, int type);
     }
 
     public interface Model {
@@ -47,6 +56,11 @@ public class IncomeContract {
         void update(Transaction transaction, int id, onTransactionListener listener);
 
         void load(int id, onTransactionListener listener);
+
+        double getAccountBalance(String email, onTransactionListener listener);
+
+        void getCategoryListByEmailAndType(String email, int type, onTransactionListener listener);
+
 
         interface onTransactionListener {
             void onSuccess(Object object);

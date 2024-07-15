@@ -3,6 +3,8 @@ package com.example.money_manager.ui;
 import static com.example.money_manager.utils.DateTimeUtils.getCurrentMonth;
 import static com.example.money_manager.utils.DateTimeUtils.getDateYearString;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -29,6 +31,7 @@ import com.example.money_manager.adapter.IncomeAdapter;
 import com.example.money_manager.contract.IncomeContract;
 import com.example.money_manager.contract.model.IncomeModel;
 import com.example.money_manager.contract.presenter.IncomePresenter;
+import com.example.money_manager.entity.Category;
 import com.example.money_manager.entity.Transaction;
 
 import java.util.ArrayList;
@@ -151,7 +154,7 @@ public class IncomeListByYearFragment extends Fragment implements IncomeContract
         }
 
         if (id == R.id.update) {
-            IncomeDialogFragment fragment = new IncomeDialogFragment(incomeAdapter.getItem(incomePosition).getId());
+            IncomeUpdateFragment fragment = new IncomeUpdateFragment(incomeAdapter.getItem(incomePosition).getId());
             FragmentManager manager = getParentFragment().getParentFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.replace(R.id.nav_host_fragment_content_main,fragment);
@@ -198,7 +201,17 @@ public class IncomeListByYearFragment extends Fragment implements IncomeContract
 
     @Override
     public void DeleteIncome(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+        new AlertDialog.Builder(getContext())
+                .setTitle("Success")
+                .setMessage(message)
+                .setIcon(R.drawable.check)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
         incomeAdapter.removeItem(incomePosition);
         incomeAdapter.notifyDataSetChanged();
     }
@@ -210,6 +223,16 @@ public class IncomeListByYearFragment extends Fragment implements IncomeContract
 
     @Override
     public void updateIncomeOnSuccess(String message) {
+
+    }
+
+    @Override
+    public void setBalance(String balance) {
+
+    }
+
+    @Override
+    public void setCategory(ArrayList<Category> categories) {
 
     }
 }

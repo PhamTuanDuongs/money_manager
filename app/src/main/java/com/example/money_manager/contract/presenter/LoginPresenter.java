@@ -2,7 +2,7 @@ package com.example.money_manager.contract.presenter;
 
 import com.example.money_manager.activity.authentication.LoginActivity;
 import com.example.money_manager.contract.LoginContract;
-import com.example.money_manager.contract.model.LoginModel;
+import com.example.money_manager.activity.authentication.model.LoginModel;
 import com.example.money_manager.utils.AccountState;
 
 public class LoginPresenter implements LoginContract.Presenter {
@@ -21,6 +21,18 @@ public class LoginPresenter implements LoginContract.Presenter {
                 @Override
                 public void onSuccess() {
                     AccountState.saveEmail((LoginActivity)view, email, "email");
+                    double balance = model.getAccountBalance(email, new LoginContract.Model.onTransactionListener() {
+                                @Override
+                                public void onSuccess(Object object) {
+                                }
+                                @Override
+                                public void onError(String message) {
+
+                                }
+                            });
+
+
+                    AccountState.saveAccountBalance((LoginActivity)view, balance, "balance");
                     view.navigateToHome();
                 }
 

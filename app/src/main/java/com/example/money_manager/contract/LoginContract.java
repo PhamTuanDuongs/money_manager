@@ -26,6 +26,8 @@ public class LoginContract {
 
         void resetPassword(String email, LoginContract.Model.OnResetPasswordListener listener);
 
+        double getAccountBalance(String email, LoginContract.Model.onTransactionListener listener);
+
         interface OnLoginFinishedListener {
             void onSuccess();
 
@@ -36,6 +38,11 @@ public class LoginContract {
 
         interface OnResetPasswordListener {
             void onSuccess();
+
+            void onError(String message);
+        }
+        interface onTransactionListener {
+            void onSuccess(Object object);
 
             void onError(String message);
         }

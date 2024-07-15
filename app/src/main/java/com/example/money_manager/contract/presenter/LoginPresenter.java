@@ -24,6 +24,7 @@ public class LoginPresenter implements LoginContract.Presenter {
                     double balance = model.getAccountBalance(email, new LoginContract.Model.onTransactionListener() {
                                 @Override
                                 public void onSuccess(Object object) {
+
                                 }
                                 @Override
                                 public void onError(String message) {

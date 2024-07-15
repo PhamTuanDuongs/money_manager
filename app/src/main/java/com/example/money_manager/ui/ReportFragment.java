@@ -87,14 +87,11 @@ public class ReportFragment extends Fragment implements ReportContract.View {
         pbLoading = v.findViewById(R.id.progressBar);
         incomeRecyclerView = v.findViewById(R.id.report_income_recycle_view_year);
         expenseRecyclerView = v.findViewById(R.id.report_expense_recycle_view_year);
-        expenseAdapter = new ReportAdapter(getContext(), categorySumByExpense);
-        expenseRecyclerView.setAdapter(expenseAdapter);
-        expenseRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        incomeAdapter = new ReportAdapter(getContext(), categorySumByIncome);
-        incomeRecyclerView.setAdapter(incomeAdapter);
-        incomeRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        String email = AccountState.getEmail(getContext(), "email");
+        presenter.onGetExpenseSumReport(2024,email);
+        presenter.onGetIncomeSumReport(2024,email);
+        presenter.onGetCategoryByExpenseReport(2024,email);
+        presenter.onGetCategoryByIncomeReport(2024,email);
         mChart = v.findViewById(R.id.combinedChart);
         mChart.getDescription().setEnabled(false);
         mChart.setBackgroundColor(Color.WHITE);
@@ -112,17 +109,10 @@ public class ReportFragment extends Fragment implements ReportContract.View {
         txtDate.setText(getCurrentMonth().substring(4, 8));
         btnNext = v.findViewById(R.id.btnNextYear);
         btnPrevious = v.findViewById(R.id.btnPreviousYear);
-        String email = AccountState.getEmail(getContext(), "email");
-        presenter.onGetExpenseSumReport(2024,email);
-        presenter.onGetIncomeSumReport(2024,email);
-        presenter.onGetCategoryByExpenseReport(2024,email);
-        presenter.onGetCategoryByIncomeReport(2024,email);
-        for(Double d: expenses){
-            Log.d("onCreateView",d+"");
-        }
-
         return v;
     }
+
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -139,42 +129,6 @@ public class ReportFragment extends Fragment implements ReportContract.View {
 
             }
         });
-        final List<String> xLabel = new ArrayList<>();
-        xLabel.add("Jan");
-        xLabel.add("Feb");
-        xLabel.add("Mar");
-        xLabel.add("Apr");
-        xLabel.add("May");
-        xLabel.add("Jun");
-        xLabel.add("Jul");
-        xLabel.add("Aug");
-        xLabel.add("Sep");
-        xLabel.add("Oct");
-        xLabel.add("Nov");
-        xLabel.add("Dec");
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setAxisMinimum(0f);
-        xAxis.setGranularity(1f);
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                return xLabel.get((int) value % xLabel.size());
-            }
-        });
-
-
-        CombinedData data = new CombinedData();
-        LineData lineDatas = new LineData();
-        lineDatas.addDataSet((ILineDataSet) dataChartExpense(expenses));
-        lineDatas.addDataSet((ILineDataSet) dataChartIncome(incomes));
-        for(Double d: expenses){
-            Log.d("onViewCreated", d+"");
-        }
-        data.setData(lineDatas);
-        xAxis.setAxisMaximum(data.getXMax() + 0.25f);
-        mChart.setData(data);
-        mChart.invalidate();
 
 
 
@@ -217,7 +171,7 @@ public class ReportFragment extends Fragment implements ReportContract.View {
         for(Double d: expenses){
             Log.d("setView", d+"");
         }
-
+        fillDataToChart();
     }
 
     @Override
@@ -225,7 +179,7 @@ public class ReportFragment extends Fragment implements ReportContract.View {
         Collection<Double> values = monthlyTotals.values();
         incomes = values.toArray(new Double[values.size()]);
         pbLoading.setVisibility(View.GONE);
-
+        fillDataToChart();
     }
 
     @Override
@@ -246,7 +200,9 @@ public class ReportFragment extends Fragment implements ReportContract.View {
             cate.setPercent(Math.round(cate.getTotalAmount()/total*100.0f)+"%");
             Log.d("category setView expense","name: "+cate.getName()+"  amount:  "+ cate.getPercent());
         }
-        categorySumByIncome=categories;
+        incomeAdapter = new ReportAdapter(getContext(), categories);
+        incomeRecyclerView.setAdapter(incomeAdapter);
+        incomeRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
     }
 
@@ -255,8 +211,6 @@ public class ReportFragment extends Fragment implements ReportContract.View {
         categorySumByExpense.clear();
         ArrayList<CategorySum> categories = new ArrayList<>();
         float total =0.0f;
-
-
         for (CategorySum cate : cates)
         {
 
@@ -269,8 +223,9 @@ public class ReportFragment extends Fragment implements ReportContract.View {
             cate.setPercent(Math.round(cate.getTotalAmount()/total*100.0f)+"%");
             Log.d("category setView expense","name: "+cate.getName()+"  amount:  "+ cate.getTotalAmount());
         }
-        categorySumByExpense=categories;
-
+        expenseAdapter = new ReportAdapter(getContext(), categories);
+        expenseRecyclerView.setAdapter(expenseAdapter);
+        expenseRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
     public boolean isContained (ArrayList<CategorySum> cates, CategorySum c){
         for (CategorySum cate : cates)
@@ -347,5 +302,42 @@ public class ReportFragment extends Fragment implements ReportContract.View {
         d.addDataSet(set);
 
         return set;
+    }
+
+    public void fillDataToChart() {
+        final List<String> xLabel = new ArrayList<>();
+        xLabel.add("Jan");
+        xLabel.add("Feb");
+        xLabel.add("Mar");
+        xLabel.add("Apr");
+        xLabel.add("May");
+        xLabel.add("Jun");
+        xLabel.add("Jul");
+        xLabel.add("Aug");
+        xLabel.add("Sep");
+        xLabel.add("Oct");
+        xLabel.add("Nov");
+        xLabel.add("Dec");
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setAxisMinimum(0f);
+        xAxis.setGranularity(1f);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return xLabel.get((int) value % xLabel.size());
+            }
+        });
+
+
+        CombinedData data = new CombinedData();
+        LineData lineDatas = new LineData();
+        lineDatas.addDataSet((ILineDataSet) dataChartExpense(expenses));
+        lineDatas.addDataSet((ILineDataSet) dataChartIncome(incomes));
+        data.setData(lineDatas);
+        xAxis.setAxisMaximum(data.getXMax() + 0.25f);
+        mChart.setData(data);
+        mChart.invalidate();
+
     }
 }

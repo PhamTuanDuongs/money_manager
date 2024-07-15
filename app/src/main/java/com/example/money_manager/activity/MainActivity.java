@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, new HomeFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, new ReportFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_home);
             setToolbarTitle("Home");
         }
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-            selectedFragment = new HomeFragment();
+            selectedFragment = new ReportFragment();
             setToolbarTitle("Home");
         }
         else if (id == R.id.nav_expense) {
@@ -77,14 +77,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             selectedFragment = new CreateReminderFragment();
             setToolbarTitle("Reminder");
         }
-        if (id == R.id.nav_report) {
-            selectedFragment = new ReportFragment();
-            setToolbarTitle("Report");
-        }
         if (selectedFragment != null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, selectedFragment).commit();
         }
-
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }

@@ -16,9 +16,5 @@
             android:id="@+id/nav_expense"
             android:icon="@drawable/ic_launcher_money"
             android:title="@string/expense" />
-        <item
-            android:id="@+id/nav_report"
-            android:icon="@drawable/ic_launcher_report"
-            android:title="@string/expense" />
     </group>
 </menu>

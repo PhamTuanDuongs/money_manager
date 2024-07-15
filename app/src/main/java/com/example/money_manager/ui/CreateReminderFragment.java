@@ -36,7 +36,6 @@ public class CreateReminderFragment extends Fragment implements CreateReminderCo
     private String frequencey = "";
 
 
-
     public CreateReminderFragment() {
     }
 

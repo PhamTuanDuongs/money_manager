@@ -1,9 +1,8 @@
 package com.example.money_manager.utils;
-
 import android.util.Log;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import com.google.firebase.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -179,8 +178,31 @@ public final class DateTimeUtils {
         return date;
     }
     public static String getDateYearString(String year) {
-        String date = "1 Jan "+year+ " - 31 Dec "+year;
+        String date = "1 Jan " + year + " - 31 Dec " + year;
         return date;
+    }
+
+    public static String convertTimestampToDate(Timestamp timestamp) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String datePart = dateFormat.format(timestamp.toDate());
+        return datePart;
+    }
+    public static String convertTimestampToTime(Timestamp timestamp) {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        String timePart = timeFormat.format(timestamp.toDate());
+        return timePart;
+    }
+
+    public  static  Date parseDate(String strDate, String pattern) {
+        Date result = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+        try {
+            result = dateFormat.parse(strDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+
     }
 
 }

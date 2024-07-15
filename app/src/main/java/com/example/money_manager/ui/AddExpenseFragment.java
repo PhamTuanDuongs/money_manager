@@ -228,7 +228,7 @@ public class AddExpenseFragment extends Fragment implements ExpenseContract.View
 
                         categoryAdapter.setSelectedPosition(position);
                         selectedCategory = (Category) categoryAdapter.getItem(position);
-                        Toast.makeText(getContext(),selectedCategory.getAutoID(), Toast.LENGTH_SHORT).show();
+
                         view.setBackgroundColor(Color.rgb(228, 255, 255));// Ensure setSelectedPosition method works as expected
                     }
                 });
@@ -242,7 +242,7 @@ public class AddExpenseFragment extends Fragment implements ExpenseContract.View
 
                         categoryAdapter.setSelectedPosition(position);
                         selectedCategory = (Category) categoryAdapter.getItem(position);
-                        Toast.makeText(getContext(),selectedCategory.getAutoID(), Toast.LENGTH_SHORT).show();
+
                         view.setBackgroundColor(Color.rgb(228, 255, 255));// E
                         return true;// nsure setSelectedPosition method works as expected
 
@@ -260,7 +260,7 @@ public class AddExpenseFragment extends Fragment implements ExpenseContract.View
 
                         categoryAdapter.setSelectedPosition(position);
                         selectedCategory = (Category) categoryAdapter.getItem(position);
-                        Toast.makeText(getContext(),selectedCategory.getAutoID(), Toast.LENGTH_SHORT).show();
+
                         view.setBackgroundColor(Color.rgb(228, 255, 255));// Ensure setSelectedPosition method works as expected
 
                     }

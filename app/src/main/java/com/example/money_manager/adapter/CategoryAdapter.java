@@ -7,18 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.money_manager.R;
 import com.example.money_manager.entity.Category;
-import com.example.money_manager.entity.Reminder;
-import com.example.money_manager.entity.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;

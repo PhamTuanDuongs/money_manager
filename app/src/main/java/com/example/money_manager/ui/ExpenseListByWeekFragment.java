@@ -22,14 +22,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.money_manager.R;
 import com.example.money_manager.adapter.ExpenseAdapter;
 import com.example.money_manager.contract.ExpenseContract;
-import com.example.money_manager.activity.authentication.model.ExpenseModel;
+import com.example.money_manager.contract.model.ExpenseModel;
 import com.example.money_manager.contract.presenter.ExpensePresenter;
-import com.example.money_manager.entity.Category;
 import com.example.money_manager.entity.Transaction;
 
 

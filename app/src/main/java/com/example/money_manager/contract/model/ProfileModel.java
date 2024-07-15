@@ -1,4 +1,4 @@
-package com.example.money_manager.activity.authentication.model;
+package com.example.money_manager.contract.model;
 
 import androidx.annotation.NonNull;
 

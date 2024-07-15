@@ -1,7 +1,6 @@
 package com.example.money_manager.ui;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -26,14 +25,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.money_manager.R;
-import com.example.money_manager.activity.authentication.model.ExpenseModel;
+import com.example.money_manager.contract.model.ExpenseModel;
 import com.example.money_manager.adapter.CategoryAdapter;
 import com.example.money_manager.contract.ExpenseContract;
 import com.example.money_manager.contract.presenter.ExpensePresenter;
 import com.example.money_manager.entity.Category;
 import com.example.money_manager.entity.Transaction;
 import com.example.money_manager.utils.AccountState;
-import java.text.DecimalFormat;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;

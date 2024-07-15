@@ -1,7 +1,7 @@
 package com.example.money_manager.contract.presenter;
 
 import com.example.money_manager.contract.ProfileContract;
-import com.example.money_manager.activity.authentication.model.ProfileModel;
+import com.example.money_manager.contract.model.ProfileModel;
 
 public class ProfilePresenter implements ProfileContract.Presenter {
 

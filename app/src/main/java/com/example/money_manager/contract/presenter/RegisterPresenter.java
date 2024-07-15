@@ -1,7 +1,7 @@
 package com.example.money_manager.contract.presenter;
 
 import com.example.money_manager.contract.RegisterContract;
-import com.example.money_manager.activity.authentication.model.RegisterModel;
+import com.example.money_manager.contract.model.RegisterModel;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class RegisterPresenter implements RegisterContract.Presenter {

@@ -52,8 +52,8 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         pieChart = view.findViewById(R.id.pieChart);
-        setupPieChart();
-        loadPieChartData();
+//        setupPieChart();
+//        loadPieChartData();
 
         return view;
     }

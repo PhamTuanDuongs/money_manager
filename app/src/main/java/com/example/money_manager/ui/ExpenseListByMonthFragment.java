@@ -1,12 +1,9 @@
 package com.example.money_manager.ui;
 
 import static com.example.money_manager.utils.DateTimeUtils.getCurrentMonth;
-import static com.example.money_manager.utils.DateTimeUtils.getCurrentWeek;
 import static com.example.money_manager.utils.DateTimeUtils.getDateMonthString;
 import static com.example.money_manager.utils.DateTimeUtils.getNextMonth;
-import static com.example.money_manager.utils.DateTimeUtils.getNextWeek;
 import static com.example.money_manager.utils.DateTimeUtils.getPreviousMonth;
-import static com.example.money_manager.utils.DateTimeUtils.getPreviousWeek;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -26,14 +23,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.money_manager.R;
 import com.example.money_manager.adapter.ExpenseAdapter;
 import com.example.money_manager.contract.ExpenseContract;
-import com.example.money_manager.activity.authentication.model.ExpenseModel;
+import com.example.money_manager.contract.model.ExpenseModel;
 import com.example.money_manager.contract.presenter.ExpensePresenter;
-import com.example.money_manager.entity.Category;
 import com.example.money_manager.entity.Transaction;
 
 

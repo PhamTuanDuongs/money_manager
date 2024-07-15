@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,14 +25,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.money_manager.R;
-import com.example.money_manager.activity.authentication.model.ExpenseModel;
+import com.example.money_manager.contract.model.ExpenseModel;
 import com.example.money_manager.adapter.CategoryAdapter;
 import com.example.money_manager.contract.ExpenseContract;
 import com.example.money_manager.contract.presenter.ExpensePresenter;
 import com.example.money_manager.entity.Category;
 import com.example.money_manager.entity.Transaction;
 import com.example.money_manager.utils.AccountState;
-import java.text.DecimalFormat;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;

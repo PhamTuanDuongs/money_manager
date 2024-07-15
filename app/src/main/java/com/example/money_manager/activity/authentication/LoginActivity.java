@@ -35,7 +35,6 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
     private TextView error_email, error_password, txt_reset_password;
     private Button btn_login;
     private LoginPresenter presenter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,9 +104,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (TextUtils.isEmpty(s)) {
-                    error_email.setText(getResources().getString(R.string.email_null));
-                }
+
             }
 
             @Override
@@ -134,9 +131,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (TextUtils.isEmpty(s)) {
-                    error_email.setText(getResources().getString(R.string.email_null));
-                }
+
             }
 
             @Override

@@ -69,7 +69,7 @@ public class IncomeFragment extends Fragment implements IncomeContract.View {
             public void OnClick(View v, int position) {
                 incomePosition = position;
                 Transaction t = incomeAdapter.getItem(position);
-                presenter.onDeleteButtonClick(t.getId());
+                presenter.onDeleteButtonClick(t.getAutoID());
             }
         });
 
@@ -77,7 +77,7 @@ public class IncomeFragment extends Fragment implements IncomeContract.View {
             @Override
             public void OnClick(View v, int position) {
                 incomePosition = position;
-                IncomeUpdateFragment fragment = new IncomeUpdateFragment(incomeAdapter.getItem(position).getId());
+                IncomeUpdateFragment fragment = new IncomeUpdateFragment(incomeAdapter.getItem(position).getAutoID());
                 FragmentManager manager = getParentFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.replace(R.id.nav_host_fragment_content_main, fragment);

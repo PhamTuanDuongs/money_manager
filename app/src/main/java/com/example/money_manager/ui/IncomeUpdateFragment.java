@@ -69,8 +69,8 @@ public class IncomeUpdateFragment extends Fragment implements IncomeContract.Vie
         // Required empty public constructor
     }
 
-    public IncomeUpdateFragment(int id) {
-        this.transaction.setId(id);
+    public IncomeUpdateFragment(String id) {
+        this.transaction.setAutoID(id);
     }
 
     int[][] states = new int[][]{
@@ -135,7 +135,7 @@ public class IncomeUpdateFragment extends Fragment implements IncomeContract.Vie
         email = AccountState.getEmail(getContext(), "email");
 
 
-        presenter.onLoadIncome(transaction.getId());
+        presenter.onLoadIncome(transaction.getAutoID());
 
 
         edtTitle.addTextChangedListener(new TextWatcher() {
@@ -226,9 +226,11 @@ public class IncomeUpdateFragment extends Fragment implements IncomeContract.Vie
 
                 // on below line we are getting
                 // our day, month and year.
-                int year = transaction.getCreateAt().getYear();
-                int month = transaction.getCreateAt().getMonth();
-                int day = transaction.getCreateAt().getDay();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(transaction.getCreateAt());
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
 
                 // on below line we are creating a variable for date picker dialog.
                 DatePickerDialog dialog = new DatePickerDialog(
@@ -263,7 +265,7 @@ public class IncomeUpdateFragment extends Fragment implements IncomeContract.Vie
                     validateDesc();
 
                 } else {
-                    presenter.onUpdateButtonClick(getTransaction(), transaction.getId());
+                    presenter.onUpdateButtonClick(getTransaction(), transaction.getAutoID());
                 }
 
             }

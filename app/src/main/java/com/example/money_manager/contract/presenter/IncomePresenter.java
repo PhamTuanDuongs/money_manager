@@ -44,7 +44,7 @@ public class IncomePresenter implements IncomeContract.Presenter {
     }
 
     @Override
-    public void onDeleteButtonClick(int id) {
+    public void onDeleteButtonClick(String id) {
         Log.d("TEST_DELETE", "Onclick Delete");
         model.delete(id, new IncomeContract.Model.onTransactionListener() {
             @Override
@@ -60,7 +60,7 @@ public class IncomePresenter implements IncomeContract.Presenter {
     }
 
     @Override
-    public void onUpdateButtonClick(Transaction transaction, int id) {
+    public void onUpdateButtonClick(Transaction transaction, String id) {
         model.update(transaction, id, new IncomeContract.Model.onTransactionListener() {
             @Override
             public void onSuccess(Object object) {
@@ -92,7 +92,7 @@ public class IncomePresenter implements IncomeContract.Presenter {
     }
 
     @Override
-    public void onLoadIncome(int id) {
+    public void onLoadIncome(String id) {
         model.load(id, new IncomeContract.Model.onTransactionListener() {
             @Override
             public void onSuccess(Object object) {

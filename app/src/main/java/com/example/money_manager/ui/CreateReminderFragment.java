@@ -30,7 +30,7 @@ import com.example.money_manager.utils.DateTimeUtils;
 
 public class CreateReminderFragment extends Fragment implements CreateReminderContract.View {
     private Spinner sp;
-    private TextView txtDate, txtHour, txt_required, txt_next_to_Update;
+    private TextView txtDate, txtHour, txt_required;
     private EditText edt_Create, edt_Comment;
     private  CreateReminderPresenter presenter;
     private Button btn_create_reminder;
@@ -63,7 +63,6 @@ public class CreateReminderFragment extends Fragment implements CreateReminderCo
         txtHour.setText(DateTimeUtils.getCurrentHour().toString());
         txt_required = v.findViewById(R.id.txt_required_update);
         edt_Create = v.findViewById(R.id.edt_creat_name);
-        txt_next_to_Update = v.findViewById(R.id.nextToUpdate);
         edt_Comment = v.findViewById(R.id.edt_comment);
         btn_create_reminder = v.findViewById(R.id.btn_create_reminder);
         btn_create_reminder.setAlpha(0.5f);
@@ -120,20 +119,6 @@ public class CreateReminderFragment extends Fragment implements CreateReminderCo
                 transaction.replace(R.id.nav_host_fragment_content_main, listReminderFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
-            }
-        });
-
-        txt_next_to_Update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UpdateReminderFragment updateFragment = new UpdateReminderFragment();
-                Bundle args = new Bundle();
-                args.putString("id", "-1309822290");
-                updateFragment.setArguments(args);
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.nav_host_fragment_content_main, updateFragment)
-                        .addToBackStack(null)
-                        .commit();
             }
         });
     }

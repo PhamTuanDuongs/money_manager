@@ -36,9 +36,10 @@ public class CreateReminderModel implements CreateReminderContract.Model {
         Map<String, Object> reminderData = new HashMap<>();
         reminderData.put("name", reminder.getName());
         reminderData.put("frequency", reminder.getFrequency());
-        reminderData.put("dateTime", reminder.getDateTime());
+        reminderData.put("dateTime", reminder.getDatetime());
         reminderData.put("comment", reminder.getComment());
         reminderData.put("account", user);
+        reminderData.put("isActive", reminder.isActive());
         db.collection("reminders").document(notificationId)
                 .set(reminderData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

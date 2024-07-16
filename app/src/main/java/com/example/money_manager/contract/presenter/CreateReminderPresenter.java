@@ -8,12 +8,10 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.DatePicker;
 
 import androidx.fragment.app.Fragment;
 
 import com.example.money_manager.AlarmReceiver;
-import com.example.money_manager.activity.authentication.WelcomeActivity;
 import com.example.money_manager.contract.CreateReminderContract;
 import com.example.money_manager.contract.model.CreateReminderModel;
 import com.example.money_manager.entity.Account;
@@ -21,13 +19,8 @@ import com.example.money_manager.entity.Reminder;
 import com.google.firebase.Timestamp;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
 
 public class CreateReminderPresenter implements CreateReminderContract.Presenter {
     private CreateReminderContract.View view;
@@ -44,7 +37,7 @@ public class CreateReminderPresenter implements CreateReminderContract.Presenter
     public void onDateClicked() {
         Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH ) + 1;
+        int month = c.get(Calendar.MONTH );
         int day = c.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(((Fragment) view).getActivity(), (view, selectedYear, selectedMonth, selectedDay) -> {
@@ -52,7 +45,7 @@ public class CreateReminderPresenter implements CreateReminderContract.Presenter
                 this.view.showDate(String.format("%d-%02d-%02d", selectedYear, selectedMonth, selectedDay));
             }
         }, year, month, day);
-
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         datePickerDialog.show();
     }
 
@@ -104,7 +97,7 @@ public class CreateReminderPresenter implements CreateReminderContract.Presenter
             }
             Timestamp timestamp = new Timestamp(datetime);
             Account account = new Account(email);
-            Reminder reminder = new Reminder(title, frequencey, timestamp, comment, account);
+            Reminder reminder = new Reminder(title, frequencey, timestamp, comment, account, false);
 
             switch (frequencey){
                 case "Once":
@@ -135,6 +128,7 @@ public class CreateReminderPresenter implements CreateReminderContract.Presenter
                         alertDialog.show();
                     }else {
                         model.scheduleOneTimeNotification(context,notificationId, title, comment, reminder, calendar);
+                        reminder.setActive(true);
                         model.createNewReminderToDB(reminder, Integer.toString(notificationId), new CreateReminderContract.Model.OnCreateNewReminderListener() {
                             @Override
                             public void onSuccess() {

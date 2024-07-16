@@ -12,5 +12,19 @@
             android:id="@+id/nav_reminder"
             android:icon="@drawable/ic_launcher_reminder"
             android:title="@string/reminder" />
+        <item
+            android:id="@+id/nav_expense"
+            android:icon="@drawable/ic_launcher_money"
+            android:title="@string/expense" />
+        <item
+            android:id="@+id/nav_income"
+            android:icon="@drawable/ic_launcher_reminder"
+            android:title="@string/income"
+            />
+        <item
+            android:id="@+id/nav_add_income"
+            android:icon="@drawable/arrow"
+            android:title="@string/add_income"
+            />
     </group>
 </menu>

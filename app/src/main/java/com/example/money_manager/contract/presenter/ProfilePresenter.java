@@ -1,12 +1,7 @@
 package com.example.money_manager.contract.presenter;
 
-import androidx.annotation.NonNull;
-
 import com.example.money_manager.contract.ProfileContract;
 import com.example.money_manager.contract.model.ProfileModel;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class ProfilePresenter implements ProfileContract.Presenter {
 

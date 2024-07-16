@@ -6,6 +6,7 @@ public class Category {
     private int type;
     private String account;
     private String image;
+    private String autoID;
 
     public Category(){
 
@@ -18,12 +19,16 @@ public class Category {
         this.image = image;
     }
 
-    public Category(String id, String name, int type, String account, String image) {
-        this.id = id;
-        this.name = name;
-        this.type = type;
-        this.account = account;
+    public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getAutoID() {
+        return autoID;
+    }
+
+    public void setAutoID(String autoID) {
+        this.autoID = autoID;
     }
 
     public String getId() {

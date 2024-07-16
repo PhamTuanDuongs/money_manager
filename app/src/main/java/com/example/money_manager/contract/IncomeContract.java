@@ -29,13 +29,13 @@ public class IncomeContract {
     public interface Presenter {
         void onAddButtonClick(Transaction transaction);
 
-        void onDeleteButtonClick(int id);
+        void onDeleteButtonClick(String id);
 
-        void onUpdateButtonClick(Transaction transaction, int id);
+        void onUpdateButtonClick(Transaction transaction, String id);
 
         void onGetListIncome();
 
-        void onLoadIncome(int id);
+        void onLoadIncome(String id);
 
         void onGetListIncomeByWeek(String date);
         void onGetListIncomeByMonth(String date);
@@ -51,11 +51,11 @@ public class IncomeContract {
 
         void add(Transaction transaction, String email, onTransactionListener listener);
 
-        void delete(int id, onTransactionListener listener);
+        void delete(String id, onTransactionListener listener);
 
-        void update(Transaction transaction, int id, onTransactionListener listener);
+        void update(Transaction transaction, String id, onTransactionListener listener);
 
-        void load(int id, onTransactionListener listener);
+        void load(String id, onTransactionListener listener);
 
         double getAccountBalance(String email, onTransactionListener listener);
 

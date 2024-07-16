@@ -137,11 +137,11 @@ public class IncomeListByWeekFragment extends Fragment implements IncomeContract
         int id = item.getItemId();
         if (id == R.id.delete) {
             Transaction t = incomeAdapter.getItem(incomePosition);
-            presenter.onDeleteButtonClick(t.getId());
+            presenter.onDeleteButtonClick(t.getAutoID());
         }
 
         if (id == R.id.update) {
-            IncomeUpdateFragment fragment = new IncomeUpdateFragment(incomeAdapter.getItem(incomePosition).getId());
+            IncomeUpdateFragment fragment = new IncomeUpdateFragment(incomeAdapter.getItem(incomePosition).getAutoID());
             FragmentManager manager = getParentFragment().getParentFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.replace(R.id.nav_host_fragment_content_main,fragment);

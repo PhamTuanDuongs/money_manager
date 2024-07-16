@@ -1,8 +1,12 @@
 package com.example.money_manager.utils;
+
+import android.icu.util.TimeZone;
+
 import android.util.Log;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import com.google.firebase.Timestamp;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -183,12 +187,12 @@ public final class DateTimeUtils {
     }
 
     public static String convertTimestampToDate(Timestamp timestamp) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        android.icu.text.SimpleDateFormat dateFormat = new android.icu.text.SimpleDateFormat("yyyy-MM-dd");
         String datePart = dateFormat.format(timestamp.toDate());
         return datePart;
     }
     public static String convertTimestampToTime(Timestamp timestamp) {
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        android.icu.text.SimpleDateFormat timeFormat = new android.icu.text.SimpleDateFormat("HH:mm");
         String timePart = timeFormat.format(timestamp.toDate());
         return timePart;
     }

@@ -15,10 +15,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.money_manager.R;
-
+import com.example.money_manager.ui.AddIncomeFragment;
 import com.example.money_manager.ui.CreateReminderFragment;
 import com.example.money_manager.ui.ExpenseListFragment;
 import com.example.money_manager.ui.HomeFragment;
+import com.example.money_manager.ui.IncomeFragment;
+import com.example.money_manager.ui.IncomeListFragment;
 import com.example.money_manager.ui.ProfileFragment;
 import com.example.money_manager.ui.ReportFragment;
 import com.example.money_manager.utils.AccountState;
@@ -68,6 +70,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_home) {
             selectedFragment = new ReportFragment();
             setToolbarTitle("Home");
+        } else if (id == R.id.nav_reminder) {
+            selectedFragment = new CreateReminderFragment();
+            setToolbarTitle("Create Reminder");
+        } else if (id == R.id.nav_income) {
+            selectedFragment = new IncomeListFragment();
+            setToolbarTitle("Income");
+        } else if(id == R.id.nav_add_income) {
+            selectedFragment = new AddIncomeFragment();
+            setToolbarTitle("Add income");
         }
         else if (id == R.id.nav_expense) {
             selectedFragment = new ExpenseListFragment();
@@ -77,9 +88,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             selectedFragment = new CreateReminderFragment();
             setToolbarTitle("Reminder");
         }
+
         if (selectedFragment != null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, selectedFragment).commit();
         }
+
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }

@@ -20,6 +20,7 @@ import com.example.money_manager.contract.ListReminderContract;
 import com.example.money_manager.contract.presenter.ListReminderPresenter;
 import com.example.money_manager.entity.Reminder;
 import com.google.firebase.Firebase;
+import com.google.firebase.Timestamp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,8 +30,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,7 +57,7 @@ public class ListReminderFragment extends Fragment implements ListReminderContra
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new ListReminderPresenter(this);
+        presenter = new ListReminderPresenter(this, requireContext());
     }
 
     @Override
@@ -68,7 +71,6 @@ public class ListReminderFragment extends Fragment implements ListReminderContra
         List<Reminder> reminders = new ArrayList<>();
         adapter = new ReminderAdapter(reminders, this);
         recyclerView.setAdapter(adapter);
-
         presenter.loadReminders();
 
         Button addReminderButton = view.findViewById(R.id.btnAddReminder);

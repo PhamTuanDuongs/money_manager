@@ -3,6 +3,8 @@ package com.example.money_manager.contract.model;
 import com.example.money_manager.contract.ListCategoryContract;
 import com.example.money_manager.entity.Category;
 import com.example.money_manager.entity.Reminder;
+import com.example.money_manager.utils.AccountState;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -17,6 +19,7 @@ import java.util.Set;
 
 public class ListCategoryModel implements ListCategoryContract.Model {
 
+    List<Category> categories = new ArrayList<>();
     @Override
     public void getCategories(OnCategoriesGetListener listener) {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
@@ -25,26 +28,43 @@ public class ListCategoryModel implements ListCategoryContract.Model {
         if (currentUser != null) {
             String currentAccount = currentUser.getEmail();
 
-            categoriesRef.whereEqualTo("account", currentAccount).get()
-                    .addOnSuccessListener(queryDocumentSnapshots -> {
-                        List<Category> categories = new ArrayList<>();
-                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                            Category category = document.toObject(Category.class);
-                            categories.add(category);
-                        }
-
-                        // Truy vấn thêm các category có account rỗng
-                        categoriesRef.whereEqualTo("account", "").get()
-                                .addOnSuccessListener(emptyAccountSnapshots -> {
-                                    for (QueryDocumentSnapshot document : emptyAccountSnapshots) {
-                                        Category category = document.toObject(Category.class);
+            categoriesRef.whereEqualTo("account", firestore.document("accounts/" + currentAccount)).get()
+                    .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    QuerySnapshot querySnapshot = task.getResult();
+                                    for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
+                                        Category category = new Category();
+                                        category.setId(documentSnapshot.getId());
+                                        category.setName(documentSnapshot.get("name", String.class));
+                                        category.setType(documentSnapshot.get("type", int.class));
+                                        category.setIconImageId(documentSnapshot.get("image", String.class));
                                         categories.add(category);
                                     }
-                                    listener.onCategoriesGet(new ArrayList<>(categories));
-                                })
-                                .addOnFailureListener(e -> listener.onError(e));
-                    })
-                    .addOnFailureListener(e -> listener.onError(e));
+                                    listener.onCategoriesGet(categories);
+                                }
+                                else{
+                                    listener.onError(task.getException());
+                                }
+                    });
         }
+        else{
+            listener.onError(new Exception("No account found"));
+        }
+
+
+        // Truy vấn thêm các category có account rỗng
+        categoriesRef.whereEqualTo("account", "").get()
+                .addOnSuccessListener(emptyAccountSnapshots -> {
+                    for (QueryDocumentSnapshot doc : emptyAccountSnapshots) {
+                        Category category = new Category();
+                        category.setId(doc.getId());
+                        category.setName(doc.get("name", String.class));
+                        category.setType(doc.get("type", int.class));
+                        category.setIconImageId(doc.get("image", String.class));
+                        categories.add(category);
+                    }
+                    listener.onCategoriesGet(categories);
+                })
+                .addOnFailureListener(e -> listener.onError(e));
     }
 }

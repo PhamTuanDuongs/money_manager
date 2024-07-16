@@ -117,7 +117,7 @@ public class CreateReminderModel implements CreateReminderContract.Model {
             calendar.add(Calendar.WEEK_OF_YEAR, 1);
         }
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY*7, pendingIntent);
     }
 
 }

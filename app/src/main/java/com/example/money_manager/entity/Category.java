@@ -1,7 +1,7 @@
 package com.example.money_manager.entity;
 
 public class Category {
-    private int id;
+    private String id;
     private String name;
     private int type;
     private String account;
@@ -11,7 +11,14 @@ public class Category {
 
     }
 
-    public Category(int id, String name, int type, String account, String image) {
+    public Category(String id, String name, int type, String image) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.image = image;
+    }
+
+    public Category(String id, String name, int type, String account, String image) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -19,11 +26,11 @@ public class Category {
         this.image = image;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

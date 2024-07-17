@@ -166,11 +166,24 @@ public class ListReminderPresenter implements ListReminderContract.Presenter, Li
         } else {
             Timestamp timestamp = reminder.getDateTime();
             Date date = timestamp.toDate();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            String formattedDate = dateFormat.format(date);
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-            String formattedTime = timeFormat.format(date);
-            updateNotification(context, reminder, formattedDate, formattedTime);
+            if (date.before(new Date()) && "Once".equals(reminder.getFrequency())) {
+                new AlertDialog.Builder(context)
+                        .setTitle("Reminder Time Passed")
+                        .setMessage("The reminder time has already passed. Do you want to update the reminder?")
+                        .setPositiveButton("Yes", (dialog, which) -> view.navigateToUpdateReminder(reminder))
+                        .setNegativeButton("No", ((dialog, which) -> {
+                            reminder.setActive(false);
+                            model.updateReminder(reminder);
+                            loadReminders();
+                        }))
+                        .show();
+            } else {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String formattedDate = dateFormat.format(date);
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+                String formattedTime = timeFormat.format(date);
+                updateNotification(context, reminder, formattedDate, formattedTime);
+            }
         }
     }
 

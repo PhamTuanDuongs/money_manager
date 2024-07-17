@@ -8,6 +8,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -38,13 +39,6 @@ public class ListCategoryModel implements ListCategoryContract.Model {
                                         category.setName(documentSnapshot.get("name", String.class));
                                         category.setType(documentSnapshot.get("type", int.class));
                                         category.setIconImageId(documentSnapshot.get("image", String.class));
-                                        String accountPath = documentSnapshot.get("account", String.class);
-                                        if (accountPath != null && accountPath.startsWith("accounts/")) {
-                                            String email = accountPath.substring("accounts/".length());
-                                            category.setAccount(email);
-                                        } else {
-                                            category.setAccount(accountPath);
-                                        }
                                         categories.add(category);
                                     }
                                     listener.onCategoriesGet(categories);
@@ -68,7 +62,7 @@ public class ListCategoryModel implements ListCategoryContract.Model {
                         category.setName(doc.get("name", String.class));
                         category.setType(doc.get("type", int.class));
                         category.setIconImageId(doc.get("image", String.class));
-                        category.setAccount(doc.get("account", String.class));
+                        category.setAccount("default");
                         categories.add(category);
                     }
                     listener.onCategoriesGet(categories);

@@ -12,7 +12,7 @@ public class ListCategoryPresenter implements ListCategoryContract.Presenter, Li
     private ListCategoryContract.Model model;
 
     public ListCategoryPresenter(ListCategoryContract.Model model) {
-            this.model = model;
+        this.model = model;
     }
 
     @Override
@@ -20,45 +20,52 @@ public class ListCategoryPresenter implements ListCategoryContract.Presenter, Li
             this.view = view;
         }
 
-            @Override
-            public void detachView() {
+    @Override
+    public void detachView() {
                 this.view = null;
             }
 
-            @Override
-            public void loadExpenseCategories() {
+    @Override
+    public void loadExpenseCategories() {
                 model.getCategories(this);
             }
 
-            @Override
-            public void loadIncomeCategories() {
+    @Override
+    public void loadIncomeCategories() {
                 model.getCategories(this);
             }
 
-            @Override
-            public void onCategoriesGet(List<Category> categories) {
+    @Override
+    public void onCategoryClicked(Category category) {
+        if (view != null) {
+            view.navigateToUpdateCategory(category);
+        }
+    }
 
-                    if (view != null) {
-                        List<Category> expenseCategories = filterCategoriesByType(categories, 1);
-                        List<Category> incomeCategories = filterCategoriesByType(categories, 2);
+    @Override
+    public void onCategoriesGet(List<Category> categories) {
 
-                        view.showExpenseCategories(expenseCategories);
-                        view.showIncomeCategories(incomeCategories);
-                    }
-                }
+        if (view != null) {
+            List<Category> expenseCategories = filterCategoriesByType(categories, 1);
+            List<Category> incomeCategories = filterCategoriesByType(categories, 0);
 
-                @Override
-                public void onError(Exception e) {
-                    // Handle error if needed
-                }
+            view.showExpenseCategories(expenseCategories);
+            view.showIncomeCategories(incomeCategories);
+        }
+    }
 
-                private List<Category> filterCategoriesByType(List<Category> categories, int type) {
-                    List<Category> filteredCategories = new ArrayList<>();
-                    for (Category category : categories) {
-                        if (category.getType() == type) {
-                            filteredCategories.add(category);
-                        }
-                    }
-                    return filteredCategories;
-                }
+    @Override
+    public void onError(Exception e) {
+
+    }
+
+    private List<Category> filterCategoriesByType(List<Category> categories, int type) {
+        List<Category> filteredCategories = new ArrayList<>();
+        for (Category category : categories) {
+            if (category.getType() == type) {
+                filteredCategories.add(category);
             }
+        }
+        return filteredCategories;
+    }
+}

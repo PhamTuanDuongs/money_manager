@@ -8,6 +8,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -28,7 +29,7 @@ public class ListCategoryModel implements ListCategoryContract.Model {
         if (currentUser != null) {
             String currentAccount = currentUser.getEmail();
 
-            categoriesRef.whereEqualTo("account", firestore.document("accounts/" + currentAccount)).get()
+            categoriesRef.whereEqualTo("account_id", firestore.document("accounts/" + currentAccount)).get()
                     .addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
                                     QuerySnapshot querySnapshot = task.getResult();
@@ -61,6 +62,7 @@ public class ListCategoryModel implements ListCategoryContract.Model {
                         category.setName(doc.get("name", String.class));
                         category.setType(doc.get("type", int.class));
                         category.setIconImageId(doc.get("image", String.class));
+                        category.setAccount("default");
                         categories.add(category);
                     }
                     listener.onCategoriesGet(categories);

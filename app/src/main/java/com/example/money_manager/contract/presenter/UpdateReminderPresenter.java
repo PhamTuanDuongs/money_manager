@@ -195,4 +195,23 @@ public class UpdateReminderPresenter implements UpdateReminderContract.Presenter
             }
         }
     }
+
+    @Override
+    public void onClickDeleteReminder(String id, Context context) {
+        model.deleteReminderById(id, new UpdateReminderContract.Model.OnDeleteReminderListener() {
+        @Override
+        public void onSuccess() {
+            if (view != null) {
+                view.deleteReminderSuccess();
+            }
+        }
+
+        @Override
+        public void onError(String message) {
+            if (view != null) {
+                view.deleteReminderError(message);
+            }
+        }
+    });
+    }
 }

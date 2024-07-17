@@ -64,6 +64,7 @@ public class CreateReminderModel implements CreateReminderContract.Model {
             intent.putExtra("notificationId", notificationId);
             intent.putExtra("title", title);
             intent.putExtra("message", message);
+            intent.putExtra("frequency", reminder.getFrequency());
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_IMMUTABLE);
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }

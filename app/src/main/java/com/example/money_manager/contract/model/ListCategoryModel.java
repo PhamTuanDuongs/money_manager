@@ -28,7 +28,7 @@ public class ListCategoryModel implements ListCategoryContract.Model {
         if (currentUser != null) {
             String currentAccount = currentUser.getEmail();
 
-            categoriesRef.whereEqualTo("account", firestore.document("accounts/" + currentAccount)).get()
+            categoriesRef.whereEqualTo("account_id", firestore.document("accounts/" + currentAccount)).get()
                     .addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
                                     QuerySnapshot querySnapshot = task.getResult();
@@ -38,6 +38,13 @@ public class ListCategoryModel implements ListCategoryContract.Model {
                                         category.setName(documentSnapshot.get("name", String.class));
                                         category.setType(documentSnapshot.get("type", int.class));
                                         category.setIconImageId(documentSnapshot.get("image", String.class));
+                                        String accountPath = documentSnapshot.get("account", String.class);
+                                        if (accountPath != null && accountPath.startsWith("accounts/")) {
+                                            String email = accountPath.substring("accounts/".length());
+                                            category.setAccount(email);
+                                        } else {
+                                            category.setAccount(accountPath);
+                                        }
                                         categories.add(category);
                                     }
                                     listener.onCategoriesGet(categories);
@@ -61,6 +68,7 @@ public class ListCategoryModel implements ListCategoryContract.Model {
                         category.setName(doc.get("name", String.class));
                         category.setType(doc.get("type", int.class));
                         category.setIconImageId(doc.get("image", String.class));
+                        category.setAccount(doc.get("account", String.class));
                         categories.add(category);
                     }
                     listener.onCategoriesGet(categories);

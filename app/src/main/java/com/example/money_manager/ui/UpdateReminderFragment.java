@@ -1,5 +1,6 @@
 package com.example.money_manager.ui;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +41,7 @@ public class UpdateReminderFragment extends Fragment implements UpdateReminderCo
     private TextView txtDate, txtHour, txt_required;
     private EditText edt_Update, edt_Comment;
     private UpdateReminderPresenter presenter;
-    private Button btn_update_reminder;
+    private Button btn_update_reminder, btn_delete_reminder;
     private String frequencey = "";
 
     public UpdateReminderFragment() {
@@ -72,6 +74,8 @@ public class UpdateReminderFragment extends Fragment implements UpdateReminderCo
         edt_Update = v.findViewById(R.id.edt_update_name);
         edt_Comment = v.findViewById(R.id.edt_comment_update);
         btn_update_reminder = v.findViewById(R.id.btn_update_reminder);
+        btn_delete_reminder = v.findViewById(R.id.btn_delete_reminder);
+
         btn_update_reminder.setAlpha(0.5f);
         btn_update_reminder.setEnabled(false);
         String [] values = {"Once", "Every 1 Minute", "Daily","Weekly"};
@@ -132,6 +136,28 @@ public class UpdateReminderFragment extends Fragment implements UpdateReminderCo
                 transaction.replace(R.id.nav_host_fragment_content_main, listReminderFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
+            }
+        });
+
+        btn_delete_reminder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String value = getArguments().getString("reminderId");
+                Log.d("Button","Clicked!" + value);
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Confirm Deletion")
+                        .setMessage("Are you sure you want to delete this reminder?")
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                            presenter.onClickDeleteReminder(value, requireContext());
+
+                            Fragment listReminderFragment = new ListReminderFragment();
+                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                            transaction.replace(R.id.nav_host_fragment_content_main, listReminderFragment);
+                            transaction.addToBackStack(null);
+                            transaction.commit();
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .show();
             }
         });
     }
@@ -197,5 +223,15 @@ public class UpdateReminderFragment extends Fragment implements UpdateReminderCo
         ArrayAdapter<String> adapter = (ArrayAdapter<String>) sp.getAdapter();
         int spinnerPosition = adapter.getPosition(frequency);
         sp.setSelection(spinnerPosition);
+    }
+
+    @Override
+    public void deleteReminderSuccess() {
+
+    }
+
+    @Override
+    public void deleteReminderError(String message) {
+
     }
 }

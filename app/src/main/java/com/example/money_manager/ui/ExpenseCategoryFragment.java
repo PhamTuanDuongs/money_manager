@@ -3,9 +3,11 @@ package com.example.money_manager.ui;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +40,7 @@ public class ExpenseCategoryFragment extends Fragment implements ListCategoryCon
         presenter.attachView(this);
 
         categoryAdapter = new CategoryAdapter();
+        categoryAdapter.setOnCategoryClickListener(category -> presenter.onCategoryClicked(category));
         rvExpenseCategories.setLayoutManager(new GridLayoutManager(getContext(), 3));
         rvExpenseCategories.setAdapter(categoryAdapter);
 
@@ -59,5 +62,15 @@ public class ExpenseCategoryFragment extends Fragment implements ListCategoryCon
 
     @Override
     public void showIncomeCategories(List<Category> incomeCategories) {
+    }
+
+    @Override
+    public void navigateToUpdateCategory(Category category) {
+//        Fragment updateCategoryFragment = UpdateCategoryFragment.newInstance(category.getId());
+//        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+//        transaction.replace(R.id.nav_host_fragment_content_main, updateCategoryFragment);
+//        transaction.addToBackStack(null);
+//        transaction.commit();
+        Log.d("Category", "clicked! " + category.getId());
     }
 }

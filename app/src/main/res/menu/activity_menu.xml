@@ -22,13 +22,8 @@
             android:title="@string/income"
             />
         <item
-            android:id="@+id/nav_add_income"
-            android:icon="@drawable/arrow"
-            android:title="@string/add_income"
-            />
-        <item
             android:id="@+id/nav_category"
-            android:icon="@drawable/icon_other"
+            android:icon="@drawable/list"
             android:title="Category"
             />
     </group>

@@ -304,7 +304,12 @@ public void getCategoryListByEmailAndType(String email, int type, onTransactionL
     firestore
             .collection(CATEGORY_COLLECTION)
             .whereEqualTo("type", type)
-            .whereEqualTo("account_id", user)
+            .where(
+                    Filter.or(
+                            Filter.equalTo("account_id", user),
+                            Filter.equalTo("account", "")
+                    )
+            )
             .get()
             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override

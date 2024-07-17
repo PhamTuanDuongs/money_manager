@@ -42,20 +42,22 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/pageholder"
         android:layout_width="411dp"
-        android:layout_height="651dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ctablayout"></androidx.viewpager.widget.ViewPager>
+
     <ImageButton
         android:id="@+id/btnAddExpense"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:layout_marginTop="632dp"
-        android:layout_marginLeft="16dp"
         android:background="@drawable/img_btn_add"
         android:src="@drawable/ic_launcher_add"
         android:text="Button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.97" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

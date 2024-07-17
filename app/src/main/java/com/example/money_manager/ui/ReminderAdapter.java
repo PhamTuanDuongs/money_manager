@@ -1,5 +1,6 @@
 package com.example.money_manager.ui;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +18,12 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
 
     private List<Reminder> reminderList;
     private OnReminderClickListener listener;
+    private Context context;
 
-    public ReminderAdapter(List<Reminder> reminderList, OnReminderClickListener listener) {
+    public ReminderAdapter(List<Reminder> reminderList, OnReminderClickListener listener, Context context) {
         this.reminderList = reminderList;
         this.listener = listener;
+        this.context = context;
     }
 
     @NonNull
@@ -37,7 +40,13 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
         holder.descriptionTextView.setText(reminder.getComment());
         holder.idTextView.setText(reminder.getId());
         holder.swActive.setChecked(reminder.isActive());
+
         holder.itemView.setOnClickListener(v -> listener.onReminderClick(reminder));
+
+        holder.swActive.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            reminder.setActive(isChecked);
+            listener.onSwitchToggle(reminder, context);
+        });
     }
 
     @Override
@@ -52,6 +61,7 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
 
     public interface OnReminderClickListener {
         void onReminderClick(Reminder reminder);
+        void onSwitchToggle(Reminder reminder, Context context);
     }
 
     static class ReminderViewHolder extends RecyclerView.ViewHolder {

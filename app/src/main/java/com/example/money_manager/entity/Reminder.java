@@ -19,12 +19,13 @@ public class Reminder {
 
     public Reminder() {}
 
-    public Reminder(String name, String frequency, Timestamp datetime, String comment, Account account) {
+    public Reminder(String name, String frequency, Timestamp datetime, String comment, Account account, boolean isActive) {
         this.name = name;
         this.frequency = frequency;
         this.datetime = datetime;
         this.comment = comment;
         this.account = account;
+        this.isActive = isActive;
     }
 
     public Reminder(String id, String name, String frequency, Timestamp datetime, String comment, Account account, boolean isActive) {

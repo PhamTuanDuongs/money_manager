@@ -5,6 +5,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.example.money_manager.AlarmReceiver;
 import com.example.money_manager.contract.ListReminderContract;
@@ -22,6 +23,15 @@ import java.util.Calendar;
 import java.util.List;
 
 public class ListReminderModel implements ListReminderContract.Model {
+
+    @Override
+    public void updateReminder(Reminder reminder) {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        firestore.collection("reminders").document(reminder.getId())
+                .update("isActive", reminder.isActive())
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Reminder updated successfully"))
+                .addOnFailureListener(e -> Log.d("Firestore", "Error updating reminder", e));
+    }
 
     @Override
     public void getReminders(OnFinishedListener listener) {
@@ -43,7 +53,7 @@ public class ListReminderModel implements ListReminderContract.Model {
                         reminder.setComment(doc.get("comment", String.class));
                         reminder.setDateTime(doc.get("dateTime", Timestamp.class));
                         reminder.setFrequency(doc.get("frequency", String.class));
-                        //reminder.setActive(doc.get("isActive",Boolean.class));
+                        reminder.setActive(doc.get("isActive",Boolean.class));
                         reminders.add(reminder);
                     }
                     listener.onFinished(reminders);
@@ -58,8 +68,9 @@ public class ListReminderModel implements ListReminderContract.Model {
 
     @SuppressLint("ScheduleExactAlarm")
     @Override
-    public void scheduleNotification(Context context, int notificationId, String title, String message, Reminder reminder, Calendar calendar, int repeatType) {
+    public void scheduleNotification(Context context, int notificationId, String title, String message, Reminder reminder, Calendar calendar, int repeatType, boolean isActive) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.setAction("Default");
         intent.putExtra("notificationId", notificationId);
@@ -67,39 +78,43 @@ public class ListReminderModel implements ListReminderContract.Model {
         intent.putExtra("message", message);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_IMMUTABLE);
+        if (isActive){
+            if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+                switch (repeatType) {
+                    case 1:
+                        calendar.add(Calendar.MINUTE, 1);
+                        break;
+                    case 2:
+                        calendar.add(Calendar.DAY_OF_MONTH, 1);
+                        break;
+                    case 3:
+                        calendar.add(Calendar.WEEK_OF_YEAR, 1);
+                        break;
+                    default:
+                        break;
+                }
+            }
 
-        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
-            switch (repeatType) {
-                case 1:
-                    calendar.add(Calendar.MINUTE, 1);
-                    break;
-                case 2:
-                    calendar.add(Calendar.DAY_OF_MONTH, 1);
-                    break;
-                case 3:
-                    calendar.add(Calendar.WEEK_OF_YEAR, 1);
-                    break;
-                default:
-                    break;
+            if (repeatType == 0) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            } else {
+                long repeatInterval = 0;
+                switch (repeatType) {
+                    case 1:
+                        repeatInterval = 1000 * 60; // 1 minute
+                        break;
+                    case 2:
+                        repeatInterval = AlarmManager.INTERVAL_DAY; // 1 day
+                        break;
+                    case 3:
+                        repeatInterval = AlarmManager.INTERVAL_DAY * 7; // 1 week
+                        break;
+                }
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), repeatInterval, pendingIntent);
             }
         }
-
-        if (repeatType == 0) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        } else {
-            long repeatInterval = 0;
-            switch (repeatType) {
-                case 1:
-                    repeatInterval = 1000 * 60; // 1 minute
-                    break;
-                case 2:
-                    repeatInterval = AlarmManager.INTERVAL_DAY; // 1 day
-                    break;
-                case 3:
-                    repeatInterval = AlarmManager.INTERVAL_DAY * 7; // 1 week
-                    break;
-            }
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), repeatInterval, pendingIntent);
+        else{
+            alarmManager.cancel(pendingIntent);
         }
     }
 }

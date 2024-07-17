@@ -1,5 +1,6 @@
 package com.example.money_manager.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -69,7 +70,7 @@ public class ListReminderFragment extends Fragment implements ListReminderContra
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         List<Reminder> reminders = new ArrayList<>();
-        adapter = new ReminderAdapter(reminders, this);
+        adapter = new ReminderAdapter(reminders, this, requireContext());
         recyclerView.setAdapter(adapter);
         presenter.loadReminders();
 
@@ -110,5 +111,10 @@ public class ListReminderFragment extends Fragment implements ListReminderContra
     @Override
     public void onReminderClick(Reminder reminder) {
         navigateToUpdateReminder(reminder);
+    }
+
+    @Override
+    public void onSwitchToggle(Reminder reminder, Context context) {
+        presenter.onSwitchToggle(reminder,context);
     }
 }

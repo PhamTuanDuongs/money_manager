@@ -97,7 +97,7 @@ public class CreateReminderPresenter implements CreateReminderContract.Presenter
             }
             Timestamp timestamp = new Timestamp(datetime);
             Account account = new Account(email);
-            Reminder reminder = new Reminder(title, frequencey, timestamp, comment, account, false);
+            Reminder reminder = new Reminder(title, frequencey, timestamp, comment, account, true);
 
             switch (frequencey){
                 case "Once":
@@ -109,6 +109,7 @@ public class CreateReminderPresenter implements CreateReminderContract.Presenter
                         builder.setIcon(android.R.drawable.ic_dialog_alert);
                         builder.setPositiveButton("Yes", (dialog, which) -> {
                             dialog.dismiss();
+                            reminder.setActive(false);
                             model.createNewReminderToDB(reminder, Integer.toString(notificationId), new CreateReminderContract.Model.OnCreateNewReminderListener() {
                                 @Override
                                 public void onSuccess() {

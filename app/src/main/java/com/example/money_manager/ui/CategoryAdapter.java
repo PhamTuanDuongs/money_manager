@@ -16,6 +16,7 @@ import java.util.List;
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 
     private List<Category> categories = new ArrayList<>();
+    private OnCategoryClickListener listener;
 
     public void setCategories(List<Category> categories) {
         this.categories = categories;
@@ -32,7 +33,16 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Category category = categories.get(position);
-        holder.bind(category);
+        holder.categoryIcon.setImageResource(holder.itemView.getContext().getResources().getIdentifier(
+                category.getImage(), "drawable", holder.itemView.getContext().getPackageName()));
+        holder.categoryName.setText(category.getName());
+        holder.categoryId.setText(category.getId());
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onCategoryClick(category);
+            }
+        });
     }
 
     @Override
@@ -43,17 +53,21 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView categoryIcon;
         public TextView categoryName;
+        public TextView categoryId;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             categoryIcon = itemView.findViewById(R.id.category_icon);
             categoryName = itemView.findViewById(R.id.category_name);
+            categoryId = itemView.findViewById(R.id.category_id);
         }
+    }
 
-        public void bind(Category category) {
-            categoryIcon.setImageResource(itemView.getContext().getResources().getIdentifier(
-                    category.getImage(), "drawable", itemView.getContext().getPackageName()));
-            categoryName.setText(category.getName());
-        }
+    public interface OnCategoryClickListener {
+        void onCategoryClick(Category category);
+    }
+
+    public void setOnCategoryClickListener(OnCategoryClickListener listener) {
+        this.listener = listener;
     }
 }

@@ -108,6 +108,7 @@ public class ListReminderFragment extends Fragment implements ListReminderContra
         transaction.commit();
     }
 
+
     @Override
     public void onReminderClick(Reminder reminder) {
         navigateToUpdateReminder(reminder);

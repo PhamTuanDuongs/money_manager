@@ -21,6 +21,9 @@ public class UpdateReminderContract {
         void updateReminderError();
 
         void fillExistData(Reminder reminder);
+        void deleteReminderSuccess();
+
+        void deleteReminderError(String message);
     }
 
     public interface Presenter {
@@ -31,6 +34,7 @@ public class UpdateReminderContract {
         void getReminderById(int id);
 
         void onClickUpdateReminder(Context context, String title, String frequencey, String strDate, String strTime, String comment, String account, int notificationId);
+        void onClickDeleteReminder(String id, Context context);
     }
 
     public interface Model {
@@ -50,6 +54,8 @@ public class UpdateReminderContract {
         void updateScheduleWeeklyNotification(Context context, int notificationId, String title,
                                               String message, Reminder reminder, Calendar calendar);
 
+        void deleteReminderById(String id, OnDeleteReminderListener listener);
+
         interface OnUpdateNewReminderListener {
             void onSuccess();
 
@@ -60,5 +66,10 @@ public class UpdateReminderContract {
             void onCallBack(Reminder reminder);
         }
 
+        interface OnDeleteReminderListener {
+            void onSuccess();
+
+            void onError(String message);
+        }
     }
 }

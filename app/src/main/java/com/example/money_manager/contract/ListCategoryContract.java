@@ -9,6 +9,7 @@ public class ListCategoryContract {
     public interface View {
         void showExpenseCategories(List<Category> expenseCategories);
         void showIncomeCategories(List<Category> incomeCategories);
+        void navigateToUpdateCategory(Category category);
     }
 
     public interface Presenter {
@@ -19,6 +20,7 @@ public class ListCategoryContract {
         void loadExpenseCategories();
 
         void loadIncomeCategories();
+        void onCategoryClicked(Category category);
     }
 
     public interface Model {

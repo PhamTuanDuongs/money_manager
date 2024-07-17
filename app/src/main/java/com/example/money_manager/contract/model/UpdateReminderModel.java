@@ -144,4 +144,12 @@ public class UpdateReminderModel implements UpdateReminderContract.Model {
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
+    @Override
+    public void deleteReminderById(String id, OnDeleteReminderListener listener) {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        firestore.collection("reminders").document(id)
+                .delete()
+                .addOnSuccessListener(aVoid -> listener.onSuccess())
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
 }

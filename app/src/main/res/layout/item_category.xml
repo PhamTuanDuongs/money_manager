@@ -6,6 +6,13 @@
     android:padding="8dp"
     android:gravity="center">
 
+    <TextView
+        android:id="@+id/category_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:visibility="gone"/>
+
     <ImageView
         android:id="@+id/category_icon"
         android:layout_width="48dp"

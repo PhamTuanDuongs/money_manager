@@ -12,6 +12,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -93,7 +94,13 @@ public class ReportModel implements ReportContract.Model {
         firestore
                 .collection(CATEGORY_COLLECTION)
                 .whereEqualTo("type", type)
-                .whereEqualTo("account_id", user)
+                .whereEqualTo("type", type)
+                .where(
+                        Filter.or(
+                                Filter.equalTo("account_id", user),
+                                Filter.equalTo("account", "")
+                        )
+                )
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

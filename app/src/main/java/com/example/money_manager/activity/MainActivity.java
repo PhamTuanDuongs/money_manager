@@ -15,9 +15,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.money_manager.R;
+import com.example.money_manager.ui.AddIncomeFragment;
 import com.example.money_manager.ui.CreateReminderFragment;
+import com.example.money_manager.ui.ExpenseListFragment;
 import com.example.money_manager.ui.HomeFragment;
+import com.example.money_manager.ui.IncomeFragment;
+import com.example.money_manager.ui.IncomeListFragment;
 import com.example.money_manager.ui.ProfileFragment;
+import com.example.money_manager.ui.ReportFragment;
 import com.example.money_manager.utils.AccountState;
 import com.google.android.material.navigation.NavigationView;
 
@@ -51,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, new HomeFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, new ReportFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_home);
             setToolbarTitle("Home");
         }
@@ -61,13 +66,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment selectedFragment = null;
         int id = item.getItemId();
+
         if (id == R.id.nav_home) {
-            selectedFragment = new HomeFragment();
+            selectedFragment = new ReportFragment();
             setToolbarTitle("Home");
         } else if (id == R.id.nav_reminder) {
             selectedFragment = new CreateReminderFragment();
             setToolbarTitle("Create Reminder");
+        } else if (id == R.id.nav_income) {
+            selectedFragment = new IncomeListFragment();
+            setToolbarTitle("Income");
+        } else if(id == R.id.nav_add_income) {
+            selectedFragment = new AddIncomeFragment();
+            setToolbarTitle("Add income");
         }
+        else if (id == R.id.nav_expense) {
+            selectedFragment = new ExpenseListFragment();
+            setToolbarTitle("Expense");
+        }
+        else if (id == R.id.nav_reminder) {
+            selectedFragment = new CreateReminderFragment();
+            setToolbarTitle("Reminder");
+        }
+
         if (selectedFragment != null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, selectedFragment).commit();
         }

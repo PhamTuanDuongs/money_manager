@@ -41,6 +41,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation("io.github.muddz:styleabletoast:2.4.0")
     implementation("com.google.firebase:firebase-database:19.2.0")
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.0.3")
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.navigation.fragment)
@@ -48,7 +49,11 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    implementation(libs.cardview)
+    implementation(libs.legacy.support.v4)
+    implementation(libs.recyclerview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
 }

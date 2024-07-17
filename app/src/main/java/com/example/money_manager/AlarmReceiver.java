@@ -23,7 +23,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
             if(Objects.equals("Default", intent.getAction())){
-                int notificationId = intent.getIntExtra("notificationId", -1);  // Retrieve the notification ID
+                int notificationId = intent.getIntExtra("notificationId", -1);
                 String title = intent.getStringExtra("title");
                 String message = intent.getStringExtra("message");
                 NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);

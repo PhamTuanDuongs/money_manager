@@ -1,7 +1,5 @@
 package com.example.money_manager.ui;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,11 +15,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.money_manager.R;
@@ -29,18 +25,16 @@ import com.example.money_manager.contract.CreateReminderContract;
 import com.example.money_manager.contract.presenter.CreateReminderPresenter;
 import com.example.money_manager.utils.AccountState;
 import com.example.money_manager.utils.DateTimeUtils;
-import com.example.money_manager.utils.ValidateUtils;
-
-import java.util.Calendar;
 
 
 public class CreateReminderFragment extends Fragment implements CreateReminderContract.View {
     private Spinner sp;
-    private TextView txtDate, txtHour, txt_required;
+    private TextView txtDate, txtHour, txt_required, txt_next_to_Update;
     private EditText edt_Create, edt_Comment;
     private  CreateReminderPresenter presenter;
     private Button btn_create_reminder;
     private String frequencey = "";
+
 
     public CreateReminderFragment() {
     }
@@ -66,13 +60,14 @@ public class CreateReminderFragment extends Fragment implements CreateReminderCo
         txtHour = v.findViewById(R.id.txt_create_hour);
         txtDate.setText(DateTimeUtils.getCurrentDate().toString());
         txtHour.setText(DateTimeUtils.getCurrentHour().toString());
-        txt_required = v.findViewById(R.id.txt_required);
+        txt_required = v.findViewById(R.id.txt_required_update);
         edt_Create = v.findViewById(R.id.edt_creat_name);
+        txt_next_to_Update = v.findViewById(R.id.nextToUpdate);
         edt_Comment = v.findViewById(R.id.edt_comment);
         btn_create_reminder = v.findViewById(R.id.btn_create_reminder);
         btn_create_reminder.setAlpha(0.5f);
         btn_create_reminder.setEnabled(false);
-        String [] values = {"Once","Daily","Weekly"};
+        String [] values = {"Once", "Every 1 Minute", "Daily","Weekly"};
         sp = (Spinner) v.findViewById(R.id.sp_create_reminder);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_dropdown_item_1line, values);
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
@@ -120,6 +115,20 @@ public class CreateReminderFragment extends Fragment implements CreateReminderCo
                 presenter.createNewReminder(requireContext(), name,frequencey,date, time, comment, account);
             }
         });
+
+        txt_next_to_Update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UpdateReminderFragment updateFragment = new UpdateReminderFragment();
+                Bundle args = new Bundle();
+                args.putString("id", "-1309822290");
+                updateFragment.setArguments(args);
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.nav_host_fragment_content_main, updateFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
     }
 
     private void handleNameReminder() {
@@ -161,12 +170,7 @@ public class CreateReminderFragment extends Fragment implements CreateReminderCo
 
     @Override
     public void showError(String message) {
-
-    }
-
-    @Override
-    public void createDefaultReminder() {
-
+        Toast.makeText(requireContext(), "Create reminder failed", Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -18,4 +18,20 @@ public class AccountState {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         return prefs.getString(KEY, null); // Return null if key not found
     }
+    public static void saveAccountBalance(Context context, double accountBalance, String KEY) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+        editor.putString(KEY, accountBalance+"");
+        editor.apply();
+    }
+    public static String getAccountBalance(Context context, String KEY) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(KEY, null); // Return null if key not found
+    }
+    public static void updateAccountBalance(Context context, double amount, String KEY) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+        double currentAmount = Double.parseDouble(getAccountBalance(context,KEY));
+        editor.remove(KEY);
+        currentAmount+=currentAmount;
+        saveAccountBalance(context,currentAmount,KEY);
+    }
 }

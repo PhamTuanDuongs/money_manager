@@ -1,26 +1,25 @@
 package com.example.money_manager.entity;
 
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Timer;
+import com.google.firebase.Timestamp;
 
 public class Reminder {
     private String name;
     private String frequency;
-    private String date;
-    private String time;
+    private Timestamp datetime;
     private String comment;
 
-    private String account;
+    private Account account;
 
-    public Reminder(String name, String frequency, String date, String time, String comment, String account) {
+    private boolean isActive;
+
+    public Reminder() {}
+    public Reminder(String name, String frequency, Timestamp datetime, String comment, Account account, boolean isActive) {
         this.name = name;
         this.frequency = frequency;
-        this.date = date;
-        this.time = time;
+        this.datetime = datetime;
         this.comment = comment;
         this.account = account;
+        this.isActive = isActive;
     }
 
     public String getName() {
@@ -39,22 +38,6 @@ public class Reminder {
         this.frequency = frequency;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
     public String getComment() {
         return comment;
     }
@@ -63,11 +46,27 @@ public class Reminder {
         this.comment = comment;
     }
 
-    public String getAccount() {
+    public Account getAccount() {
         return account;
     }
 
-    public void setAccount(String account) {
+    public void setAccount(Account account) {
         this.account = account;
+    }
+
+    public Timestamp getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(Timestamp datetime) {
+        this.datetime = datetime;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

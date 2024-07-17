@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="152dp"
         android:text="Sign up to save your information"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.545"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,13 +21,14 @@
 
     <Button
         android:id="@+id/btn_nav_sign_up"
-        android:layout_width="182dp"
-        android:layout_height="46dp"
+        android:layout_width="217dp"
+        android:layout_height="53dp"
         android:layout_marginTop="64dp"
         android:backgroundTint="@color/yellow_600"
         android:text="Sign up"
         android:textAllCaps="false"
         android:textColor="@color/black"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,11 +36,12 @@
 
     <TextView
         android:id="@+id/txt_nav_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="68dp"
+        android:layout_height="31dp"
         android:layout_marginTop="48dp"
         android:text="Login"
         android:textColor="@color/teal_700"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_nav_sign_up" />

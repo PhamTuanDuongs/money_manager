@@ -1,14 +1,13 @@
 package com.example.money_manager.ui;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.money_manager.R;
 
@@ -39,7 +38,7 @@ public class ListCategoryFragment extends Fragment{
 
 
         btnAddCategory.setOnClickListener(v -> {
-                Fragment createCategoryFragment = new CreateReminderFragment();
+                Fragment createCategoryFragment = new CreateCategoryFragment();
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_container_view, createCategoryFragment);
                 transaction.addToBackStack(null);

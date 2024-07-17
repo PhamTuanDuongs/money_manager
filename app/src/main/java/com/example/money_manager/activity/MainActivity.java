@@ -1,5 +1,6 @@
 package com.example.money_manager.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,11 +16,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.money_manager.R;
+import com.example.money_manager.activity.authentication.LoginActivity;
 import com.example.money_manager.ui.AddIncomeFragment;
-import com.example.money_manager.ui.CreateReminderFragment;
+import com.example.money_manager.ui.CreateCategoryFragment;
 import com.example.money_manager.ui.ExpenseListFragment;
-import com.example.money_manager.ui.HomeFragment;
-import com.example.money_manager.ui.IncomeFragment;
 import com.example.money_manager.ui.IncomeListFragment;
 import com.example.money_manager.ui.ListCategoryFragment;
 import com.example.money_manager.ui.ListReminderFragment;
@@ -27,6 +27,7 @@ import com.example.money_manager.ui.ProfileFragment;
 import com.example.money_manager.ui.ReportFragment;
 import com.example.money_manager.utils.AccountState;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -40,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Toolbar toolbar = findViewById(R.id.toolbar_logins);
         setSupportActionBar(toolbar);
-
 
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -58,7 +58,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, new ReportFragment()).commit();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.nav_host_fragment_content_main, new ReportFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_home);
             setToolbarTitle("Home");
         }
@@ -81,13 +82,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_expense) {
             selectedFragment = new ExpenseListFragment();
             setToolbarTitle("Expense");
+        } else if (id == R.id.nav_add_income) {
+            selectedFragment = new AddIncomeFragment();
+            setToolbarTitle("Add income");
+        } else if (id == R.id.nav_logout) {
+            FirebaseAuth.getInstance().signOut();
+            Intent myintent = new Intent(this, LoginActivity.class);
+            startActivity(myintent);
         } else if (id == R.id.nav_category) {
             selectedFragment = new ListCategoryFragment();
             setToolbarTitle("Category");
         }
-
         if (selectedFragment != null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, selectedFragment).commit();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.nav_host_fragment_content_main, selectedFragment).commit();
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
@@ -102,7 +110,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         img_user_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, new ProfileFragment()).commit();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.nav_host_fragment_content_main, new ProfileFragment()).commit();
                 setToolbarTitle("Profile");
                 drawerLayout.closeDrawer(GravityCompat.START);
             }

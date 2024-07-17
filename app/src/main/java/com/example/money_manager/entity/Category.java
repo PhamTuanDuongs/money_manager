@@ -8,7 +8,7 @@ public class Category {
     private String image;
     private String autoID;
 
-    public Category(){
+    public Category() {
 
     }
 
@@ -17,6 +17,20 @@ public class Category {
         this.name = name;
         this.type = type;
         this.image = image;
+    }
+
+    public Category(String id, String name, int type, String account, String image) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.account = account;
+        this.image = image;
+    }
+
+    public Category(String name, int type, String account) {
+        this.name = name;
+        this.type = type;
+        this.account = account;
     }
 
     public void setImage(String image) {

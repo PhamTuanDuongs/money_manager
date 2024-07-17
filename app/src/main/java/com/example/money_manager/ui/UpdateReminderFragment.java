@@ -1,6 +1,12 @@
 package com.example.money_manager.ui;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -15,12 +21,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import com.example.money_manager.R;
 import com.example.money_manager.contract.UpdateReminderContract;
+import com.example.money_manager.contract.presenter.CreateReminderPresenter;
 import com.example.money_manager.contract.presenter.UpdateReminderPresenter;
 import com.example.money_manager.entity.Reminder;
 import com.example.money_manager.utils.AccountState;
@@ -43,9 +46,10 @@ public class UpdateReminderFragment extends Fragment implements UpdateReminderCo
     }
 
 
-    public static UpdateReminderFragment newInstance(String param1, String param2) {
+    public static UpdateReminderFragment newInstance(String reminderId) {
         UpdateReminderFragment fragment = new UpdateReminderFragment();
         Bundle args = new Bundle();
+        args.putString("reminderId", reminderId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -75,7 +79,7 @@ public class UpdateReminderFragment extends Fragment implements UpdateReminderCo
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_dropdown_item_1line, values);
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         sp.setAdapter(adapter);
-        String value = getArguments().getString("id");
+        String value = getArguments().getString("reminderId");
         presenter.getReminderById(Integer.parseInt(value));
         return v;
     }
@@ -120,8 +124,14 @@ public class UpdateReminderFragment extends Fragment implements UpdateReminderCo
                 String time = txtHour.getText().toString();
                 String comment = edt_Comment.getText().toString();
                 String account = AccountState.getEmail(requireContext(), "email");
-                String value = getArguments().getString("id");
+                String value = getArguments().getString("reminderId");
                 presenter.onClickUpdateReminder(requireContext(), name,frequencey,date, time, comment, account, Integer.parseInt(value));
+
+                Fragment listReminderFragment = new ListReminderFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.nav_host_fragment_content_main, listReminderFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
     }
@@ -181,8 +191,8 @@ public class UpdateReminderFragment extends Fragment implements UpdateReminderCo
     public void fillExistData(Reminder reminder) {
         edt_Update.setText(reminder.getName());
         edt_Comment.setText(reminder.getComment());
-        txtDate.setText(DateTimeUtils.convertTimestampToDate(reminder.getDatetime()));
-        txtHour.setText(DateTimeUtils.convertTimestampToTime(reminder.getDatetime()));
+        txtDate.setText(DateTimeUtils.convertTimestampToDate(reminder.getDateTime()));
+        txtHour.setText(DateTimeUtils.convertTimestampToTime(reminder.getDateTime()));
         String frequency = reminder.getFrequency();
         ArrayAdapter<String> adapter = (ArrayAdapter<String>) sp.getAdapter();
         int spinnerPosition = adapter.getPosition(frequency);

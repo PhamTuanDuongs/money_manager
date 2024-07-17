@@ -36,7 +36,7 @@ public class CreateReminderModel implements CreateReminderContract.Model {
         Map<String, Object> reminderData = new HashMap<>();
         reminderData.put("name", reminder.getName());
         reminderData.put("frequency", reminder.getFrequency());
-        reminderData.put("dateTime", reminder.getDatetime());
+        reminderData.put("dateTime", reminder.getDateTime());
         reminderData.put("comment", reminder.getComment());
         reminderData.put("account", user);
         reminderData.put("isActive", reminder.isActive());
@@ -118,7 +118,7 @@ public class CreateReminderModel implements CreateReminderContract.Model {
             calendar.add(Calendar.WEEK_OF_YEAR, 1);
         }
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY*7, pendingIntent);
     }
 
 }

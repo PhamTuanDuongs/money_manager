@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.text.Editable;
 import android.text.TextUtils;
@@ -29,7 +30,7 @@ import com.example.money_manager.utils.DateTimeUtils;
 
 public class CreateReminderFragment extends Fragment implements CreateReminderContract.View {
     private Spinner sp;
-    private TextView txtDate, txtHour, txt_required, txt_next_to_Update;
+    private TextView txtDate, txtHour, txt_required;
     private EditText edt_Create, edt_Comment;
     private  CreateReminderPresenter presenter;
     private Button btn_create_reminder;
@@ -62,7 +63,6 @@ public class CreateReminderFragment extends Fragment implements CreateReminderCo
         txtHour.setText(DateTimeUtils.getCurrentHour().toString());
         txt_required = v.findViewById(R.id.txt_required_update);
         edt_Create = v.findViewById(R.id.edt_creat_name);
-        txt_next_to_Update = v.findViewById(R.id.nextToUpdate);
         edt_Comment = v.findViewById(R.id.edt_comment);
         btn_create_reminder = v.findViewById(R.id.btn_create_reminder);
         btn_create_reminder.setAlpha(0.5f);
@@ -113,20 +113,12 @@ public class CreateReminderFragment extends Fragment implements CreateReminderCo
                 String comment = edt_Comment.getText().toString();
                 String account = AccountState.getEmail(requireContext(), "email");
                 presenter.createNewReminder(requireContext(), name,frequencey,date, time, comment, account);
-            }
-        });
 
-        txt_next_to_Update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UpdateReminderFragment updateFragment = new UpdateReminderFragment();
-                Bundle args = new Bundle();
-                args.putString("id", "-1309822290");
-                updateFragment.setArguments(args);
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.nav_host_fragment_content_main, updateFragment)
-                        .addToBackStack(null)
-                        .commit();
+                Fragment listReminderFragment = new ListReminderFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.nav_host_fragment_content_main, listReminderFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
     }

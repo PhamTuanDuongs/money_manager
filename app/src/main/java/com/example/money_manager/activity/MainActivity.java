@@ -21,6 +21,8 @@ import com.example.money_manager.ui.ExpenseListFragment;
 import com.example.money_manager.ui.HomeFragment;
 import com.example.money_manager.ui.IncomeFragment;
 import com.example.money_manager.ui.IncomeListFragment;
+import com.example.money_manager.ui.ListCategoryFragment;
+import com.example.money_manager.ui.ListReminderFragment;
 import com.example.money_manager.ui.ProfileFragment;
 import com.example.money_manager.ui.ReportFragment;
 import com.example.money_manager.utils.AccountState;
@@ -71,8 +73,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             selectedFragment = new ReportFragment();
             setToolbarTitle("Home");
         } else if (id == R.id.nav_reminder) {
-            selectedFragment = new CreateReminderFragment();
-            setToolbarTitle("Create Reminder");
+            selectedFragment = new ListReminderFragment();
+            setToolbarTitle("Reminder");
         } else if (id == R.id.nav_income) {
             selectedFragment = new IncomeListFragment();
             setToolbarTitle("Income");
@@ -84,9 +86,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             selectedFragment = new ExpenseListFragment();
             setToolbarTitle("Expense");
         }
-        else if (id == R.id.nav_reminder) {
-            selectedFragment = new CreateReminderFragment();
-            setToolbarTitle("Reminder");
+        else if (id == R.id.nav_category) {
+            selectedFragment = new ListCategoryFragment();
+            setToolbarTitle("Category");
         }
 
         if (selectedFragment != null) {

@@ -43,7 +43,7 @@ public class UpdateReminderModel implements UpdateReminderContract.Model {
                    Reminder reminder = new Reminder();
                    reminder.setName(document.get("name", String.class));
                    reminder.setComment(document.get("comment", String.class));
-                   reminder.setDatetime(document.get("dateTime", Timestamp.class));
+                   reminder.setDateTime(document.get("dateTime", Timestamp.class));
                    reminder.setFrequency(document.get("frequency", String.class));
                    fireStoreReminderCallBack.onCallBack(reminder);
                }
@@ -58,9 +58,10 @@ public class UpdateReminderModel implements UpdateReminderContract.Model {
         Map<String, Object> reminderData = new HashMap<>();
         reminderData.put("name", reminder.getName());
         reminderData.put("frequency", reminder.getFrequency());
-        reminderData.put("dateTime", reminder.getDatetime());
+        reminderData.put("dateTime", reminder.getDateTime());
         reminderData.put("comment", reminder.getComment());
         reminderData.put("account", user);
+        reminderData.put("isActive", reminder.isActive());
         db.collection("reminders").document(notificationId)
                 .set(reminderData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

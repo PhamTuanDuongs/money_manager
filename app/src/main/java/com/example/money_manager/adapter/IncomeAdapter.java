@@ -59,11 +59,11 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeView
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String formattedDate = formatter.format(date);
 
-        holder.tvName.setText(t.getName());
-        holder.tvAmount.setText("+" +t.getAmount());
-//        holder.tvDesc.setText(t.getDescription());
+        holder.tvName.setText("Name:  "+ t.getName());
+        holder.tvAmount.setText("+" +t.getAmount() + " VND");
+        holder.tvDesc.setText("Description:  "+t.getDescription());
         holder.tvDate.setText(formattedDate);
-        holder.tvCate.setText(t.getCategory().getName());
+        holder.tvCate.setText("Category:  "+t.getCategory().getName());
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -94,6 +94,7 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeView
         private TextView tvAmount;
         private TextView tvName;
         private TextView tvDate;
+        private TextView tvDecs;
         private Button btnUpdate;
         private Button btnDelete;
 
@@ -105,6 +106,7 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeView
             tvName = itemView.findViewById(R.id.txtIncomeName);
             tvDate = itemView.findViewById(R.id.txtIncomeDateCreated);
             tvCate = itemView.findViewById(R.id.txtIncomeCate);
+            tvDesc = itemView.findViewById(R.id.txtIncomeDesc);
 
         }
     }

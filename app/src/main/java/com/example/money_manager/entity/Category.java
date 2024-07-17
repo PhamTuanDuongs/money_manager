@@ -19,6 +19,7 @@ public class Category {
         this.image = image;
     }
 
+
     public Category(String id, String name, int type, String account, String image) {
         this.id = id;
         this.name = name;
@@ -31,6 +32,12 @@ public class Category {
         this.name = name;
         this.type = type;
         this.account = account;
+    }
+    public Category(String name, int type, String account, String img) {
+        this.name = name;
+        this.type = type;
+        this.account = account;
+        this.image =img;
     }
 
     public void setImage(String image) {

@@ -82,9 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_expense) {
             selectedFragment = new ExpenseListFragment();
             setToolbarTitle("Expense");
-        } else if (id == R.id.nav_add_income) {
-            selectedFragment = new AddIncomeFragment();
-            setToolbarTitle("Add income");
+
         } else if (id == R.id.nav_logout) {
             FirebaseAuth.getInstance().signOut();
             Intent myintent = new Intent(this, LoginActivity.class);

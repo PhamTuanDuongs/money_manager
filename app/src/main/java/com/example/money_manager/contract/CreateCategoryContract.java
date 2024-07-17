@@ -11,6 +11,8 @@ public class CreateCategoryContract {
 
     public interface Presenter {
         void createCategory(String name, int type, String account);
+
+        void createCategory(String name, int type, String email, String img);
     }
 
     public interface Model {

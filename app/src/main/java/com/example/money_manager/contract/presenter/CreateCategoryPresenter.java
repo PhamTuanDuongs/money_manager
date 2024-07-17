@@ -14,9 +14,14 @@ public class CreateCategoryPresenter implements CreateCategoryContract.Presenter
     }
 
     @Override
-    public void createCategory(String name, int type, String email) {
+    public void createCategory(String name, int type, String account) {
+
+    }
+
+    @Override
+    public void createCategory(String name, int type, String email, String img) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            Category category = new Category(name, type, email);
+            Category category = new Category(name, type, email,img);
             model.createCategory(category, new CreateCategoryContract.Model.OnCreateCategoryListener() {
                 @Override
                 public void onSuccess() {

@@ -23,6 +23,7 @@ public class CreateCategoryModel implements CreateCategoryContract.Model {
         categoryData.put("name", category.getName());
         categoryData.put("type", category.getType());
         categoryData.put("account_id", user);
+        categoryData.put("image", category.getImage());
 
         db.collection("categories")
                 .add(categoryData)
